@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core;
-
-import com.zuoxiaolong.niubi.job.core.config.Context;
+package com.zuoxiaolong.niubi.job.core.io;
 
 import java.io.InputStream;
 
@@ -30,9 +28,9 @@ public class ClasspathResource implements Resource {
 
     private String name;
 
-    public ClasspathResource(Context context, String resource) {
+    public ClasspathResource(ClassLoader classLoader, String resource) {
         this.name = resource;
-        this.inputStream = context.getResourceAsStream(resource);
+        this.inputStream = classLoader.getResourceAsStream(resource);
     }
 
     public InputStream getInputStream() {

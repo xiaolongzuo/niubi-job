@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.core.container;
 import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.config.DefaultContext;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.metadata.MethodMetadata;
 import com.zuoxiaolong.niubi.job.core.scanner.DefaultJobScanner;
 import com.zuoxiaolong.niubi.job.core.scanner.JobScanner;
@@ -41,8 +42,16 @@ public class DefaultContainer implements Container {
 
     private ScheduleManager scheduleManager;
 
+    public DefaultContainer() {
+        this(new Configuration());
+    }
+
     public DefaultContainer(Configuration configuration) {
-        this.context = new DefaultContext(configuration);
+        this.context = new DefaultContext(ClassHelper.getDefaultClassLoader(), configuration);
+        createScheduleManager();
+    }
+
+    private void createScheduleManager() {
         scheduleManager = new DefaultScheduleManager();
         List<MethodMetadata> methodMetadataList = jobScanner.scan(context);
         for (MethodMetadata methodMetadata : methodMetadataList) {

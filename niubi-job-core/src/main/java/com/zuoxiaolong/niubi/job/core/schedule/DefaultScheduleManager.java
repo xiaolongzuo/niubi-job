@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.schedule;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.config.Context;
-import com.zuoxiaolong.niubi.job.core.helper.JobExecutionContextHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.metadata.MethodMetadata;
 import com.zuoxiaolong.niubi.job.core.metadata.PlaceholderJob;
@@ -114,7 +114,7 @@ public class DefaultScheduleManager implements ScheduleManager {
         for (JobKey jobKey : jobKeyList) {
             try {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-                MethodMetadata methodMetadata = JobExecutionContextHelper.getMethodMetadata(jobDetail);
+                MethodMetadata methodMetadata = JobContextHelper.getMethodMetadata(jobDetail);
                 ScheduleBuilder scheduleBuilder = methodMetadata.schedule().scheduleType().scheduleBuilder(methodMetadata.schedule());
                 scheduler.scheduleJob(TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(scheduleBuilder).build());
             } catch (SchedulerException e) {

@@ -50,14 +50,18 @@ public class StandbyNode implements Node {
 
     private CuratorFramework client;
 
-    public StandbyNode(Configuration configuration, String connectString) {
+    public StandbyNode() {
+        this(new Configuration());
+    }
+
+    public StandbyNode(Configuration configuration) {
         try {
             this.name = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             //ignored
         }
         this.container = new DefaultContainer(configuration);
-        this.client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
+        this.client = CuratorFrameworkFactory.newClient(configuration.getConnectString(), retryPolicy);
         this.client.start();
         this.leaderSelector = new LeaderSelector(client, LEADER_PATH, new GreedyLeaderSelectorListener(this));
         leaderSelector.autoRequeue();

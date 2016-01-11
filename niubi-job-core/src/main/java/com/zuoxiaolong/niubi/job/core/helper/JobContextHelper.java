@@ -27,7 +27,7 @@ import org.quartz.SchedulerException;
  * @author Xiaolong Zuo
  * @since 16/1/9 23:51
  */
-public abstract class JobExecutionContextHelper {
+public abstract class JobContextHelper {
 
     public static MethodMetadata getMethodMetadata(JobDetail jobDetail) {
         return (MethodMetadata) jobDetail.getJobDataMap().get(MethodMetadata.DATA_MAP_KEY);

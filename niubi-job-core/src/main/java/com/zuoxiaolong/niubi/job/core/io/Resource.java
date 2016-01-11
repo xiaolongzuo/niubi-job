@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core;
+package com.zuoxiaolong.niubi.job.core.io;
 
 import java.io.InputStream;
 

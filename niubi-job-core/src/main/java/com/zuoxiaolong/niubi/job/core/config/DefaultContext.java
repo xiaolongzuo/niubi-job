@@ -29,15 +29,11 @@ import java.net.URL;
  */
 public class DefaultContext implements Context {
 
-    private ClassLoader classLoader = DefaultContext.class.getClassLoader();
+    private ClassLoader classLoader;
 
     private JobBeanFactory jobBeanFactory = new DefaultJobBeanFactory();
 
     private Configuration configuration;
-
-    public DefaultContext(Configuration configuration) {
-        this.configuration = configuration;
-    }
 
     public DefaultContext(ClassLoader classLoader, Configuration configuration) {
         this.classLoader = classLoader;

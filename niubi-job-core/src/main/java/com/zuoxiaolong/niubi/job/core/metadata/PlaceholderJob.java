@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.metadata;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.config.Context;
-import com.zuoxiaolong.niubi.job.core.helper.JobExecutionContextHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -37,8 +37,8 @@ public class PlaceholderJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         try {
-            MethodMetadata methodMetadata = JobExecutionContextHelper.getMethodMetadata(jobExecutionContext);
-            Context context = JobExecutionContextHelper.getContext(jobExecutionContext);
+            MethodMetadata methodMetadata = JobContextHelper.getMethodMetadata(jobExecutionContext);
+            Context context = JobContextHelper.getContext(jobExecutionContext);
             methodMetadata.method().invoke(context.getJobBeanFactory().getJobBean(methodMetadata.clazz()), EMPTY_ARGUMENTS);
         } catch (IllegalAccessException e) {
             throw new NiubiException(e);

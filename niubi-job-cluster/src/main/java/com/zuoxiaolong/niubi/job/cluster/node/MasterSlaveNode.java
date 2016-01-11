@@ -86,9 +86,13 @@ public class MasterSlaveNode implements Node {
 
     private PathChildrenCache ephemeralNodeCache;
 
-    public MasterSlaveNode(final Configuration configuration, String connectString) {
+    public MasterSlaveNode() {
+        this(new Configuration());
+    }
+
+    public MasterSlaveNode(Configuration configuration) {
         createContainer(configuration);
-        createClient(connectString);
+        createClient(configuration.getConnectString());
         createDistributedProperties();
         createNodePath();
         createLeaderSelector();
