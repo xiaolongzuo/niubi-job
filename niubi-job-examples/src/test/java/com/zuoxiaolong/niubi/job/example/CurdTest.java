@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.example;
 
-import com.google.gson.Gson;
+import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.BackgroundCallback;
@@ -37,7 +37,7 @@ public class CurdTest {
         client.start();
         client.create().creatingParentsIfNeeded().withProtection().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).inBackground(new BackgroundCallback() {
             public void processResult(CuratorFramework client, CuratorEvent event) throws Exception {
-                System.out.println(new Gson().toJson(event));
+                System.out.println(JsonHelper.toJson(event));
             }
         }).forPath("/nodecache/child1", "123".getBytes());
 
@@ -50,7 +50,7 @@ public class CurdTest {
         client.start();
         System.out.println(client.create().inBackground(new BackgroundCallback() {
             public void processResult(CuratorFramework client, CuratorEvent event) throws Exception {
-                System.out.println(new Gson().toJson(event));
+                System.out.println(JsonHelper.toJson(event));
             }
         }).forPath("/nodecache/child1"));
 
@@ -63,7 +63,7 @@ public class CurdTest {
         client.start();
         System.out.println(client.create().withProtection().inBackground(new BackgroundCallback() {
             public void processResult(CuratorFramework client, CuratorEvent event) throws Exception {
-                System.out.println(new Gson().toJson(event));
+                System.out.println(JsonHelper.toJson(event));
             }
         }).forPath("/nodecache/child1"));
 
@@ -103,7 +103,7 @@ public class CurdTest {
         client.start();
         System.out.println(client.getChildren().inBackground(new BackgroundCallback() {
             public void processResult(CuratorFramework client, CuratorEvent event) throws Exception {
-                System.out.println(new Gson().toJson(event));
+                System.out.println(JsonHelper.toJson(event));
             }
         }).forPath("/nodecache"));
 
@@ -114,7 +114,21 @@ public class CurdTest {
     public void testGetChildren1() throws Exception {
         CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000, 4));
         client.start();
-        System.out.println(new Gson().toJson(client.getChildren().forPath("/nodecache")));
+        System.out.println(JsonHelper.toJson(client.getChildren().forPath("/nodecache")));
+
+        Thread.sleep(10000);
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000, 4));
+        client.start();
+        client.delete().inBackground(new BackgroundCallback() {
+            @Override
+            public void processResult(CuratorFramework curatorFramework, CuratorEvent curatorEvent) throws Exception {
+                System.out.println(JsonHelper.toJson(curatorEvent));
+            }
+        }).forPath("/curd-test/delete");
 
         Thread.sleep(10000);
     }

@@ -256,8 +256,7 @@ public class MasterSlaveNode implements Node {
     private void clearInvalidPersistentNode(List<String> ephemeralNodeNameList, List<String> persistentNodeNameList) throws Exception {
         for (String persistentNodeName : persistentNodeNameList) {
             if (!ephemeralNodeNameList.contains(persistentNodeName)) {
-                //TODO  改为异步
-                client.delete().forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH, persistentNodeName));
+                client.delete().inBackground().forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH, persistentNodeName));
             }
         }
     }
