@@ -38,17 +38,21 @@ import java.util.Properties;
 public class Configuration {
 
     private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
+    private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
 
     private static final String PROPERTY_NAME_PACKAGE_NAMES = "job.package.names";
     private static final String PROPERTY_NAME_CONNECT_STRING = "zk.connect.string";
+    private static final String PROPERTY_NAME_MODE = "mode";
 
     private Properties properties;
 
     private ClassLoader classLoader;
 
-    private String[] packageNames = new String[]{""};
+    private String[] packageNames;
 
     private String connectString;
+
+    private Mode mode;
 
     public Configuration() {
         this(ClassHelper.getDefaultClassLoader());
@@ -58,6 +62,7 @@ public class Configuration {
         this.classLoader = classLoader;
         this.properties = new Properties();
         try {
+            this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_CONFIG_FILE).getInputStream());
         } catch (IOException e) {
             LoggerHelper.error("load config file failed.", e);
@@ -82,6 +87,7 @@ public class Configuration {
         }
         this.packageNames = jobPackageNames.split(",|:|;");
         this.connectString = properties.getProperty(PROPERTY_NAME_CONNECT_STRING, "localhost:2181");
+        this.mode = Mode.valueOf(properties.getProperty(PROPERTY_NAME_MODE, "MASTER_SLAVE"));
     }
 
 }

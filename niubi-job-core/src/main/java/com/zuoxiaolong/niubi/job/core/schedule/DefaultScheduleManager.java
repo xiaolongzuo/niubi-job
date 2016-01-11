@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.schedule;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
+import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -48,12 +49,14 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> groupStatusMap;
 
-    public DefaultScheduleManager() {
+    public DefaultScheduleManager(Configuration configuration) {
         this.jobKeyListMap = new ConcurrentHashMap<String, List<JobKey>>();
         this.sortedGroupList = new ArrayList<String>();
         this.groupStatusMap = new ConcurrentHashMap<String, ScheduleStatus>();
         try {
-            scheduler = StdSchedulerFactory.getDefaultScheduler();
+            StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
+            schedulerFactory.initialize(configuration.getProperties());
+            scheduler = schedulerFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException e) {
             LoggerHelper.error("create scheduler failed.", e);

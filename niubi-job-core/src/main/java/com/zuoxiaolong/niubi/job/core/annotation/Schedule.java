@@ -34,7 +34,7 @@ public @interface Schedule {
     String DEFAULT_GROUP = "_default_group";
 
     /**
-     * 调度类型,目前支持两种
+     * 调度类型,目前支持一种
      * @return scheduleType
      */
     ScheduleType scheduleType() default ScheduleType.CRON;
@@ -49,24 +49,12 @@ public @interface Schedule {
      * 仅当type为CRON时有效
      * @return cron
      */
-    String cron() default "";
+    String cron();
 
     /**
-     * 仅当type为SIMPLE时有效
-     * @return interval
-     */
-    long interval() default -1;
-
-    /**
-     * 仅当type为SIMPLE时有效
-     * @return repeatCount
-     */
-    int repeatCount() default -1;
-
-    /**
-     * 所有type均有效
+     * 丢失的任务策略
      * @return misfirePolicy
      */
-    MisfirePolicy misfirePolicy() default MisfirePolicy.SMART;
+    MisfirePolicy misfirePolicy() default MisfirePolicy.None;
 
 }

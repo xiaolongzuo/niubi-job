@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.example;
+package com.zuoxiaolong.niubi.job.examples;
 
 import com.google.gson.Gson;
 import org.apache.curator.framework.CuratorFramework;
@@ -30,7 +30,7 @@ import java.io.InputStreamReader;
  * @author Xiaolong Zuo
  * @since 16/1/10 18:56
  */
-public class CachTest {
+public class CacheTest {
 
     @Test
     public void testTreeCache() throws Exception {

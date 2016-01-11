@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.jobs;
+package com.zuoxiaolong.niubi.job.examples.jobs;
 
 import com.zuoxiaolong.niubi.job.core.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.core.annotation.Schedule;

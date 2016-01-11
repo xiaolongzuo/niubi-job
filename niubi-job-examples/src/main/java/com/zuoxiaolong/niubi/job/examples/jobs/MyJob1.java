@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.jobs;
+package com.zuoxiaolong.niubi.job.examples.jobs;
 
 import com.zuoxiaolong.niubi.job.core.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
@@ -26,17 +26,17 @@ import java.util.Date;
  * @author Xiaolong Zuo
  * @since 16/1/9 02:17
  */
-public class MyJob2 {
+public class MyJob1 {
 
-    @Schedule(cron = "0/10 * * * * ?", group = "group2")
+    @Schedule(cron = "0/10 * * * * ?")
     public void test1() {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group2][1]");
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group1][1]");
     }
 
     @Disabled
-    @Schedule(cron = "0/11 * * * * ?", group = "group2")
+    @Schedule(cron = "0/11 * * * * ?")
     public void test2() {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group2][2]");
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group1][2]");
     }
 
 }

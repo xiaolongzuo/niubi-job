@@ -14,16 +14,31 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.annotation;
+package com.zuoxiaolong.niubi.job.core.node;
+
+import com.zuoxiaolong.niubi.job.core.config.Configuration;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
+ * 单机版实现
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 16/1/12 01:17
  */
-public enum MisfirePolicy {
+public class SimpleNode extends AbstractNode {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    public SimpleNode() {
+    }
+
+    public SimpleNode(Configuration configuration) {
+        super(configuration);
+    }
+
+    public void join() {
+        getContainer().getScheduleManager().startup();
+    }
+
+    public void exit() {
+        getContainer().getScheduleManager().shutdown();
+    }
 
 }

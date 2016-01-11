@@ -18,12 +18,10 @@ package com.zuoxiaolong.niubi.job.core.annotation;
 
 import org.quartz.CronScheduleBuilder;
 import org.quartz.ScheduleBuilder;
-import org.quartz.SimpleScheduleBuilder;
 
 /**
- * 目前主要支持两种类型的调度方式
+ * 目前主要支持一种类型的调度方式
  * 1.cron表达式(CRON)
- * 2.interval模式(SIMPLE)
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 04:22
@@ -33,27 +31,14 @@ public enum ScheduleType {
     CRON {
         @Override
         public ScheduleBuilder scheduleBuilder(Schedule schedule) {
-            if (schedule.misfirePolicy() == MisfirePolicy.IGNORE) {
+            if (schedule.misfirePolicy() == MisfirePolicy.IgnoreMisfires) {
                 return CronScheduleBuilder.cronSchedule(schedule.cron()).withMisfireHandlingInstructionIgnoreMisfires();
-            } else {
+            } else if (schedule.misfirePolicy() == MisfirePolicy.DoNothing) {
                 return CronScheduleBuilder.cronSchedule(schedule.cron()).withMisfireHandlingInstructionDoNothing();
-            }
-        }
-    }, SIMPLE {
-        @Override
-        public ScheduleBuilder scheduleBuilder(Schedule schedule) {
-            if (schedule.misfirePolicy() == MisfirePolicy.IGNORE) {
-                return SimpleScheduleBuilder
-                        .simpleSchedule()
-                        .withIntervalInMilliseconds(schedule.interval())
-                        .withRepeatCount(schedule.repeatCount())
-                        .withMisfireHandlingInstructionIgnoreMisfires();
+            } else if (schedule.misfirePolicy() == MisfirePolicy.FireAndProceed){
+                return CronScheduleBuilder.cronSchedule(schedule.cron()).withMisfireHandlingInstructionFireAndProceed();
             } else {
-                return SimpleScheduleBuilder
-                        .simpleSchedule()
-                        .withIntervalInMilliseconds(schedule.interval())
-                        .withRepeatCount(schedule.repeatCount())
-                        .withMisfireHandlingInstructionNowWithRemainingCount();
+                return CronScheduleBuilder.cronSchedule(schedule.cron());
             }
         }
     };

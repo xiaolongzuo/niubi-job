@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.annotation;
+package com.zuoxiaolong.niubi.job.core.node;
+
+import com.zuoxiaolong.niubi.job.core.container.Container;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
+ * 该接口代表一个集群中的节点,一般对应一个JVM
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 16/1/9 14:41
  */
-public enum MisfirePolicy {
+public interface Node {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    Container getContainer();
+
+    String getName();
+
+    void join();
+
+    void exit();
 
 }

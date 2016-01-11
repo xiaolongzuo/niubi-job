@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.example;
+package com.zuoxiaolong.niubi.job.spring.config;
 
-import com.zuoxiaolong.niubi.job.cluster.node.Node;
-import com.zuoxiaolong.niubi.job.cluster.node.StandbyNode;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.xml.BeanDefinitionParser;
+import org.springframework.beans.factory.xml.ParserContext;
+import org.w3c.dom.Element;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:08
+ * @since 16/1/11 23:01
  */
-public class StandbyNodeTest {
+public class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
-    @org.junit.Test
-    public void test() throws InterruptedException, IOException {
-        Node node = new StandbyNode();
-        node.join();
-        new BufferedReader(new InputStreamReader(System.in)).readLine();
+    public BeanDefinition parse(Element element, ParserContext parserContext) {
+
+        return null;
     }
 
 }

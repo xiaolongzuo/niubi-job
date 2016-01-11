@@ -48,11 +48,11 @@ public class DefaultContainer implements Container {
 
     public DefaultContainer(Configuration configuration) {
         this.context = new DefaultContext(ClassHelper.getDefaultClassLoader(), configuration);
-        createScheduleManager();
+        createScheduleManager(configuration);
     }
 
-    private void createScheduleManager() {
-        scheduleManager = new DefaultScheduleManager();
+    private void createScheduleManager(Configuration configuration) {
+        scheduleManager = new DefaultScheduleManager(configuration);
         List<MethodMetadata> methodMetadataList = jobScanner.scan(context);
         for (MethodMetadata methodMetadata : methodMetadataList) {
             scheduleManager.addJob(methodMetadata);

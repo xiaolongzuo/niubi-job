@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.example;
+package com.zuoxiaolong.niubi.job.examples;
 
-import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.core.container.Container;
-import com.zuoxiaolong.niubi.job.core.container.DefaultContainer;
+import com.zuoxiaolong.niubi.job.core.node.Node;
+import com.zuoxiaolong.niubi.job.core.node.SimpleNode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,21 +26,21 @@ import java.util.Date;
  * @author Xiaolong Zuo
  * @since 16/1/9 02:19
  */
-public class SimpleNode {
+public class SimpleNodeTest {
 
     @org.junit.Test
     public void test() throws InterruptedException {
-        Container container = new DefaultContainer(new Configuration("com.zuoxiaolong.niubi.job.jobs"));
-        container.getScheduleManager().startup(Schedule.DEFAULT_GROUP);
+        Node node = new SimpleNode();
+        node.join();
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 启动容器");
         Thread.sleep(1000 * 40);
-        container.getScheduleManager().shutdown(Schedule.DEFAULT_GROUP);
+        node.exit();
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 暂停容器");
         Thread.sleep(1000 * 30);
-        container.getScheduleManager().startup(Schedule.DEFAULT_GROUP);
+        node.join();
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 恢复容器");
         Thread.sleep(1000 * 40);
-        container.getScheduleManager().shutdown(Schedule.DEFAULT_GROUP);
+        node.exit();
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 关闭容器");
         Thread.sleep(1000 * 2);
     }

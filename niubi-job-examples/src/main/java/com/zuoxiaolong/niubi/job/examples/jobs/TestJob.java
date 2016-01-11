@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.annotation;
+package com.zuoxiaolong.niubi.job.examples.jobs;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 16/1/11 23:37
  */
-public enum MisfirePolicy {
+public class TestJob implements Job {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 这是一个TestJob");
+    }
 
 }

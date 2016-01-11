@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.core.scanner;
 
+import com.zuoxiaolong.niubi.job.core.ConfigException;
 import com.zuoxiaolong.niubi.job.core.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.core.config.Context;
@@ -48,6 +49,10 @@ public class DefaultJobScanner implements JobScanner {
 
     public List<MethodMetadata> scan(Context context, String packageName) {
         URL url = context.getResource(packageName.replace(".", "/"));
+        if (url == null) {
+            LoggerHelper.error("package [" + packageName + "] can't find.");
+            throw new ConfigException();
+        }
         List<MethodMetadata> methodMetadataList = new ArrayList<MethodMetadata>();
         if (url.getProtocol().toLowerCase().equals("file")) {
             LoggerHelper.info("scan package [" + packageName + "]");

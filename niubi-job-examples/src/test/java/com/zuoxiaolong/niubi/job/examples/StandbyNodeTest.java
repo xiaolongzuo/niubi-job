@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.annotation;
+package com.zuoxiaolong.niubi.job.examples;
+
+import com.zuoxiaolong.niubi.job.core.node.Node;
+import com.zuoxiaolong.niubi.job.cluster.node.StandbyNode;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 16/1/9 15:08
  */
-public enum MisfirePolicy {
+public class StandbyNodeTest {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    @org.junit.Test
+    public void test() throws InterruptedException, IOException {
+        Node node = new StandbyNode();
+        node.join();
+        new BufferedReader(new InputStreamReader(System.in)).readLine();
+    }
 
 }

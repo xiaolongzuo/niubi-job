@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.example;
+package com.zuoxiaolong.niubi.job.examples;
 
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import org.apache.curator.framework.CuratorFramework;
@@ -124,7 +124,6 @@ public class CurdTest {
         CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000, 4));
         client.start();
         client.delete().inBackground(new BackgroundCallback() {
-            @Override
             public void processResult(CuratorFramework curatorFramework, CuratorEvent curatorEvent) throws Exception {
                 System.out.println(JsonHelper.toJson(curatorEvent));
             }

@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.example;
+package com.zuoxiaolong.niubi.job.spring.config;
 
-import com.zuoxiaolong.niubi.job.cluster.node.MasterSlaveNode;
-import com.zuoxiaolong.niubi.job.cluster.node.Node;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:08
+ * @since 16/1/9 15:31
  */
-public class MasterSlaveNodeTest {
+public class NiubiJobNamespaceHandler extends NamespaceHandlerSupport {
 
-    @org.junit.Test
-    public void test() throws InterruptedException, IOException {
-        Node node = new MasterSlaveNode();
-        node.join();
-        new BufferedReader(new InputStreamReader(System.in)).readLine();
+    public void init() {
+        this.registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
     }
 
 }

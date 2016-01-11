@@ -18,10 +18,9 @@ package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.core.container.Container;
-import com.zuoxiaolong.niubi.job.core.container.DefaultContainer;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.core.node.AbstractNode;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -39,18 +38,15 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.curator.utils.ZKPaths;
 import org.apache.zookeeper.CreateMode;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 
 /**
- * 集群节点的curator实现,可以保证同一时间有且仅有一个节点在运行job。
- * 且管理器会智能调度任务，保证任务均匀分布。
+ * 主从模式实现
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43
  */
-public class MasterSlaveNode implements Node {
+public class MasterSlaveNode extends AbstractNode {
 
     public static final String MASTER_SELECTOR_PATH = "/masterslaveleaderpath/masterselector";
 
@@ -70,10 +66,6 @@ public class MasterSlaveNode implements Node {
 
     private CuratorFramework client;
 
-    private String name;
-
-    private Container container;
-
     private LeaderSelector leaderSelector;
 
     private Integer nodeSequenceNumber;
@@ -91,21 +83,12 @@ public class MasterSlaveNode implements Node {
     }
 
     public MasterSlaveNode(Configuration configuration) {
-        createContainer(configuration);
+        super(configuration);
         createClient(configuration.getConnectString());
         createDistributedProperties();
         createNodePath();
         createLeaderSelector();
         createNodeCache();
-    }
-
-    private void createContainer(Configuration configuration) {
-        try {
-            this.name = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            //ignored
-        }
-        this.container = new DefaultContainer(configuration);
     }
 
     private void createClient(String connectString) {
@@ -136,9 +119,9 @@ public class MasterSlaveNode implements Node {
             this.persistentPathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
                 public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
                     if (event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
-                        container.getScheduleManager().startup(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
+                        getContainer().getScheduleManager().startup(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
                     } else if (event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED) {
-                        container.getScheduleManager().shutdown(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
+                        getContainer().getScheduleManager().shutdown(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
                     }
                 }
             });
@@ -155,17 +138,17 @@ public class MasterSlaveNode implements Node {
             private Object mutex = new Object();
 
             public void takeLeadership(CuratorFramework client) throws Exception {
-                LoggerHelper.info(name + " has been leadership.");
+                LoggerHelper.info(getName() + " has been leadership.");
                 synchronized (mutex) {
                     intervalTakeLeadership(client);
                     mutex.wait();
-                    LoggerHelper.info(name + " lost leadership.");
+                    LoggerHelper.info(getName() + " lost leadership.");
                 }
             }
 
             @Override
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
-                LoggerHelper.info(name + " state change [" + newState + "]");
+                LoggerHelper.info(getName() + " state change [" + newState + "]");
                 if (!newState.isConnected()) {
                     synchronized (mutex) {
                         mutex.notify();
@@ -350,14 +333,6 @@ public class MasterSlaveNode implements Node {
         return needToAddOrDeleteGroupListMap;
     }
 
-    public Container getContainer() {
-        return container;
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public synchronized void join() {
         this.leaderSelector.start();
     }
@@ -392,7 +367,7 @@ public class MasterSlaveNode implements Node {
         private ContextManager() throws Exception {
             ephemeralNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(NODE_EPHEMERAL_PATH));
             persistentNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(NODE_PERSISTENT_PATH));
-            allGroupList = Collections.unmodifiableList(container.getScheduleManager().getGroupList());
+            allGroupList = Collections.unmodifiableList(getContainer().getScheduleManager().getGroupList());
             nodeSize = ephemeralNodeNameList.size();
             groupSize = allGroupList.size();
             averageGroupCount = (groupSize % nodeSize == 0) ? (groupSize / nodeSize) : (groupSize / nodeSize + 1);

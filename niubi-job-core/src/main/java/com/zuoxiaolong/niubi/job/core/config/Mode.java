@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.cluster.node;
-
-import com.zuoxiaolong.niubi.job.core.container.Container;
+package com.zuoxiaolong.niubi.job.core.config;
 
 /**
- * 该接口代表一个集群中的节点,一般对应一个JVM
+ * 支持的模式
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 14:41
+ * @since 16/1/12 01:13
  */
-public interface Node {
+public enum Mode {
 
-    Container getContainer();
-
-    String getName();
-
-    void join();
-
-    void exit();
-
+    SIMPLE, STANDBY, MASTER_SLAVE
 }

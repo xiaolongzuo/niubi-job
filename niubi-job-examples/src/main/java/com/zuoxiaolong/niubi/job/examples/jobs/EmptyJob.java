@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.config;
+package com.zuoxiaolong.niubi.job.examples.jobs;
+
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:31
+ * @since 16/1/12 00:17
  */
-public class NiubiJobNamespaceHandler {
+public class EmptyJob implements Job {
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
