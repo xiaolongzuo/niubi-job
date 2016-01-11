@@ -44,7 +44,8 @@ import java.net.UnknownHostException;
 import java.util.*;
 
 /**
- * 集群节点的curator实现,可以保证同一时间有且仅有一个节点在运行job
+ * 集群节点的curator实现,可以保证同一时间有且仅有一个节点在运行job。
+ * 且管理器会智能调度任务，保证任务均匀分布。
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43

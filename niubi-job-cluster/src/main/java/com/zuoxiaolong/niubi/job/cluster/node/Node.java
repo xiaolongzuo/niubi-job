@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.cluster.node;
 import com.zuoxiaolong.niubi.job.core.container.Container;
 
 /**
- * 该接口代表一个集群中的节点,一般是一个job应用
+ * 该接口代表一个集群中的节点,一般对应一个JVM
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:41
