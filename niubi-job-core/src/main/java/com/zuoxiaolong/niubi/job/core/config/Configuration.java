@@ -43,6 +43,7 @@ public class Configuration {
     private static final String PROPERTY_NAME_PACKAGE_NAMES = "job.package.names";
     private static final String PROPERTY_NAME_CONNECT_STRING = "zk.connect.string";
     private static final String PROPERTY_NAME_MODE = "mode";
+    private static final String PROPERTY_NAME_CLASSPATH = "classpath";
 
     private Properties properties;
 
@@ -53,6 +54,8 @@ public class Configuration {
     private String connectString;
 
     private Mode mode;
+
+    private String classpath;
 
     public Configuration() {
         this(ClassHelper.getDefaultClassLoader());
@@ -88,6 +91,7 @@ public class Configuration {
         this.packageNames = jobPackageNames.split(",|:|;");
         this.connectString = properties.getProperty(PROPERTY_NAME_CONNECT_STRING, "localhost:2181");
         this.mode = Mode.valueOf(properties.getProperty(PROPERTY_NAME_MODE, "MASTER_SLAVE"));
+        this.classpath = properties.getProperty(PROPERTY_NAME_CLASSPATH, classLoader.getResource("").getPath());
     }
 
 }
