@@ -1,5 +1,7 @@
+package com.zuoxiaolong.niubi.job.core.job;
+
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +16,26 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.metadata;
-
-import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
-
-import java.lang.reflect.Method;
+import java.util.HashMap;
 
 /**
- * 一个需要调度的方法元数据
- *
- * @author Xiaolong Zuo
- * @since 16/1/9 00:33
+ * @author 左潇龙
+ * @since 1/12/2016 16:58
  */
-public interface MethodMetadata {
+public class JobParameter extends HashMap<String, Object> {
 
-    String DATA_MAP_KEY = "_metadata";
+    public static final String DATA_MAP_KEY = "_job_parameter";
 
-    Class<?> clazz();
+    public Integer getInteger(String key) {
+        return Integer.valueOf(get(key).toString());
+    }
 
-    Schedule schedule();
+    public Long getLong(String key) {
+        return Long.valueOf(get(key).toString());
+    }
 
-    Method method();
+    public String getString(String key) {
+        return get(key).toString();
+    }
 
 }

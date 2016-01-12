@@ -34,16 +34,16 @@ public @interface Schedule {
     String DEFAULT_GROUP = "_default_group";
 
     /**
-     * 调度类型,目前支持一种
-     * @return scheduleType
-     */
-    ScheduleType scheduleType() default ScheduleType.CRON;
-
-    /**
-     * 分组名称,不同组的任务可能会在不同的节点中执行
+     * 分组名称
      * @return group
      */
     String group() default DEFAULT_GROUP;
+
+    /**
+     * 任务名称
+     * @return group
+     */
+    String name() default "";
 
     /**
      * 仅当type为CRON时有效

@@ -25,9 +25,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.io.InputStream;
-import java.net.URL;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/11 22:44
@@ -50,33 +47,13 @@ public class SpringContext extends DefaultContext implements Context, BeanFactor
     }
 
     @Override
-    public <T> Class<T> loadClass(String className) {
-        return super.loadClass(className);
+    public JobBeanFactory jobBeanFactory() {
+        return super.jobBeanFactory();
     }
 
     @Override
-    public <T> T initializeBean(Class<T> clazz) {
-        return super.initializeBean(clazz);
-    }
-
-    @Override
-    public URL getResource(String name) {
-        return super.getResource(name);
-    }
-
-    @Override
-    public InputStream getResourceAsStream(String name) {
-        return super.getResourceAsStream(name);
-    }
-
-    @Override
-    public JobBeanFactory getJobBeanFactory() {
-        return super.getJobBeanFactory();
-    }
-
-    @Override
-    public Configuration getConfiguration() {
-        return super.getConfiguration();
+    public Configuration configuration() {
+        return super.configuration();
     }
 
 }

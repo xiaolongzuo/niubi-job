@@ -18,9 +18,6 @@ package com.zuoxiaolong.niubi.job.core.config;
 
 import com.zuoxiaolong.niubi.job.core.bean.JobBeanFactory;
 
-import java.io.InputStream;
-import java.net.URL;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/9 23:19
@@ -29,16 +26,10 @@ public interface Context {
 
     String DATA_MAP_KEY = "____context";
 
-    <T> Class<T> loadClass(String className);
+    ClassLoader classLoader();
 
-    <T> T initializeBean(Class<T> clazz);
+    JobBeanFactory jobBeanFactory();
 
-    URL getResource(String name);
-
-    InputStream getResourceAsStream(String name);
-
-    JobBeanFactory getJobBeanFactory();
-
-    Configuration getConfiguration();
+    Configuration configuration();
 
 }

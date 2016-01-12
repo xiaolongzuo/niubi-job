@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.core.config;
 
-import com.zuoxiaolong.niubi.job.core.ConfigException;
-import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.io.ClasspathResource;
@@ -25,6 +23,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -40,58 +39,48 @@ public class Configuration {
     private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
     private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
 
-    private static final String PROPERTY_NAME_PACKAGE_NAMES = "job.package.names";
-    private static final String PROPERTY_NAME_CONNECT_STRING = "zk.connect.string";
     private static final String PROPERTY_NAME_MODE = "mode";
-    private static final String PROPERTY_NAME_CLASSPATH = "classpath";
+    private static final String PROPERTY_NAME_JOB_JAR_REPERTORY = "jar.job.repertory";
+    private static final String PROPERTY_NAME_BASE_PACKAGES = "local.base.package";
 
     private Properties properties;
 
-    private ClassLoader classLoader;
-
-    private String[] packageNames;
-
-    private String connectString;
+    private JobScanClassLoader classLoader;
 
     private Mode mode;
 
-    private String classpath;
+    private String jobJarRepertory;
+
+    private String basePackages;
 
     public Configuration() {
         this(ClassHelper.getDefaultClassLoader());
     }
 
     public Configuration(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        this.properties = new Properties();
+        this(classLoader, new Properties());
+    }
+
+    public Configuration(ClassLoader classLoader, Properties properties) {
+        this.properties = properties;
         try {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());
+        } catch (IOException e) {
+            LoggerHelper.info("read config file [" + DEFAULT_QUARTZ_FILE + "] failed.", e);
+        }
+        try {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_CONFIG_FILE).getInputStream());
         } catch (IOException e) {
-            LoggerHelper.error("load config file failed.", e);
-            throw new NiubiException(e);
+            LoggerHelper.info("read config file [" + DEFAULT_CONFIG_FILE + "] failed.", e);
         }
-        readProperties(this.properties);
+        readConfigurationFromProperties();
+        this.classLoader = new JobScanClassLoader(new URL[]{}, classLoader, jobJarRepertory);
     }
 
-    public Configuration(Properties properties) {
-        readProperties(properties);
-    }
-
-    public Configuration(String... packageNames) {
-        this.packageNames = packageNames;
-    }
-
-    private void readProperties(Properties properties) {
-        String jobPackageNames = properties.getProperty(PROPERTY_NAME_PACKAGE_NAMES);
-        if (jobPackageNames == null || jobPackageNames.trim().length() == 0) {
-            LoggerHelper.error("job.package.names must be set.");
-            throw new ConfigException();
-        }
-        this.packageNames = jobPackageNames.split(",|:|;");
-        this.connectString = properties.getProperty(PROPERTY_NAME_CONNECT_STRING, "localhost:2181");
+    protected void readConfigurationFromProperties() {
         this.mode = Mode.valueOf(properties.getProperty(PROPERTY_NAME_MODE, "MASTER_SLAVE"));
-        this.classpath = properties.getProperty(PROPERTY_NAME_CLASSPATH, classLoader.getResource("").getPath());
+        this.jobJarRepertory = properties.getProperty(PROPERTY_NAME_JOB_JAR_REPERTORY, "http://localhost:8080/job");
+        this.basePackages = properties.getProperty(PROPERTY_NAME_BASE_PACKAGES, "");
     }
 
 }

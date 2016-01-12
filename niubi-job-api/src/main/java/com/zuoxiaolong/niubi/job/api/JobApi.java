@@ -1,5 +1,6 @@
+package com.zuoxiaolong.niubi.job.api;
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +15,12 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.scanner;
-
-import java.util.List;
-
 /**
- * job的扫描器
- *
- * @author Xiaolong Zuo
- * @since 16/1/9 00:31
+ * @author 左潇龙
+ * @since 1/12/2016 13:00
  */
-public interface JobScanner {
+public interface JobApi {
 
-    List<MethodTriggerDescriptor> scan();
+    void addJar(String jarFileName);
 
 }

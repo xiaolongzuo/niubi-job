@@ -16,10 +16,11 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
+import com.zuoxiaolong.niubi.job.api.config.ClusterConfiguration;
 import com.zuoxiaolong.niubi.job.core.NiubiException;
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.core.node.AbstractNode;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -48,16 +49,6 @@ import java.util.*;
  */
 public class MasterSlaveNode extends AbstractNode {
 
-    public static final String MASTER_SELECTOR_PATH = "/masterslaveleaderpath/masterselector";
-
-    public static final String NODE_EPHEMERAL_PATH = "/masterslaveleaderpath/nodeephemeralpath";
-
-    public static final String NODE_PERSISTENT_PATH = "/masterslaveleaderpath/nodepersistentpath";
-
-    public static final String COUNTER_PATH = "/masterslaveleaderpath/counterpath";
-
-    public static final String LOCK_PATH = "/masterslaveleaderpath/lockpath";
-
     private DistributedAtomicInteger distributedAtomicInteger;
 
     private InterProcessMutex interProcessMutex;
@@ -79,25 +70,29 @@ public class MasterSlaveNode extends AbstractNode {
     private PathChildrenCache ephemeralNodeCache;
 
     public MasterSlaveNode() {
-        this(new Configuration());
+        this(new ClusterConfiguration());
     }
 
-    public MasterSlaveNode(Configuration configuration) {
+    public MasterSlaveNode(ClusterConfiguration configuration) {
         super(configuration);
-        createClient(configuration.getConnectString());
+        createClient();
         createDistributedProperties();
         createNodePath();
         createLeaderSelector();
         createNodeCache();
     }
 
-    private void createClient(String connectString) {
-        this.client = CuratorFrameworkFactory.newClient(connectString, retryPolicy);
+    protected ClusterConfiguration getConfiguration() {
+        return (ClusterConfiguration) super.getConfiguration();
+    }
+
+    private void createClient() {
+        this.client = CuratorFrameworkFactory.newClient(getConfiguration().getConnectString(), retryPolicy);
         this.client.start();
     }
 
     private void createDistributedProperties() {
-        this.distributedAtomicInteger = new DistributedAtomicInteger(client, COUNTER_PATH, retryPolicy);
+        this.distributedAtomicInteger = new DistributedAtomicInteger(client, getConfiguration().getCounterPath(), retryPolicy);
         try {
             AtomicValue<Integer> value = this.distributedAtomicInteger.increment();
             if (value.succeeded()) {
@@ -108,13 +103,13 @@ public class MasterSlaveNode extends AbstractNode {
         } catch (Exception e) {
             throw new NiubiException(e);
         }
-        this.interProcessMutex = new InterProcessMutex(client, LOCK_PATH);
+        this.interProcessMutex = new InterProcessMutex(client, getConfiguration().getLockPath());
     }
 
     private void createNodePath() {
         try {
-            this.nodePersistentPath = this.client.create().creatingParentsIfNeeded().withProtection().withMode(CreateMode.PERSISTENT).forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH, String.valueOf(nodeSequenceNumber)));
-            this.nodeEphemeralPath = this.client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(ZKPaths.makePath(NODE_EPHEMERAL_PATH, this.nodePersistentPath.substring(this.nodePersistentPath.lastIndexOf("/") + 1)));
+            this.nodePersistentPath = this.client.create().creatingParentsIfNeeded().withProtection().withMode(CreateMode.PERSISTENT).forPath(ZKPaths.makePath(getConfiguration().getPersistentPath(), String.valueOf(nodeSequenceNumber)), StringHelper.getBytes(getName()));
+            this.nodeEphemeralPath = this.client.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(ZKPaths.makePath(getConfiguration().getEphemeralPath(), this.nodePersistentPath.substring(this.nodePersistentPath.lastIndexOf("/") + 1)));
             this.persistentPathChildrenCache = new PathChildrenCache(client, this.nodePersistentPath, true);
             this.persistentPathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
                 public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
@@ -158,12 +153,12 @@ public class MasterSlaveNode extends AbstractNode {
 
         };
 
-        this.leaderSelector = new LeaderSelector(client, MASTER_SELECTOR_PATH, listener);
+        this.leaderSelector = new LeaderSelector(client, getConfiguration().getMasterSelectorPath(), listener);
         this.leaderSelector.autoRequeue();
     }
 
     private void createNodeCache() {
-        ephemeralNodeCache = new PathChildrenCache(client, NODE_EPHEMERAL_PATH, true);
+        ephemeralNodeCache = new PathChildrenCache(client, getConfiguration().getEphemeralPath(), true);
         ephemeralNodeCache.getListenable().addListener(new PathChildrenCacheListener() {
             public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
                 boolean isNotSelfNode = event != null && !event.getData().getPath().equals(nodeEphemeralPath);
@@ -205,7 +200,7 @@ public class MasterSlaveNode extends AbstractNode {
                 if (createList != null) {
                     for (String group : createList) {
                         try {
-                            client.create().withMode(CreateMode.EPHEMERAL).forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH + "/" + ephemeralNodeName, group));
+                            client.create().withMode(CreateMode.EPHEMERAL).forPath(ZKPaths.makePath(getConfiguration().getEphemeralPath() + "/" + ephemeralNodeName, group));
                         } catch (Exception e) {
                             LoggerHelper.warn(e.getMessage());
                         }
@@ -214,7 +209,7 @@ public class MasterSlaveNode extends AbstractNode {
                 if (deleteList != null) {
                     for (String group : deleteList) {
                         try {
-                            client.delete().forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH + "/" + ephemeralNodeName, group));
+                            client.delete().forPath(ZKPaths.makePath(getConfiguration().getPersistentPath() + "/" + ephemeralNodeName, group));
                         } catch (Exception e) {
                             LoggerHelper.warn(e.getMessage());
                         }
@@ -365,8 +360,8 @@ public class MasterSlaveNode extends AbstractNode {
         private List<String> sortedEphemeralNodeNameList;
 
         private ContextManager() throws Exception {
-            ephemeralNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(NODE_EPHEMERAL_PATH));
-            persistentNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(NODE_PERSISTENT_PATH));
+            ephemeralNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(getConfiguration().getEphemeralPath()));
+            persistentNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(getConfiguration().getPersistentPath()));
             allGroupList = Collections.unmodifiableList(getContainer().getScheduleManager().getGroupList());
             nodeSize = ephemeralNodeNameList.size();
             groupSize = allGroupList.size();
@@ -380,7 +375,7 @@ public class MasterSlaveNode extends AbstractNode {
         private void clearInvalidPersistentNode() throws Exception {
             for (String persistentNodeName : persistentNodeNameList) {
                 if (!ephemeralNodeNameList.contains(persistentNodeName)) {
-                    client.delete().inBackground().forPath(ZKPaths.makePath(NODE_PERSISTENT_PATH, persistentNodeName));
+                    client.delete().inBackground().forPath(ZKPaths.makePath(getConfiguration().getPersistentPath(), persistentNodeName));
                 }
             }
         }
@@ -388,7 +383,7 @@ public class MasterSlaveNode extends AbstractNode {
         private void fillNodeScheduledGroupCondition() {
             for (String ephemeralNodeName : ephemeralNodeNameList) {
                 List<String> nodeGroupList;
-                String persistentNodePath = ZKPaths.makePath(NODE_PERSISTENT_PATH, ephemeralNodeName);
+                String persistentNodePath = ZKPaths.makePath(getConfiguration().getPersistentPath(), ephemeralNodeName);
                 try {
                     nodeGroupList = client.getChildren().forPath(persistentNodePath);
                 } catch (Exception e) {

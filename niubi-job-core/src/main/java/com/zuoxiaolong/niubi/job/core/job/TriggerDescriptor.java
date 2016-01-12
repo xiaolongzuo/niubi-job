@@ -14,32 +14,25 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.node;
+package com.zuoxiaolong.niubi.job.core.job;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
+import com.zuoxiaolong.niubi.job.core.annotation.MisfirePolicy;
+import org.quartz.Trigger;
 
 /**
- * 单机版实现
+ * 一个需要调度的方法元数据
  *
  * @author Xiaolong Zuo
- * @since 16/1/12 01:17
+ * @since 16/1/9 00:33
  */
-public class SimpleNode extends AbstractNode {
+public interface TriggerDescriptor extends KeyDescriptor {
 
-    public SimpleNode() {
-        this(new Configuration());
-    }
+    String DATA_MAP_KEY = "_trigger_detail";
 
-    public SimpleNode(Configuration configuration) {
-        super(configuration);
-    }
+    String cron();
 
-    public void join() {
-        getContainer().getScheduleManager().startup();
-    }
+    MisfirePolicy misfirePolicy();
 
-    public void exit() {
-        getContainer().getScheduleManager().shutdown();
-    }
+    Trigger trigger();
 
 }

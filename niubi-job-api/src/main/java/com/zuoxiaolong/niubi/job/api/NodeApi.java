@@ -1,5 +1,7 @@
+package com.zuoxiaolong.niubi.job.api;
+
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +16,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.scanner;
+import com.zuoxiaolong.niubi.job.api.model.NodeModel;
 
 import java.util.List;
 
 /**
- * job的扫描器
- *
- * @author Xiaolong Zuo
- * @since 16/1/9 00:31
+ * @author 左潇龙
+ * @since 1/12/2016 12:56
  */
-public interface JobScanner {
+public interface NodeApi {
 
-    List<MethodTriggerDescriptor> scan();
+    List<NodeModel> getAllNode();
+
+    String createNode();
+
+    void deleteNode();
 
 }

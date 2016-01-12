@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.metadata;
+package com.zuoxiaolong.niubi.job.core.job;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -31,18 +33,26 @@ import java.lang.reflect.InvocationTargetException;
  * @author Xiaolong Zuo
  * @since 16/1/9 01:58
  */
-public class PlaceholderJob implements Job {
-
-    private static final Object[] EMPTY_ARGUMENTS = new Object[]{};
+public class StubJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        MethodDescriptor methodDescriptor = JobContextHelper.getJobDescriptor(jobExecutionContext);
+        JobParameter jobParameter = JobContextHelper.getJobParameter(jobExecutionContext);
         try {
-            MethodMetadata methodMetadata = JobContextHelper.getMethodMetadata(jobExecutionContext);
+            LoggerHelper.info("begin execute job : " + methodDescriptor);
+            LoggerHelper.info("job parameter : " + JsonHelper.toJson(jobParameter));
             Context context = JobContextHelper.getContext(jobExecutionContext);
-            methodMetadata.method().invoke(context.getJobBeanFactory().getJobBean(methodMetadata.clazz()), EMPTY_ARGUMENTS);
+            if (methodDescriptor.hasParameter()) {
+                methodDescriptor.method().invoke(context.jobBeanFactory().getJobBean(methodDescriptor.clazz()), new Object[]{jobParameter});
+            } else {
+                methodDescriptor.method().invoke(context.jobBeanFactory().getJobBean(methodDescriptor.clazz()), new Object[]{});
+            }
+            LoggerHelper.info("execute job success: " + methodDescriptor);
         } catch (IllegalAccessException e) {
+            LoggerHelper.info("execute job failed: " + methodDescriptor);
             throw new NiubiException(e);
         } catch (InvocationTargetException e) {
+            LoggerHelper.info("execute job failed: " + methodDescriptor);
             throw new NiubiException(e);
         }
     }

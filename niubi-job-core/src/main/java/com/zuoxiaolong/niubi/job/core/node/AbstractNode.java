@@ -34,11 +34,14 @@ public abstract class AbstractNode implements Node {
 
     private Container container;
 
+    private Configuration configuration;
+
     public AbstractNode() {
         this(new Configuration());
     }
 
     public AbstractNode(Configuration configuration) {
+        this.configuration = configuration;
         try {
             this.name = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -53,6 +56,10 @@ public abstract class AbstractNode implements Node {
 
     public String getName() {
         return name;
+    }
+
+    protected Configuration getConfiguration() {
+        return configuration;
     }
 
 }

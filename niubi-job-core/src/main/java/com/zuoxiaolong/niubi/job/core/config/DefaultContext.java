@@ -16,12 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.core.config;
 
-import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.core.bean.JobBeanFactory;
-
-import java.io.InputStream;
-import java.net.URL;
 
 /**
  * @author Xiaolong Zuo
@@ -40,37 +36,22 @@ public class DefaultContext implements Context {
         this.configuration = configuration;
     }
 
-    public <T> Class<T> loadClass(String className) {
-        try {
-            return (Class<T>) classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new NiubiException(e);
-        }
+    public DefaultContext(ClassLoader classLoader, Configuration configuration, JobBeanFactory jobBeanFactory) {
+        this.classLoader = classLoader;
+        this.configuration = configuration;
+        this.jobBeanFactory = jobBeanFactory;
     }
 
-    public <T> T initializeBean(Class<T> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new NiubiException(e);
-        } catch (IllegalAccessException e) {
-            throw new NiubiException(e);
-        }
+    @Override
+    public ClassLoader classLoader() {
+        return classLoader;
     }
 
-    public URL getResource(String name) {
-        return classLoader.getResource(name);
-    }
-
-    public InputStream getResourceAsStream(String name) {
-        return classLoader.getResourceAsStream(name);
-    }
-
-    public JobBeanFactory getJobBeanFactory() {
+    public JobBeanFactory jobBeanFactory() {
         return jobBeanFactory;
     }
 
-    public Configuration getConfiguration() {
+    public Configuration configuration() {
         return configuration;
     }
 

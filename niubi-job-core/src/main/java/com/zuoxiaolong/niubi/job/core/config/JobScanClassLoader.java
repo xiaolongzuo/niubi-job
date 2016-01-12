@@ -28,20 +28,25 @@ import java.net.URLClassLoader;
  */
 public class JobScanClassLoader extends URLClassLoader {
 
-    private String classpath;
+    private String jobJarRepertory;
 
-    public JobScanClassLoader(URL[] urls, ClassLoader parent, String classpath) {
+    public JobScanClassLoader(URL[] urls, ClassLoader parent, String jobJarRepertory) {
         super(urls, parent);
-        this.classpath = classpath;
+        this.jobJarRepertory = jobJarRepertory;
+    }
+
+    @Override
+    public void addURL(URL url) {
+        super.addURL(url);
     }
 
     public void addJobJar(String jarFileName) {
         try {
-            String url = classpath;
-            if (!classpath.endsWith("/")) {
+            String url = jobJarRepertory;
+            if (!jobJarRepertory.endsWith("/")) {
                 url += "/";
             }
-            super.addURL(new URL(url + jarFileName));
+            addURL(new URL(url + jarFileName));
         } catch (Exception e) {
             LoggerHelper.error("can't find jar.", e);
             throw new NiubiException(e);

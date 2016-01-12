@@ -22,13 +22,7 @@ package com.zuoxiaolong.niubi.job.core.bean;
  */
 public interface JobBeanFactory {
 
-    <T> void registerJobBeanInstance(String jobClassName, T instance);
-
-    <T> void registerJobBeanClass(String jobClassName, Class<T> clazz);
-
-    <T> Class<T> getJobBeanClass(String name);
-
-    <T> T getJobBean(String name);
+    <T> void registerJobBeanInstance(Class<T> clazz);
 
     <T> T getJobBean(Class<T> clazz);
 

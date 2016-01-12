@@ -14,6 +14,8 @@
         <module>niubi-job-examples</module>
         <module>niubi-job-cluster</module>
         <module>niubi-job-spring</module>
+        <module>niubi-job-console</module>
+        <module>niubi-job-api</module>
     </modules>
 
     <properties>
@@ -38,6 +40,11 @@
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-cluster</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

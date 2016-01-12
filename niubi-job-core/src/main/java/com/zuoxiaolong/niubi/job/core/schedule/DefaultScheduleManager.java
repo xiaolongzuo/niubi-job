@@ -21,8 +21,10 @@ import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.metadata.MethodMetadata;
-import com.zuoxiaolong.niubi.job.core.metadata.PlaceholderJob;
+import com.zuoxiaolong.niubi.job.core.job.JobTriggerFactory;
+import com.zuoxiaolong.niubi.job.core.job.MethodDescriptor;
+import com.zuoxiaolong.niubi.job.core.job.TriggerDescriptor;
+import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -117,9 +119,8 @@ public class DefaultScheduleManager implements ScheduleManager {
         for (JobKey jobKey : jobKeyList) {
             try {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-                MethodMetadata methodMetadata = JobContextHelper.getMethodMetadata(jobDetail);
-                ScheduleBuilder scheduleBuilder = methodMetadata.schedule().scheduleType().scheduleBuilder(methodMetadata.schedule());
-                scheduler.scheduleJob(TriggerBuilder.newTrigger().forJob(jobDetail).withSchedule(scheduleBuilder).build());
+                TriggerDescriptor triggerDescriptor = JobContextHelper.getTriggerDescriptor(jobDetail);
+                scheduler.scheduleJob(triggerDescriptor.trigger());
             } catch (SchedulerException e) {
                 LoggerHelper.error("trigger job failed.", e);
                 throw new NiubiException(e);
@@ -170,39 +171,27 @@ public class DefaultScheduleManager implements ScheduleManager {
         return Collections.unmodifiableList(sortedGroupList);
     }
 
-    public void addJob(MethodMetadata methodMetadata) {
-        String name = methodMetadata.clazz().getName() + "." + methodMetadata.method().getName();
-        String group = methodMetadata.schedule().group();
-        JobKey jobKey = new JobKey(name, group);
-        JobDetail jobDetail = createJob(jobKey, methodMetadata);
+    public void addJob(MethodTriggerDescriptor descriptor) {
+        JobKey jobKey = descriptor.jobKey();
+        JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(MethodDescriptor.DATA_MAP_KEY, descriptor.getMethodDescriptor());
+        JobDetail jobDetail = JobTriggerFactory.jobDetail(descriptor.group(), descriptor.name(), jobDataMap);
         try {
             scheduler.addJob(jobDetail, true);
         } catch (SchedulerException e) {
             LoggerHelper.error("add job failed.", e);
             throw new NiubiException(e);
         }
-        List<JobKey> jobKeyList = jobKeyListMap.get(group);
+        List<JobKey> jobKeyList = jobKeyListMap.get(descriptor.group());
         if (jobKeyList == null) {
             jobKeyList = new ArrayList<JobKey>();
         }
         jobKeyList.add(jobKey);
-        jobKeyListMap.put(group, jobKeyList);
-        if (!sortedGroupList.contains(group)) {
-            sortedGroupList.add(group);
+        jobKeyListMap.put(descriptor.group(), jobKeyList);
+        if (!sortedGroupList.contains(descriptor.group())) {
+            sortedGroupList.add(descriptor.group());
         }
-        groupStatusMap.put(group, ScheduleStatus.SHUTDOWN);
-    }
-
-    protected JobDetail createJob(JobKey jobKey, MethodMetadata methodMetadata) {
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(MethodMetadata.DATA_MAP_KEY, methodMetadata);
-        JobDetail jobDetail = JobBuilder
-                .newJob(PlaceholderJob.class)
-                .withIdentity(jobKey)
-                .setJobData(jobDataMap)
-                .storeDurably(true)
-                .build();
-        return jobDetail;
+        groupStatusMap.put(descriptor.group(), ScheduleStatus.SHUTDOWN);
     }
 
 }

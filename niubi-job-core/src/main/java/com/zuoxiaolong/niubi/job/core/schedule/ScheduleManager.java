@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.schedule;
 
 import com.zuoxiaolong.niubi.job.core.config.Context;
-import com.zuoxiaolong.niubi.job.core.metadata.MethodMetadata;
+import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
 import org.quartz.JobKey;
 
 import java.util.List;
@@ -44,6 +44,6 @@ public interface ScheduleManager {
 
     List<JobKey> getJobKeyList(String group);
 
-    void addJob(MethodMetadata methodMetadata);
+    void addJob(MethodTriggerDescriptor descriptor);
 
 }

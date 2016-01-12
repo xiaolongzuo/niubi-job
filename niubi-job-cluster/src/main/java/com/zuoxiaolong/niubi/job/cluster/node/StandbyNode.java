@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
+import com.zuoxiaolong.niubi.job.cluster.config.ClusterConfiguration;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.node.AbstractNode;
 import org.apache.curator.RetryPolicy;
@@ -47,10 +47,10 @@ public class StandbyNode extends AbstractNode {
     private CuratorFramework client;
 
     public StandbyNode() {
-        this(new Configuration());
+        this(new ClusterConfiguration());
     }
 
-    public StandbyNode(Configuration configuration) {
+    public StandbyNode(ClusterConfiguration configuration) {
         super(configuration);
         this.client = CuratorFrameworkFactory.newClient(configuration.getConnectString(), retryPolicy);
         this.client.start();

@@ -16,6 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.core.bean;
 
+import com.zuoxiaolong.niubi.job.core.NiubiException;
+
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -24,28 +27,21 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultJobBeanFactory implements JobBeanFactory {
 
-    private ConcurrentHashMap<String, Class<?>> jobBeanClassMap = new ConcurrentHashMap<String, Class<?>>();
+    private Map<Class<?>, Object> jobBeanInstanceClassMap = new ConcurrentHashMap<Class<?>, Object>();
 
-    private ConcurrentHashMap<String, Object> jobBeanInstanceMap = new ConcurrentHashMap<String, Object>();
-
-    public <T> void registerJobBeanInstance(String jobClassName, T instance) {
-        jobBeanInstanceMap.put(jobClassName, instance);
-    }
-
-    public <T> void registerJobBeanClass(String jobClassName, Class<T> clazz) {
-        jobBeanClassMap.put(jobClassName, clazz);
-    }
-
-    public <T> Class<T> getJobBeanClass(String name) {
-        return (Class<T>) jobBeanClassMap.get(name);
-    }
-
-    public <T> T getJobBean(String name) {
-        return (T) jobBeanInstanceMap.get(name);
+    public <T> void registerJobBeanInstance(Class<T> clazz) {
+        try {
+            T instance = clazz.newInstance();
+            jobBeanInstanceClassMap.put(clazz, instance);
+        } catch (InstantiationException e) {
+            throw new NiubiException(e);
+        } catch (IllegalAccessException e) {
+            throw new NiubiException(e);
+        }
     }
 
     public <T> T getJobBean(Class<T> clazz) {
-        return (T) jobBeanInstanceMap.get(clazz.getName());
+        return (T) jobBeanInstanceClassMap.get(clazz);
     }
 
 }

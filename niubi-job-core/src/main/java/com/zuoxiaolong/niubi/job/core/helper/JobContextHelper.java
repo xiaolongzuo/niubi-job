@@ -18,7 +18,9 @@ package com.zuoxiaolong.niubi.job.core.helper;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.config.Context;
-import com.zuoxiaolong.niubi.job.core.metadata.MethodMetadata;
+import com.zuoxiaolong.niubi.job.core.job.JobParameter;
+import com.zuoxiaolong.niubi.job.core.job.MethodDescriptor;
+import com.zuoxiaolong.niubi.job.core.job.TriggerDescriptor;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
@@ -29,12 +31,24 @@ import org.quartz.SchedulerException;
  */
 public abstract class JobContextHelper {
 
-    public static MethodMetadata getMethodMetadata(JobDetail jobDetail) {
-        return (MethodMetadata) jobDetail.getJobDataMap().get(MethodMetadata.DATA_MAP_KEY);
+    public static TriggerDescriptor getTriggerDescriptor(JobDetail jobDetail) {
+        return (TriggerDescriptor) jobDetail.getJobDataMap().get(TriggerDescriptor.DATA_MAP_KEY);
     }
 
-    public static MethodMetadata getMethodMetadata(JobExecutionContext jobExecutionContext) {
-        return (MethodMetadata) jobExecutionContext.getMergedJobDataMap().get(MethodMetadata.DATA_MAP_KEY);
+    public static TriggerDescriptor getTriggerDescriptor(JobExecutionContext jobExecutionContext) {
+        return (TriggerDescriptor) jobExecutionContext.getMergedJobDataMap().get(TriggerDescriptor.DATA_MAP_KEY);
+    }
+
+    public static MethodDescriptor getJobDescriptor(JobDetail jobDetail) {
+        return (MethodDescriptor) jobDetail.getJobDataMap().get(MethodDescriptor.DATA_MAP_KEY);
+    }
+
+    public static MethodDescriptor getJobDescriptor(JobExecutionContext jobExecutionContext) {
+        return (MethodDescriptor) jobExecutionContext.getMergedJobDataMap().get(MethodDescriptor.DATA_MAP_KEY);
+    }
+
+    public static JobParameter getJobParameter(JobExecutionContext jobExecutionContext) {
+        return (JobParameter) jobExecutionContext.getMergedJobDataMap().get(JobParameter.DATA_MAP_KEY);
     }
 
     public static Context getContext(JobExecutionContext jobExecutionContext) {
