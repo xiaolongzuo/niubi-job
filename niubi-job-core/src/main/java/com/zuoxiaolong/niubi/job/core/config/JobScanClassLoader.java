@@ -16,9 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.core.config;
 
-import com.zuoxiaolong.niubi.job.core.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -28,29 +25,13 @@ import java.net.URLClassLoader;
  */
 public class JobScanClassLoader extends URLClassLoader {
 
-    private String jobJarRepertory;
-
-    public JobScanClassLoader(URL[] urls, ClassLoader parent, String jobJarRepertory) {
-        super(urls, parent);
-        this.jobJarRepertory = jobJarRepertory;
+    public JobScanClassLoader(ClassLoader parent) {
+        super(new URL[]{}, parent);
     }
 
     @Override
     public void addURL(URL url) {
         super.addURL(url);
-    }
-
-    public void addJobJar(String jarFileName) {
-        try {
-            String url = jobJarRepertory;
-            if (!jobJarRepertory.endsWith("/")) {
-                url += "/";
-            }
-            addURL(new URL(url + jarFileName));
-        } catch (Exception e) {
-            LoggerHelper.error("can't find jar.", e);
-            throw new NiubiException(e);
-        }
     }
 
 }

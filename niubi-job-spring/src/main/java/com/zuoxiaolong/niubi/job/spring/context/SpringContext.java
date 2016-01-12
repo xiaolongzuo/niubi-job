@@ -33,8 +33,8 @@ public class SpringContext extends DefaultContext implements Context, BeanFactor
 
     private BeanFactory beanFactory;
 
-    public SpringContext(ClassLoader classLoader, Configuration configuration) {
-        super(classLoader, configuration);
+    public SpringContext(ClassLoader classLoader) {
+        super(classLoader);
     }
 
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {

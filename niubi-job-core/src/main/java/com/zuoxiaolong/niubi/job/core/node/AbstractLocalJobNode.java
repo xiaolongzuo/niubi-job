@@ -1,6 +1,5 @@
-package com.zuoxiaolong.niubi.job.api;
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +14,25 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.core.node;
+
+import com.zuoxiaolong.niubi.job.core.container.Container;
+import com.zuoxiaolong.niubi.job.core.container.DefaultContainer;
+
 /**
- * @author 左潇龙
- * @since 1/12/2016 13:00
+ * @author Xiaolong Zuo
+ * @since 16/1/12 01:19
  */
-public interface JobApi {
+public abstract class AbstractLocalJobNode extends AbstractNode implements LocalJobNode {
+
+    private Container container;
+
+    public AbstractLocalJobNode() {
+        this.container = new DefaultContainer();
+    }
+
+    public Container getContainer() {
+        return container;
+    }
 
 }

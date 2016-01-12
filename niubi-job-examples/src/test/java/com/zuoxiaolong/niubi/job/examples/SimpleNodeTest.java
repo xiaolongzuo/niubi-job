@@ -30,6 +30,9 @@ public class SimpleNodeTest {
 
     @org.junit.Test
     public void test() throws InterruptedException {
+        System.out.println(SimpleNodeTest.class.getClassLoader().getResource(""));
+        System.out.println(SimpleNodeTest.class.getClassLoader().getResource("com/"));
+        System.out.println(SimpleNodeTest.class.getClassLoader().getResource("com/zuoxiaolong/niubi/job/examples/jobs"));
         Node node = new SimpleNode();
         node.join();
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 启动容器");

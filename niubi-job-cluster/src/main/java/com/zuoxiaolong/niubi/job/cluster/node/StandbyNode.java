@@ -16,18 +16,27 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.cluster.config.ClusterConfiguration;
+import com.zuoxiaolong.niubi.job.api.ApiFactory;
+import com.zuoxiaolong.niubi.job.api.NodeApi;
+import com.zuoxiaolong.niubi.job.api.PathApi;
+import com.zuoxiaolong.niubi.job.core.NiubiException;
+import com.zuoxiaolong.niubi.job.core.container.Container;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.node.AbstractNode;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.node.AbstractRemoteJobNode;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -36,25 +45,40 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43
  */
-public class StandbyNode extends AbstractNode {
-
-    public static final String LEADER_PATH = "/fairnodeleaderpath";
+public class StandbyNode extends AbstractRemoteJobNode {
 
     private final LeaderSelector leaderSelector;
 
-    private RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 6);
+    private RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
 
     private CuratorFramework client;
 
-    public StandbyNode() {
-        this(new ClusterConfiguration());
-    }
+    private PathChildrenCache pathChildrenCache;
 
-    public StandbyNode(ClusterConfiguration configuration) {
-        super(configuration);
-        this.client = CuratorFrameworkFactory.newClient(configuration.getConnectString(), retryPolicy);
+    private PathApi pathApi;
+
+    private NodeApi nodeApi;
+
+    private String zookeeperAddresses;
+
+    private String jarRepertoryUrl;
+
+    public StandbyNode(String zookeeperAddresses, String jarRepertoryUrl) {
+        this.zookeeperAddresses = zookeeperAddresses;
+        this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
+        this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
-        this.leaderSelector = new LeaderSelector(client, LEADER_PATH, createLeaderSelectorListener());
+        this.pathApi = ApiFactory.instance().pathApi();
+        this.nodeApi = ApiFactory.instance().nodeApi(client);
+        this.pathChildrenCache = new PathChildrenCache(client, pathApi.getStandbyNodeJobJarPath(), true);
+        this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
+        try {
+            this.pathChildrenCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed." , e);
+            throw new NiubiException(e);
+        }
+        this.leaderSelector = new LeaderSelector(client, pathApi.getStandbyNodeMasterPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
     }
 
@@ -70,7 +94,14 @@ public class StandbyNode extends AbstractNode {
                 LoggerHelper.info(getName() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        getContainer().getScheduleManager().startup();
+                        List<String> jobJarList = nodeApi.getStandbyNodeJobJarList();
+                        for (String jarFileName : jobJarList) {
+                            try {
+                                getContainer(jarRepertoryUrl + jarFileName).getScheduleManager().startup();
+                            } catch (Exception e) {
+                                LoggerHelper.error("start jar failed [" + jarFileName + "]", e);
+                            }
+                        }
                         mutex.wait();
                     }
                 } catch (Exception e) {
@@ -85,13 +116,33 @@ public class StandbyNode extends AbstractNode {
                 if (!newState.isConnected()) {
                     synchronized (mutex) {
                         LoggerHelper.info(getName() + "'s connection has been un-connected");
-                        getContainer().getScheduleManager().shutdown();
+                        for (Container container : getContainerCache().values()) {
+                            container.getScheduleManager().shutdown();
+                        }
                         LoggerHelper.info(getName() + " has been shutdown");
                         mutex.notify();
                     }
                 }
             }
 
+        };
+    }
+
+    public PathChildrenCacheListener createPathChildrenCacheListener() {
+        return (curatorFramework, event) -> {
+            boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
+            boolean isAddOrRemoveEvent = event!= null && (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED || event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED);
+            if (!hasLeadership || !isAddOrRemoveEvent) {
+                return;
+            }
+            String path = event.getData().getPath();
+            path = path.substring(path.lastIndexOf("/") + 1);
+            Container container = getContainer(path);
+            if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
+                container.getScheduleManager().startup();
+            } else {
+                container.getScheduleManager().shutdown();
+            }
         };
     }
 

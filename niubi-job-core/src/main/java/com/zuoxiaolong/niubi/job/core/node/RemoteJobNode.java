@@ -1,7 +1,5 @@
-package com.zuoxiaolong.niubi.job.api.model;
-
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +14,16 @@ package com.zuoxiaolong.niubi.job.api.model;
  * limitations under the License.
  */
 
-import lombok.Getter;
-import lombok.Setter;
+package com.zuoxiaolong.niubi.job.core.node;
+
+import com.zuoxiaolong.niubi.job.core.container.Container;
 
 /**
- * @author 左潇龙
- * @since 1/12/2016 12:57
+ * @author Xiaolong Zuo
+ * @since 16/1/12 23:45
  */
-@Setter
-@Getter
-public class NodeModel {
+public interface RemoteJobNode extends Node {
 
-    private String id;
-
-    private String name;
+    Container getContainer(String jarFileName);
 
 }

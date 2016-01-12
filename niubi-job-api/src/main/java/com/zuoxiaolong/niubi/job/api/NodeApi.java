@@ -16,8 +16,6 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.model.NodeModel;
-
 import java.util.List;
 
 /**
@@ -26,10 +24,6 @@ import java.util.List;
  */
 public interface NodeApi {
 
-    List<NodeModel> getAllNode();
-
-    String createNode();
-
-    void deleteNode();
+    List<String> getStandbyNodeJobJarList() throws Exception;
 
 }

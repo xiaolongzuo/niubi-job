@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.examples;
 
-import com.zuoxiaolong.niubi.job.cluster.node.MasterSlaveNode;
+import com.zuoxiaolong.niubi.job.cluster.node.MasterSlaveLocalJobNode;
 import com.zuoxiaolong.niubi.job.core.node.Node;
 
 import java.io.BufferedReader;
@@ -31,7 +31,7 @@ public class MasterSlaveNodeTest {
 
     @org.junit.Test
     public void test() throws InterruptedException, IOException {
-        Node node = new MasterSlaveNode();
+        Node node = new MasterSlaveLocalJobNode();
         node.join();
         new BufferedReader(new InputStreamReader(System.in)).readLine();
     }

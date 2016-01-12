@@ -26,6 +26,16 @@ public abstract class StringHelper {
 
     private static final String charset = "UTF-8";
 
+    public static String appendSlant(String url) {
+        if (url == null ) {
+            return null;
+        }
+        if (url.endsWith("/")) {
+            return url;
+        }
+        return url + "/";
+    }
+
     public static byte[] getBytes(String s) {
         if (s == null) {
             return new byte[0];

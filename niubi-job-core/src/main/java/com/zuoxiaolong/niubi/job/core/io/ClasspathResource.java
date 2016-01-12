@@ -16,6 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.core.io;
 
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+
 import java.io.InputStream;
 
 /**
@@ -29,6 +31,8 @@ public class ClasspathResource implements Resource {
     private String name;
 
     public ClasspathResource(ClassLoader classLoader, String resource) {
+        AssertHelper.notNull(classLoader, "classLoader can't be null.");
+        AssertHelper.notNull(classLoader, "resource can't be null.");
         this.name = resource;
         this.inputStream = classLoader.getResourceAsStream(resource);
     }

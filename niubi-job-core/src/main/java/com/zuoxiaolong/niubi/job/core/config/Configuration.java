@@ -16,14 +16,13 @@
 
 package com.zuoxiaolong.niubi.job.core.config;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.io.ClasspathResource;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Properties;
 
 /**
@@ -39,48 +38,25 @@ public class Configuration {
     private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
     private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
 
-    private static final String PROPERTY_NAME_MODE = "mode";
-    private static final String PROPERTY_NAME_JOB_JAR_REPERTORY = "jar.job.repertory";
-    private static final String PROPERTY_NAME_BASE_PACKAGES = "local.base.package";
-
     private Properties properties;
 
-    private JobScanClassLoader classLoader;
-
-    private Mode mode;
-
-    private String jobJarRepertory;
-
-    private String basePackages;
-
-    public Configuration() {
-        this(ClassHelper.getDefaultClassLoader());
-    }
-
-    public Configuration(ClassLoader classLoader) {
+    Configuration(ClassLoader classLoader) {
         this(classLoader, new Properties());
     }
 
-    public Configuration(ClassLoader classLoader, Properties properties) {
+    Configuration(ClassLoader classLoader, Properties properties) {
         this.properties = properties;
         try {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());
         } catch (IOException e) {
-            LoggerHelper.info("read config file [" + DEFAULT_QUARTZ_FILE + "] failed.", e);
+            LoggerHelper.error("read config file [" + DEFAULT_QUARTZ_FILE + "] failed.", e);
+            throw new NiubiException(e);
         }
         try {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_CONFIG_FILE).getInputStream());
-        } catch (IOException e) {
-            LoggerHelper.info("read config file [" + DEFAULT_CONFIG_FILE + "] failed.", e);
+        } catch (Exception e) {
+            LoggerHelper.info("read config file [" + DEFAULT_CONFIG_FILE + "] failed, has been ignored.", e);
         }
-        readConfigurationFromProperties();
-        this.classLoader = new JobScanClassLoader(new URL[]{}, classLoader, jobJarRepertory);
-    }
-
-    protected void readConfigurationFromProperties() {
-        this.mode = Mode.valueOf(properties.getProperty(PROPERTY_NAME_MODE, "MASTER_SLAVE"));
-        this.jobJarRepertory = properties.getProperty(PROPERTY_NAME_JOB_JAR_REPERTORY, "http://localhost:8080/job");
-        this.basePackages = properties.getProperty(PROPERTY_NAME_BASE_PACKAGES, "");
     }
 
 }

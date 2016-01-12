@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.core.node;
 
-import com.zuoxiaolong.niubi.job.core.container.Container;
-
 /**
  * 该接口代表一个集群中的节点,一般对应一个JVM
  *
@@ -25,8 +23,6 @@ import com.zuoxiaolong.niubi.job.core.container.Container;
  * @since 16/1/9 14:41
  */
 public interface Node {
-
-    Container getContainer();
 
     String getName();
 

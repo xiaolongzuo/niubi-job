@@ -16,50 +16,28 @@
 
 package com.zuoxiaolong.niubi.job.core.node;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.core.container.Container;
-import com.zuoxiaolong.niubi.job.core.container.DefaultContainer;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 01:19
+ * @since 16/1/12 23:42
  */
 public abstract class AbstractNode implements Node {
 
     private String name;
 
-    private Container container;
-
-    private Configuration configuration;
-
     public AbstractNode() {
-        this(new Configuration());
-    }
-
-    public AbstractNode(Configuration configuration) {
-        this.configuration = configuration;
         try {
             this.name = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
             this.name = UUID.randomUUID().toString();
         }
-        this.container = new DefaultContainer(configuration);
-    }
-
-    public Container getContainer() {
-        return container;
     }
 
     public String getName() {
         return name;
-    }
-
-    protected Configuration getConfiguration() {
-        return configuration;
     }
 
 }

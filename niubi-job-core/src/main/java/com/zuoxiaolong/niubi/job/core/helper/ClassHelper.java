@@ -22,6 +22,26 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 public abstract class ClassHelper {
 
+    public static String getPackageName(String jarEntryName) {
+        if (jarEntryName.endsWith(".class")) {
+            jarEntryName = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replace("/", ".");
+            int index = jarEntryName.lastIndexOf(".");
+            if (index < 0 ) {
+                return null;
+            } else {
+                return jarEntryName.substring(0, index);
+            }
+        }
+        return null;
+    }
+
+    public static String getClassName(String jarEntryName) {
+        if (jarEntryName.endsWith(".class")) {
+            return jarEntryName.replace("/", ".").substring(0, jarEntryName.lastIndexOf("."));
+        }
+        return null;
+    }
+
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader classLoader = null;
         try {

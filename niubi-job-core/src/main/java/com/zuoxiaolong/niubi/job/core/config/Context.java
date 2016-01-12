@@ -26,7 +26,7 @@ public interface Context {
 
     String DATA_MAP_KEY = "____context";
 
-    ClassLoader classLoader();
+    JobScanClassLoader classLoader();
 
     JobBeanFactory jobBeanFactory();
 

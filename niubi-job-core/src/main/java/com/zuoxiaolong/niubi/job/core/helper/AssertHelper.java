@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.config;
+package com.zuoxiaolong.niubi.job.core.helper;
+
+import com.zuoxiaolong.niubi.job.core.NiubiException;
 
 /**
- * 支持的模式
- *
  * @author Xiaolong Zuo
- * @since 16/1/12 01:13
+ * @since 16/1/13 02:43
  */
-public enum Mode {
+public abstract class AssertHelper {
 
-    SIMPLE, STANDBY, MASTER_SLAVE
+    public static void notNull(Object o, String message) {
+        if (o == null) {
+            NullPointerException nullPointerException = new NullPointerException();
+            LoggerHelper.error(message, nullPointerException);
+            throw new NiubiException(nullPointerException);
+        }
+    }
+
 }

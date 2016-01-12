@@ -17,10 +17,8 @@
 package com.zuoxiaolong.niubi.job.core.scanner;
 
 import com.zuoxiaolong.niubi.job.core.ConfigException;
-import com.zuoxiaolong.niubi.job.core.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.core.config.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 import java.io.File;
 import java.net.URL;
@@ -35,36 +33,29 @@ import java.util.List;
  */
 public class LocalJobScanner extends AbstractJobScanner {
 
-    private String[] basePackages;
-
-    public LocalJobScanner(JobScanClassLoader classLoader, JobBeanFactory jobBeanFactory, String basePackages) {
-        super(classLoader, jobBeanFactory);
-        this.basePackages = StringHelper.split(basePackages);
+    public LocalJobScanner(Context context) {
+        super(context);
     }
 
     @Override
     public List<MethodTriggerDescriptor> scan() {
         List<MethodTriggerDescriptor> descriptorList = new ArrayList<MethodTriggerDescriptor>();
-        for (String packageName : basePackages) {
-            descriptorList.addAll(scan(packageName));
-        }
-        return descriptorList;
-    }
-
-    public List<MethodTriggerDescriptor> scan(String packageName) {
-        URL url = getClassLoader().getResource(packageName.replace(".", "/"));
+        URL url = getContext().classLoader().getResource("");
         if (url == null) {
-            LoggerHelper.error("package [" + packageName + "] can't find.");
+            LoggerHelper.error("classpath can't be find.");
             throw new ConfigException();
         }
-        List<MethodTriggerDescriptor> descriptorList = new ArrayList<MethodTriggerDescriptor>();
         if (url.getProtocol().toLowerCase().equals("file")) {
-            LoggerHelper.info("scan package [" + packageName + "]");
-            File file = new File(url.getFile());
-            fill(packageName.indexOf(".") < 0 ? "" : packageName.substring(0, packageName.lastIndexOf(".")), file, descriptorList);
+            LoggerHelper.info("scan classpath [" + url + "]");
+            File[] children = new File(url.getFile()).listFiles();
+            if (children != null && children.length > 0) {
+                for (File child : children) {
+                    fill("", child, descriptorList);
+                }
+            }
             return descriptorList;
         } else {
-            LoggerHelper.warn("package [" + packageName + "] is not a file but a " + url.getProtocol() + ".");
+            LoggerHelper.warn("url [" + url + "] is not a file but a " + url.getProtocol() + ".");
             return descriptorList;
         }
     }

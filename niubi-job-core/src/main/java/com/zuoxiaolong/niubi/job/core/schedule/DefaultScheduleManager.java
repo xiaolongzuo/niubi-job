@@ -17,7 +17,6 @@
 package com.zuoxiaolong.niubi.job.core.schedule;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.JobContextHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -51,13 +50,13 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> groupStatusMap;
 
-    public DefaultScheduleManager(Configuration configuration) {
+    public DefaultScheduleManager(Context context) {
         this.jobKeyListMap = new ConcurrentHashMap<String, List<JobKey>>();
         this.sortedGroupList = new ArrayList<String>();
         this.groupStatusMap = new ConcurrentHashMap<String, ScheduleStatus>();
         try {
             StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            schedulerFactory.initialize(configuration.getProperties());
+            schedulerFactory.initialize(context.configuration().getProperties());
             scheduler = schedulerFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException e) {
@@ -174,6 +173,7 @@ public class DefaultScheduleManager implements ScheduleManager {
     public void addJob(MethodTriggerDescriptor descriptor) {
         JobKey jobKey = descriptor.jobKey();
         JobDataMap jobDataMap = new JobDataMap();
+        jobDataMap.put(TriggerDescriptor.DATA_MAP_KEY, descriptor.getTriggerDescriptor());
         jobDataMap.put(MethodDescriptor.DATA_MAP_KEY, descriptor.getMethodDescriptor());
         JobDetail jobDetail = JobTriggerFactory.jobDetail(descriptor.group(), descriptor.name(), jobDataMap);
         try {

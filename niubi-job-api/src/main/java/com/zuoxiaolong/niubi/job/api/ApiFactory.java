@@ -14,26 +14,32 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.examples;
+package com.zuoxiaolong.niubi.job.api;
 
-import com.zuoxiaolong.niubi.job.cluster.node.StandbyNode;
-import com.zuoxiaolong.niubi.job.core.node.Node;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import com.zuoxiaolong.niubi.job.api.curator.NodeApiImpl;
+import com.zuoxiaolong.niubi.job.api.curator.PathApiImpl;
+import org.apache.curator.framework.CuratorFramework;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:08
+ * @since 16/1/13 01:04
  */
-public class StandbyNodeTest {
+public class ApiFactory {
 
-    @org.junit.Test
-    public void test() throws InterruptedException, IOException {
-        Node node = new StandbyNode("localhost:2181,localhost:3181,localhost:4181", "http://localhost:8080/job");
-        node.join();
-        new BufferedReader(new InputStreamReader(System.in)).readLine();
+    private ApiFactory() {}
+
+    private static final ApiFactory INSTANCE = new ApiFactory();
+
+    public static ApiFactory instance() {
+        return INSTANCE;
+    }
+
+    public PathApi pathApi() {
+        return new PathApiImpl();
+    }
+
+    public NodeApi nodeApi(CuratorFramework client) {
+        return new NodeApiImpl(client);
     }
 
 }

@@ -16,12 +16,12 @@
 
 package com.zuoxiaolong.niubi.job.core.container;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.config.DefaultContext;
 import com.zuoxiaolong.niubi.job.core.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.core.scanner.LocalJobScanner;
 import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
+import com.zuoxiaolong.niubi.job.core.scanner.RemoteJobScanner;
 import com.zuoxiaolong.niubi.job.core.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.core.schedule.ScheduleManager;
 
@@ -42,24 +42,19 @@ public class DefaultContainer implements Container {
     private ScheduleManager scheduleManager;
 
     public DefaultContainer() {
-        this(new Configuration());
+        this.context = new DefaultContext();
+        this.jobScanner = new LocalJobScanner(context);
+        createScheduleManager();
     }
 
-    public DefaultContainer(Configuration configuration) {
-        this.context = new DefaultContext(configuration.getClassLoader(), configuration);
-        this.jobScanner = new LocalJobScanner(configuration.getClassLoader(), context.jobBeanFactory(), configuration.getBasePackages());
-        createScheduleManager(configuration);
+    public DefaultContainer(String jarUrl) {
+        this.context = new DefaultContext();
+        this.jobScanner = new RemoteJobScanner(context, jarUrl);
+        createScheduleManager();
     }
 
-    public DefaultContainer(Configuration configuration, String jarFileName) {
-        configuration.getClassLoader().addJobJar(jarFileName);
-        this.context = new DefaultContext(configuration.getClassLoader(), configuration);
-        this.jobScanner = new LocalJobScanner(configuration.getClassLoader(), context.jobBeanFactory(), configuration.getJobJarRepertory());
-        createScheduleManager(configuration);
-    }
-
-    private void createScheduleManager(Configuration configuration) {
-        scheduleManager = new DefaultScheduleManager(configuration);
+    private void createScheduleManager() {
+        scheduleManager = new DefaultScheduleManager(context);
         List<MethodTriggerDescriptor> descriptorList = jobScanner.scan();
         for (MethodTriggerDescriptor descriptor : descriptorList) {
             scheduleManager.addJob(descriptor);

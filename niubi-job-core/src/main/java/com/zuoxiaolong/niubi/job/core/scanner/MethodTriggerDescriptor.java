@@ -74,4 +74,8 @@ public class MethodTriggerDescriptor {
         return methodDescriptor;
     }
 
+    public TriggerDescriptor getTriggerDescriptor() {
+        return triggerDescriptor;
+    }
+
 }

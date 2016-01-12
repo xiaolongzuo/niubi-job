@@ -16,23 +16,13 @@
 
 package com.zuoxiaolong.niubi.job.core.node;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-
 /**
  * 单机版实现
  *
  * @author Xiaolong Zuo
  * @since 16/1/12 01:17
  */
-public class SimpleNode extends AbstractNode {
-
-    public SimpleNode() {
-        this(new Configuration());
-    }
-
-    public SimpleNode(Configuration configuration) {
-        super(configuration);
-    }
+public class SimpleNode extends AbstractLocalJobNode {
 
     public void join() {
         getContainer().getScheduleManager().startup();

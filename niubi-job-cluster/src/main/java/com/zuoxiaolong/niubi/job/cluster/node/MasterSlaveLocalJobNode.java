@@ -24,7 +24,7 @@ import com.zuoxiaolong.niubi.job.core.node.AbstractRemoteJobNode;
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43
  */
-public class MasterSlaveNode extends AbstractRemoteJobNode {
+public class MasterSlaveLocalJobNode extends AbstractRemoteJobNode {
     @Override
     public void join() {
 
@@ -55,11 +55,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 //
 //    private PathChildrenCache ephemeralNodeCache;
 //
-//    public MasterSlaveNode() {
+//    public MasterSlaveLocalJobNode() {
 //        this(new ClusterConfiguration());
 //    }
 //
-//    public MasterSlaveNode(ClusterConfiguration configuration) {
+//    public MasterSlaveLocalJobNode(ClusterConfiguration configuration) {
 //        super(configuration);
 //        createClient();
 //        createDistributedProperties();
@@ -100,9 +100,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 //            this.persistentPathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
 //                public void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
 //                    if (event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
-////                        getContainer().getScheduleManager().startup(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
+//                        getContainer().getScheduleManager().startup(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
 //                    } else if (event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED) {
-////                        getContainer().getScheduleManager().shutdown(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
+//                        getContainer().getScheduleManager().shutdown(event.getData().getPath().substring(event.getData().getPath().lastIndexOf("/") + 1));
 //                    }
 //                }
 //            });
@@ -348,7 +348,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 //        private ContextManager() throws Exception {
 //            ephemeralNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(getConfiguration().getEphemeralPath()));
 //            persistentNodeNameList = Collections.unmodifiableList(client.getChildren().forPath(getConfiguration().getPersistentPath()));
-////            allGroupList = Collections.unmodifiableList(getContainer().getScheduleManager().getGroupList());
+//            allGroupList = Collections.unmodifiableList(getContainer().getScheduleManager().getGroupList());
 //            nodeSize = ephemeralNodeNameList.size();
 //            groupSize = allGroupList.size();
 //            averageGroupCount = (groupSize % nodeSize == 0) ? (groupSize / nodeSize) : (groupSize / nodeSize + 1);
