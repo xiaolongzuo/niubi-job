@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.api.model;
 
 /*
  * Copyright 2002-2015 the original author or authors.
@@ -16,18 +16,19 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.model.NodeView;
-
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author 左潇龙
- * @since 1/12/2016 12:56
+ * @since 1/13/2016 19:22
  */
-public interface NodeApi {
+@Setter
+@Getter
+public class NodeView {
 
-    List<String> getStandbyNodeJobJarList() throws Exception;
+    private String id;
 
-    List<NodeView> getAllNodes();
+    private String name;
 
 }

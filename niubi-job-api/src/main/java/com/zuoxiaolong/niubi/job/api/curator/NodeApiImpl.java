@@ -19,8 +19,10 @@ package com.zuoxiaolong.niubi.job.api.curator;
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
 import com.zuoxiaolong.niubi.job.api.NodeApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
+import com.zuoxiaolong.niubi.job.api.model.NodeView;
 import org.apache.curator.framework.CuratorFramework;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,6 +43,16 @@ public class NodeApiImpl implements NodeApi {
     @Override
     public List<String> getStandbyNodeJobJarList() throws Exception {
         return client.getChildren().forPath(pathApi.getStandbyNodeJobJarPath());
+    }
+
+    @Override
+    public List<NodeView> getAllNodes() {
+        List<NodeView> list = new ArrayList<>();
+        NodeView nodeView1 = new NodeView();
+        nodeView1.setId("1");
+        nodeView1.setName("节点1");
+        list.add(nodeView1);
+        return list;
     }
 
 }
