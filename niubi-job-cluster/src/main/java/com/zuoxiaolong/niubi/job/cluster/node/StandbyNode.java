@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.cluster.node;
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
 import com.zuoxiaolong.niubi.job.api.NodeApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
+import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.container.Container;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -131,7 +132,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
     public PathChildrenCacheListener createPathChildrenCacheListener() {
         return (curatorFramework, event) -> {
             boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
-            boolean isAddOrRemoveEvent = event!= null && (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED || event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED);
+            boolean isAddOrRemoveEvent = EventHelper.isChildAddEvent(event) || EventHelper.isChildRemoveEvent(event);
             if (!hasLeadership || !isAddOrRemoveEvent) {
                 return;
             }

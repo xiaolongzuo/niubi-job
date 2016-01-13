@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.api.model;
+package com.zuoxiaolong.niubi.job.api.view;
 
 /*
  * Copyright 2002-2015 the original author or authors.
