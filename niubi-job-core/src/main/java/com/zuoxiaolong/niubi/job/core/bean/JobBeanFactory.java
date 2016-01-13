@@ -22,8 +22,6 @@ package com.zuoxiaolong.niubi.job.core.bean;
  */
 public interface JobBeanFactory {
 
-    <T> void registerJobBeanInstance(Class<T> clazz);
-
     <T> T getJobBean(Class<T> clazz);
 
 }

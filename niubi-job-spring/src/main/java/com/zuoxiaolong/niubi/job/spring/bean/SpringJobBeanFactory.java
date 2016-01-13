@@ -1,4 +1,5 @@
-package com.zuoxiaolong.niubi.job.spring.context;
+package com.zuoxiaolong.niubi.job.spring.bean;
+
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -15,15 +16,25 @@ package com.zuoxiaolong.niubi.job.spring.context;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.config.Context;
+import com.zuoxiaolong.niubi.job.core.bean.JobBeanFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 /**
  * @author 左潇龙
- * @since 1/13/2016 14:34
+ * @since 1/13/2016 14:25
  */
-public interface SpringContext extends Context {
+public class SpringJobBeanFactory implements JobBeanFactory {
 
-    ApplicationContext applicationContext();
+    private ApplicationContext applicationContext;
+
+    public SpringJobBeanFactory(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public <T> T getJobBean(Class<T> clazz) {
+        return applicationContext.getBean(clazz);
+    }
 
 }

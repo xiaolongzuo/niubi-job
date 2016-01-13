@@ -1,5 +1,6 @@
+package com.zuoxiaolong.niubi.job.spring.container;
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +15,15 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.spring.config;
-
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.xml.BeanDefinitionParser;
-import org.springframework.beans.factory.xml.ParserContext;
-import org.w3c.dom.Element;
+import com.zuoxiaolong.niubi.job.core.container.Container;
+import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
 
 /**
- * @author Xiaolong Zuo
- * @since 16/1/11 23:01
+ * @author 左潇龙
+ * @since 1/13/2016 17:01
  */
-public class ConfigBeanDefinitionParser implements BeanDefinitionParser {
+public interface SpringContainer extends Container {
 
-    public BeanDefinition parse(Element element, ParserContext parserContext) {
-
-        return null;
-    }
+    SpringContext getContext();
 
 }

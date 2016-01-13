@@ -1,5 +1,6 @@
+package com.zuoxiaolong.niubi.job.core.bean;
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +15,12 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.spring.config;
-
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
-
 /**
- * @author Xiaolong Zuo
- * @since 16/1/9 15:31
+ * @author 左潇龙
+ * @since 1/13/2016 14:27
  */
-public class NiubiJobNamespaceHandler extends NamespaceHandlerSupport {
+public interface RegisteredJobBeanFactory extends JobBeanFactory {
 
-    public void init() {
-        this.registerBeanDefinitionParser("config", new ConfigBeanDefinitionParser());
-    }
+    <T> void registerJobBeanInstance(Class<T> clazz);
 
 }

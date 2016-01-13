@@ -40,11 +40,11 @@ public class Configuration {
 
     private Properties properties;
 
-    Configuration(ClassLoader classLoader) {
+    public Configuration(ClassLoader classLoader) {
         this(classLoader, new Properties());
     }
 
-    Configuration(ClassLoader classLoader, Properties properties) {
+    public Configuration(ClassLoader classLoader, Properties properties) {
         this.properties = properties;
         try {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());

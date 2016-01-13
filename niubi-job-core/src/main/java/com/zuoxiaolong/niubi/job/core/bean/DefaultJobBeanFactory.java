@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Xiaolong Zuo
  * @since 16/1/9 15:41
  */
-public class DefaultJobBeanFactory implements JobBeanFactory {
+public class DefaultJobBeanFactory implements RegisteredJobBeanFactory {
 
     private Map<Class<?>, Object> jobBeanInstanceClassMap = new ConcurrentHashMap<Class<?>, Object>();
 

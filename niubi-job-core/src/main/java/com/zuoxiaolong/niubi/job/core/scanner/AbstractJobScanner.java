@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.core.scanner;
 
 import com.zuoxiaolong.niubi.job.core.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
+import com.zuoxiaolong.niubi.job.core.bean.RegisteredJobBeanFactory;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.job.JobParameter;
@@ -62,11 +63,15 @@ public abstract class AbstractJobScanner implements JobScanner {
                 Type[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
                     descriptorList.add(new MethodTriggerDescriptor(schedule, method, clazz, true));
-                    context.jobBeanFactory().registerJobBeanInstance(clazz);
+                    if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
+                        ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
+                    }
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "(JobParameter)]");
                 } else if (parameterTypes == null || parameterTypes.length == 0){
                     descriptorList.add(new MethodTriggerDescriptor(schedule, method, clazz, false));
-                    context.jobBeanFactory().registerJobBeanInstance(clazz);
+                    if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
+                        ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
+                    }
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "]");
                 } else {
                     LoggerHelper.error("schedule method must not have parameter or have a JobParameter parameter [" + className + "." + method.getName() + "]");
