@@ -48,6 +48,18 @@ public abstract class StringHelper {
         }
     }
 
+    public static String getString(byte[] bytes) {
+        if (bytes == null) {
+            return null;
+        }
+        try {
+            return new String(bytes, charset);
+        } catch (UnsupportedEncodingException e) {
+            //ignored
+            return "";
+        }
+    }
+
     public static boolean isEmpty(String s) {
         return s == null || s.trim().length() == 0;
     }
