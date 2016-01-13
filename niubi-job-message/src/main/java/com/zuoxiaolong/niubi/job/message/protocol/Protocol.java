@@ -14,28 +14,16 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.helper;
-
-import com.google.gson.Gson;
+package com.zuoxiaolong.niubi.job.message.protocol;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/11 01:25
+ * @since 16/1/14 03:18
  */
-public abstract class JsonHelper {
+public interface Protocol {
 
-    private static final Gson GSON = new Gson();
+    byte[] serialize(Object message);
 
-    public static String toJson(Object object) {
-        return GSON.toJson(object);
-    }
-
-    public static <T> T fromJson(String json, Class<T> clazz) {
-        return GSON.fromJson(json, clazz);
-    }
-
-    public static <T> T fromJson(byte[] bytes, Class<T> clazz) {
-        return GSON.fromJson(StringHelper.getString(bytes), clazz);
-    }
+    <T> T deserialize(byte[] data, Class<T> clazz);
 
 }

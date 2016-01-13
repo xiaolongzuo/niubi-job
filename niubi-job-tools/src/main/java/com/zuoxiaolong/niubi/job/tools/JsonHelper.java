@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.helper;
+package com.zuoxiaolong.niubi.job.tools;
 
-import com.zuoxiaolong.niubi.job.core.NiubiException;
+import com.google.gson.Gson;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 02:43
+ * @since 16/1/11 01:25
  */
-public abstract class AssertHelper {
+public abstract class JsonHelper {
 
-    public static void notNull(Object o, String message) {
-        if (o == null) {
-            NullPointerException nullPointerException = new NullPointerException();
-            LoggerHelper.error(message, nullPointerException);
-            throw new NiubiException(nullPointerException);
-        }
+    private static final Gson GSON = new Gson();
+
+    public static byte[] toBytes(Object object) {
+        return StringHelper.getBytes(toJson(object));
+    }
+
+    public static String toJson(Object object) {
+        return GSON.toJson(object);
+    }
+
+    public static <T> T fromJson(String json, Class<T> clazz) {
+        return GSON.fromJson(json, clazz);
+    }
+
+    public static <T> T fromJson(byte[] bytes, Class<T> clazz) {
+        return fromJson(StringHelper.getString(bytes), clazz);
     }
 
 }

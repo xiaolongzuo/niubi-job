@@ -23,8 +23,8 @@ import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.container.Container;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
+import com.zuoxiaolong.niubi.job.tools.StringHelper;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -76,7 +76,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
         try {
             this.pathChildrenCache.start();
         } catch (Exception e) {
-            LoggerHelper.error("path children path start failed." , e);
+            LoggerHelper.error("path children path start failed.", e);
             throw new NiubiException(e);
         }
         this.leaderSelector = new LeaderSelector(client, pathApi.getStandbyNodeMasterPath(), createLeaderSelectorListener());

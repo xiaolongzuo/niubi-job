@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.core.io;
 
-import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+import com.zuoxiaolong.niubi.job.tools.AssertHelper;
 
 import java.io.InputStream;
 

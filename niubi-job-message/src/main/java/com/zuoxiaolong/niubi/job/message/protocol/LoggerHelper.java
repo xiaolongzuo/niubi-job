@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.helper;
+package com.zuoxiaolong.niubi.job.message.protocol;
 
 import org.apache.log4j.Logger;
 

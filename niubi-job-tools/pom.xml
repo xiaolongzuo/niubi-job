@@ -9,16 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>niubi-job-service</artifactId>
+    <artifactId>niubi-job-tools</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-message</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-persistent</artifactId>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
         </dependency>
     </dependencies>
 </project>

@@ -17,7 +17,10 @@
         <module>niubi-job-console</module>
         <module>niubi-job-api</module>
         <module>niubi-job-service</module>
-        <module>niubi-job-orm</module>
+        <module>niubi-job-persistent</module>
+        <module>niubi-job-message</module>
+        <module>niubi-job-tools</module>
+        <module>niubi-job-launcher</module>
     </modules>
 
     <properties>
@@ -54,6 +57,21 @@
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-spring</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-tools</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-persistent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

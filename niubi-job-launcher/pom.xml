@@ -9,24 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>niubi-job-core</artifactId>
+    <artifactId>niubi-job-launcher</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-tools</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-message</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.quartz-scheduler</groupId>
-            <artifactId>quartz</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <artifactId>niubi-job-cluster</artifactId>
         </dependency>
     </dependencies>
 

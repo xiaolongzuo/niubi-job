@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.api.ApiFactory;
 import com.zuoxiaolong.niubi.job.api.JobJarApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
 import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.util.ArrayList;
