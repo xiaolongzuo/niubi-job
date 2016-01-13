@@ -16,6 +16,8 @@
         <module>niubi-job-spring</module>
         <module>niubi-job-console</module>
         <module>niubi-job-api</module>
+        <module>niubi-job-service</module>
+        <module>niubi-job-orm</module>
     </modules>
 
     <properties>
@@ -83,6 +85,12 @@
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>5.0.6.Final</version>
+            </dependency>
+
 
             <!-- provided -->
             <dependency>
@@ -94,6 +102,12 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
                 <version>${spring.version}</version>
                 <scope>provided</scope>
             </dependency>

@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.curator.framework.recipes.cache.ChildData;
+package com.zuoxiaolong.niubi.job.core;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:11
+ * @since 16/1/13 23:27
  */
-@Getter
-@Setter
-public class NodeModel extends ChildDataModel<NodeModel.NodeData> {
+public class UnknownGenericTypeException extends RuntimeException {
 
-    public NodeModel(ChildData childData) {
-        super(childData);
+    public UnknownGenericTypeException() {
     }
 
-    @Setter
-    @Getter
-    public static class NodeData {
-
-        private String name;
-
-        private NodeStatus status;
-
+    public UnknownGenericTypeException(String message) {
+        super(message);
     }
 
-    public enum NodeStatus {
+    public UnknownGenericTypeException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-        RUNNING, STARTED
+    public UnknownGenericTypeException(Throwable cause) {
+        super(cause);
+    }
 
+    public UnknownGenericTypeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

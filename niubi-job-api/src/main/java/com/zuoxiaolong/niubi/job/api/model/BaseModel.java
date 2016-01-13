@@ -1,7 +1,5 @@
-package com.zuoxiaolong.niubi.job.api.view;
-
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +14,21 @@ package com.zuoxiaolong.niubi.job.api.view;
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.api.model;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author 左潇龙
- * @since 1/13/2016 19:22
+ * @author Xiaolong Zuo
+ * @since 16/1/13 22:46
  */
-@Setter
 @Getter
-public class NodeView {
+@Setter
+public abstract class BaseModel {
 
-    private String id;
+    protected String id;
 
-    private String name;
+    protected String path;
 
 }

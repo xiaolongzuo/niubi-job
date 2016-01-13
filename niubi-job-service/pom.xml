@@ -9,21 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>niubi-job-cluster</artifactId>
+    <artifactId>niubi-job-service</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <artifactId>niubi-job-core</artifactId>
         </dependency>
     </dependencies>
-
 </project>

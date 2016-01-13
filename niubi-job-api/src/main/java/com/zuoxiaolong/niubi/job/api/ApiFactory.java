@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.api;
 
-import com.zuoxiaolong.niubi.job.api.curator.NodeApiImpl;
+import com.zuoxiaolong.niubi.job.api.curator.JobJarApiImpl;
 import com.zuoxiaolong.niubi.job.api.curator.PathApiImpl;
 import org.apache.curator.framework.CuratorFramework;
 
@@ -38,8 +38,8 @@ public class ApiFactory {
         return new PathApiImpl();
     }
 
-    public NodeApi nodeApi(CuratorFramework client) {
-        return new NodeApiImpl(client);
+    public JobJarApi jobJarApi(CuratorFramework client) {
+        return new JobJarApiImpl(client);
     }
 
 }

@@ -9,21 +9,17 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>niubi-job-cluster</artifactId>
+    <artifactId>niubi-job-orm</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-api</artifactId>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
-
 </project>

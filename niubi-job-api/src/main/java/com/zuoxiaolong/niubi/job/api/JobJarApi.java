@@ -1,5 +1,6 @@
+package com.zuoxiaolong.niubi.job.api;
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +15,16 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.node;
+import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
 
-import com.zuoxiaolong.niubi.job.core.container.Container;
+import java.util.List;
 
 /**
- * @author Xiaolong Zuo
- * @since 16/1/12 23:45
+ * @author 左潇龙
+ * @since 1/12/2016 13:00
  */
-public interface RemoteJobNode extends Node {
+public interface JobJarApi {
 
-    Container getContainer(String jarFileName);
+    List<JobJarModel> getStandbyNodeJobJarList() throws Exception;
 
 }

@@ -14,38 +14,18 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
+package com.zuoxiaolong.niubi.job.cluster.node;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.curator.framework.recipes.cache.ChildData;
+import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
+import com.zuoxiaolong.niubi.job.core.container.Container;
+import com.zuoxiaolong.niubi.job.core.node.Node;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:11
+ * @since 16/1/12 23:45
  */
-@Getter
-@Setter
-public class NodeModel extends ChildDataModel<NodeModel.NodeData> {
+public interface RemoteJobNode extends Node {
 
-    public NodeModel(ChildData childData) {
-        super(childData);
-    }
-
-    @Setter
-    @Getter
-    public static class NodeData {
-
-        private String name;
-
-        private NodeStatus status;
-
-    }
-
-    public enum NodeStatus {
-
-        RUNNING, STARTED
-
-    }
+    Container getContainer(String jarRepertoryUrl, JobJarModel jobJarModel);
 
 }

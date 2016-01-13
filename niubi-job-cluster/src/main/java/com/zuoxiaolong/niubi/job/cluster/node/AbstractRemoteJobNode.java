@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.node;
+package com.zuoxiaolong.niubi.job.cluster.node;
 
+import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
 import com.zuoxiaolong.niubi.job.core.container.Container;
 import com.zuoxiaolong.niubi.job.core.container.DefaultContainer;
+import com.zuoxiaolong.niubi.job.core.node.AbstractNode;
+import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
 
 import java.util.Collections;
 import java.util.Map;
@@ -42,17 +45,21 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         return Collections.unmodifiableMap(containerCache);
     }
 
-    public Container getContainer(String jarUrl) {
-        Container container = containerCache.get(jarUrl);
+    public Container getContainer(String jarRepertoryUrl, JobJarModel jobJarModel) {
+        Container container = containerCache.get(jobJarModel.getId());
         if (container != null) {
             return container;
         }
         lock.lock();
         try {
-            container = containerCache.get(jarUrl);
+            container = containerCache.get(jobJarModel.getId());
             if (container == null) {
-                container = new DefaultContainer(jarUrl);
-                containerCache.put(jarUrl, container);
+                if (jobJarModel.getData().isSpring()) {
+                    container = new DefaultSpringContainer(jarRepertoryUrl + jobJarModel.getId());
+                } else {
+                    container = new DefaultContainer(jarRepertoryUrl + jobJarModel.getId());
+                }
+                containerCache.put(jobJarModel.getId(), container);
             }
             return container;
         } finally {

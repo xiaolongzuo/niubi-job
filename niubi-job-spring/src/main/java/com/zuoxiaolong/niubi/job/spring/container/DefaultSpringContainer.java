@@ -16,7 +16,6 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.container.Container;
 import com.zuoxiaolong.niubi.job.core.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.core.scanner.LocalJobScanner;
 import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
@@ -34,7 +33,7 @@ import java.util.List;
  * @author 左潇龙
  * @since 1/13/2016 14:22
  */
-public class DefaultSpringContainer implements Container {
+public class DefaultSpringContainer implements SpringContainer {
 
     private JobScanner jobScanner;
 
@@ -42,11 +41,15 @@ public class DefaultSpringContainer implements Container {
 
     private ScheduleManager scheduleManager;
 
-    public DefaultSpringContainer(String applicationContextXmlPath) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(applicationContextXmlPath);
+    public DefaultSpringContainer() {
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_PATH);
         this.context = new DefaultSpringContext(applicationContext);
         this.jobScanner = new LocalJobScanner(context);
         createScheduleManager();
+    }
+
+    public DefaultSpringContainer(String jarUrl) {
+        this(APPLICATION_CONTEXT_XML_PATH, jarUrl);
     }
 
     public DefaultSpringContainer(String applicationContextXmlPath, String jarUrl) {

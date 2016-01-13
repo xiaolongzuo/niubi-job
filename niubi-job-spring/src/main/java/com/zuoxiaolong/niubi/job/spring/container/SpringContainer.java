@@ -24,6 +24,8 @@ import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
  */
 public interface SpringContainer extends Container {
 
+    String APPLICATION_CONTEXT_XML_PATH = "applicationContext.xml";
+
     SpringContext getContext();
 
 }

@@ -17,9 +17,10 @@
 package com.zuoxiaolong.niubi.job.api.curator;
 
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.NodeApi;
+import com.zuoxiaolong.niubi.job.api.JobJarApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
-import com.zuoxiaolong.niubi.job.api.view.NodeView;
+import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.util.ArrayList;
@@ -29,30 +30,31 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 16/1/13 01:15
  */
-public class NodeApiImpl implements NodeApi {
+public class JobJarApiImpl implements JobJarApi {
 
     private CuratorFramework client;
 
     private PathApi pathApi;
 
-    public NodeApiImpl(CuratorFramework client) {
+    public JobJarApiImpl(CuratorFramework client) {
         this.client = client;
         this.pathApi = ApiFactory.instance().pathApi();
     }
 
     @Override
-    public List<String> getStandbyNodeJobJarList() throws Exception {
-        return client.getChildren().forPath(pathApi.getStandbyNodeJobJarPath());
-    }
-
-    @Override
-    public List<NodeView> getAllNodes() {
-        List<NodeView> list = new ArrayList<>();
-        NodeView nodeView1 = new NodeView();
-        nodeView1.setId("1");
-        nodeView1.setName("节点1");
-        list.add(nodeView1);
-        return list;
+    public List<JobJarModel> getStandbyNodeJobJarList() throws Exception {
+        List<JobJarModel> jobJarModelList = new ArrayList<>();
+        List<String> children = client.getChildren().forPath(pathApi.getStandbyNodeJobJarPath());
+        for (String jarFileName : children) {
+            String path = pathApi.getStandbyNodeJobJarPath() + "/" + jarFileName;
+            try {
+                byte[] bytes = client.getData().forPath(path);
+                jobJarModelList.add(new JobJarModel(path, bytes));
+            } catch (Exception e) {
+                LoggerHelper.error("get data failed [" + path + "]", e);
+            }
+        }
+        return jobJarModelList;
     }
 
 }

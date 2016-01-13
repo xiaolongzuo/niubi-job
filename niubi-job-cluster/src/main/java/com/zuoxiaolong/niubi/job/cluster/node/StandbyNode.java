@@ -17,14 +17,14 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.NodeApi;
+import com.zuoxiaolong.niubi.job.api.JobJarApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
+import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.container.Container;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.core.node.AbstractRemoteJobNode;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -58,7 +58,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private PathApi pathApi;
 
-    private NodeApi nodeApi;
+    private JobJarApi jobJarApi;
 
     private String zookeeperAddresses;
 
@@ -70,7 +70,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
         this.pathApi = ApiFactory.instance().pathApi();
-        this.nodeApi = ApiFactory.instance().nodeApi(client);
+        this.jobJarApi = ApiFactory.instance().jobJarApi(client);
         this.pathChildrenCache = new PathChildrenCache(client, pathApi.getStandbyNodeJobJarPath(), true);
         this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
         try {
@@ -95,12 +95,12 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getName() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        List<String> jobJarList = nodeApi.getStandbyNodeJobJarList();
-                        for (String jarFileName : jobJarList) {
+                        List<JobJarModel> jobJarList = jobJarApi.getStandbyNodeJobJarList();
+                        for (JobJarModel jobJarModel : jobJarList) {
                             try {
-                                getContainer(jarRepertoryUrl + jarFileName).getScheduleManager().startup();
+                                getContainer(jarRepertoryUrl, jobJarModel).getScheduleManager().startup();
                             } catch (Exception e) {
-                                LoggerHelper.error("start jar failed [" + jarFileName + "]", e);
+                                LoggerHelper.error("start jar failed [" + jobJarModel.getPath() + "]", e);
                             }
                         }
                         mutex.wait();
@@ -136,9 +136,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
             if (!hasLeadership || !isAddOrRemoveEvent) {
                 return;
             }
-            String path = event.getData().getPath();
-            path = path.substring(path.lastIndexOf("/") + 1);
-            Container container = getContainer(path);
+            JobJarModel jobJarModel = new JobJarModel(event.getData());
+            Container container = getContainer(jarRepertoryUrl, jobJarModel);
             if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
                 container.getScheduleManager().startup();
             } else {

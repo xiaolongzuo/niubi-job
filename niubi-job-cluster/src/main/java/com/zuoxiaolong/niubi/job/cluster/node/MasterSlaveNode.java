@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.core.node.AbstractRemoteJobNode;
-
 /**
  * 主从模式实现
  *

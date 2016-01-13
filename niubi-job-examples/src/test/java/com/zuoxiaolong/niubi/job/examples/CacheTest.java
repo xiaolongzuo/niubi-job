@@ -37,7 +37,7 @@ public class CacheTest {
         CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000,4));
         client.start();
 
-        final TreeCache nodeCache = new TreeCache(client , "/nodecache");
+        final TreeCache nodeCache = new TreeCache(client , "/");
         nodeCache.getListenable().addListener(new TreeCacheListener() {
             public void childEvent(CuratorFramework client, TreeCacheEvent event) throws Exception {
                 System.out.println(new Gson().toJson(event));

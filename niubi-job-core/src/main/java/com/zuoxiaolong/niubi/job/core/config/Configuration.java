@@ -35,8 +35,9 @@ import java.util.Properties;
 @Getter
 public class Configuration {
 
-    private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
     private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
+
+    private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
 
     private Properties properties;
 

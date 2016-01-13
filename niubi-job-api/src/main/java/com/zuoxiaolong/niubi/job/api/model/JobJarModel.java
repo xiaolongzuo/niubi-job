@@ -20,32 +20,40 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:11
+ * @since 16/1/13 23:20
  */
-@Getter
 @Setter
-public class NodeModel extends ChildDataModel<NodeModel.NodeData> {
+@Getter
+public class JobJarModel extends ChildDataModel<JobJarModel.JobJarData> {
 
-    public NodeModel(ChildData childData) {
+    public JobJarModel(ChildData childData) {
         super(childData);
+    }
+
+    public JobJarModel(String path, byte[] bytes) {
+        super(path, bytes);
     }
 
     @Setter
     @Getter
-    public static class NodeData {
+    public static class JobJarData {
 
-        private String name;
+        private Mode mode;
 
-        private NodeStatus status;
+        private List<String> jobs;
+
+        public boolean isSpring() {
+            return mode == Mode.SPRING;
+        }
 
     }
 
-    public enum NodeStatus {
-
-        RUNNING, STARTED
-
+    public enum Mode {
+        SPRING, COMMON
     }
 
 }
