@@ -30,4 +30,12 @@ public abstract class JsonHelper {
         return GSON.toJson(object);
     }
 
+    public static <T> T fromJson(String json, Class<T> clazz) {
+        return GSON.fromJson(json, clazz);
+    }
+
+    public static <T> T fromJson(byte[] bytes, Class<T> clazz) {
+        return GSON.fromJson(StringHelper.getString(bytes), clazz);
+    }
+
 }

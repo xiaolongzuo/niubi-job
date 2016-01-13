@@ -16,7 +16,7 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.model.NodeView;
+import com.zuoxiaolong.niubi.job.api.view.NodeView;
 
 import java.util.List;
 

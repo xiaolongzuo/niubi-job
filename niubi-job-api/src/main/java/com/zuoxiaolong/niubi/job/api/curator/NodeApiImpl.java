@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.api.curator;
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
 import com.zuoxiaolong.niubi.job.api.NodeApi;
 import com.zuoxiaolong.niubi.job.api.PathApi;
-import com.zuoxiaolong.niubi.job.api.model.NodeView;
+import com.zuoxiaolong.niubi.job.api.view.NodeView;
 import org.apache.curator.framework.CuratorFramework;
 
 import java.util.ArrayList;
