@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+    xmlns:context="http://www.springframework.org/schema/context" 
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd  
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd  
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd 
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd  
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+       http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task-4.0.xsd
+       "
+        >  
+  	
+  	<!-- 配置文件 -->
+    <bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>/WEB-INF/config/config.properties</value>
+			</list>
+		</property>
+	</bean>
+  	
+  	
+    <!-- ViewResolver -->  
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">  
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>  
+        <property name="prefix" value="/WEB-INF/jsp/"/>   
+        
+         <!--<property name="prefix" value="/"/>-->
+        <property name="suffix" value=".jsp"/>  
+    </bean>  
+    
+    <!--Spring3.1开始的注解 HandlerMapping -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" >
+	</bean>
+	<!--Spring3.1开始的注解 HandlerAdapter -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<!--线程安全的访问session -->
+		<property name="synchronizeOnSession" value="true" />
+		<property name="messageConverters">  
+  			<list>  
+  				 <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" /> 
+  				 <bean class="org.springframework.http.converter.StringHttpMessageConverter" />  
+  			</list>  
+ 		</property>
+	</bean>
+
+	<!-- 基于注释的事务，当注释中发现@Transactional时，使用id为“transactionManager”的事务管理器  -->
+    <!-- 如果没有设置transaction-manager的值，则spring以缺省默认的事务管理器来处理事务，默认事务管理器为第一个加载的事务管理器 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+	
+	
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- set the max upload size1000MB-->
+		<property name="maxUploadSize">
+			<value>1048576000</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+	</bean>
+	
+	
+    <!-- 告诉spring 去读 @Transactional 标注 -->
+    <context:annotation-config/>
+    <mvc:annotation-driven />  
+    <mvc:default-servlet-handler/> 
+	<context:component-scan base-package="com.zuoxiaolong.niubi.job.console"/>
+    <!-- task任务扫描注解 -->
+	<task:annotation-driven/>
+	<mvc:interceptors>
+        <mvc:interceptor>
+        	<mvc:mapping path="/**"/>
+            <mvc:mapping path="/"/>
+            <mvc:exclude-mapping path="/images/**"/>
+            <mvc:exclude-mapping path="/res/**"/>
+            <mvc:exclude-mapping path="/css/**"/>
+            <mvc:exclude-mapping path="/js/**"/>
+            <bean class="com.zuoxiaolong.niubi.job.console.basic.interceptor.PageGlobalParameterInjectInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
+</beans>  
