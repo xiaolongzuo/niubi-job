@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.console.controller;
+package com.zuoxiaolong.niubi.job.console.main.controller;
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -24,23 +24,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.zuoxiaolong.niubi.job.api.model.NodeView;
-import com.zuoxiaolong.niubi.job.console.service.NodeService;
+import com.zuoxiaolong.niubi.job.api.view.NodeView;
+import com.zuoxiaolong.niubi.job.console.main.service.NodeService;
 
 @Controller
-@RequestMapping("/console")
+@RequestMapping("/node")
 public class BasicController {
 	
 	@Resource
 	private NodeService nodeService;
 	
 	@ResponseBody
-	@RequestMapping(value = "/getAllNodes")
+	@RequestMapping(value = "/list")
 	public List<NodeView> getAllNodes(){
 		return nodeService.getAllNodes();
 	}
 	
-	@RequestMapping(value = "/nodeview")
+	@RequestMapping(value = "/view")
 	public ModelAndView index(){
 		return new ModelAndView("nodeview");
 	}

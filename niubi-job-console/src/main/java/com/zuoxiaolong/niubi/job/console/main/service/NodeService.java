@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.console.service.impl;
+package com.zuoxiaolong.niubi.job.console.main.service;
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -16,20 +16,14 @@ package com.zuoxiaolong.niubi.job.console.service.impl;
  */
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.zuoxiaolong.niubi.job.api.view.NodeView;
 
-import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.model.NodeView;
-import com.zuoxiaolong.niubi.job.console.service.NodeService;
-
-@Service
-@Transactional
-public class NodeServiceImpl implements NodeService{
-
-	@Override
-	public List<NodeView> getAllNodes() {
-		return ApiFactory.instance().nodeApi(null).getAllNodes();
-	}
+public interface NodeService {
+	
+	/**
+	 * get all available nodes
+	 * @return the list of  NodeView
+	 */
+	List<NodeView> getAllNodes();
 	
 }

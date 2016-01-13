@@ -73,7 +73,7 @@
     <context:annotation-config/>
     <mvc:annotation-driven />  
     <mvc:default-servlet-handler/> 
-	<context:component-scan base-package="com.zuoxiaolong.niubi.job"/>
+	<context:component-scan base-package="com.zuoxiaolong.niubi.job.console"/>
     <!-- task任务扫描注解 -->
 	<task:annotation-driven/>
 	<mvc:interceptors>
@@ -84,7 +84,7 @@
             <mvc:exclude-mapping path="/res/**"/>
             <mvc:exclude-mapping path="/css/**"/>
             <mvc:exclude-mapping path="/js/**"/>
-            <bean class="com.zuoxiaolong.niubi.job.basic.interceptor.PageGlobalParameterInjectInterceptor" />
+            <bean class="com.zuoxiaolong.niubi.job.console.basic.interceptor.PageGlobalParameterInjectInterceptor" />
         </mvc:interceptor>
     </mvc:interceptors>
     

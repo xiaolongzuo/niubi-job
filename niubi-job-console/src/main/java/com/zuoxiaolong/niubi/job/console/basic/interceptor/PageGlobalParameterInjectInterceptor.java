@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.basic.interceptor;
+package com.zuoxiaolong.niubi.job.console.basic.interceptor;
 /*
  * Copyright 2002-2015 the original author or authors.
  *
