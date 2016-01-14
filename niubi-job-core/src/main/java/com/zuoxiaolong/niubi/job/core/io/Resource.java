@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.config;
+package com.zuoxiaolong.niubi.job.core.io;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
+import java.io.InputStream;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:19
+ * @since 16/1/9 15:40
  */
-public interface Context {
+public interface Resource {
 
-    String DATA_MAP_KEY = "____context";
-
-    JobScanClassLoader classLoader();
-
-    JobBeanFactory jobBeanFactory();
-
-    Configuration configuration();
+    InputStream getInputStream();
 
 }

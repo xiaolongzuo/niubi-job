@@ -16,14 +16,14 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.scheduler.NiubiException;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scheduler.config.Context;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobDataMapManager;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobTriggerFactory;
 import com.zuoxiaolong.niubi.job.scheduler.job.MethodDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.job.TriggerDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
-import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 

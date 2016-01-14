@@ -16,9 +16,9 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
-import com.zuoxiaolong.niubi.job.tools.helper.StringHelper;
 import org.quartz.ScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;

@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.message.log4j;
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.message.Message;
 import com.zuoxiaolong.niubi.job.message.Producer;
 

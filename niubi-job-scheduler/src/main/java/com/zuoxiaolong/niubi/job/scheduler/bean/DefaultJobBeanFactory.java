@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
-import com.zuoxiaolong.niubi.job.scheduler.NiubiException;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

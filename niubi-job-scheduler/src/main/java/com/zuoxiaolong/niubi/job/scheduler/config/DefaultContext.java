@@ -16,9 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.config;
 
+import com.zuoxiaolong.niubi.job.core.config.Configuration;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.tools.helper.ClassHelper;
 
 /**
  * @author Xiaolong Zuo

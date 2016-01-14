@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.config;
-
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
+package com.zuoxiaolong.niubi.job.core.exception;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:19
+ * @since 16/1/9 01:21
  */
-public interface Context {
+public class NiubiException extends RuntimeException {
 
-    String DATA_MAP_KEY = "____context";
-
-    JobScanClassLoader classLoader();
-
-    JobBeanFactory jobBeanFactory();
-
-    Configuration configuration();
+    public NiubiException(Throwable cause) {
+        super(cause);
+    }
 
 }

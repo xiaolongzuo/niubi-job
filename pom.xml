@@ -20,6 +20,7 @@
         <module>niubi-job-message</module>
         <module>niubi-job-launcher</module>
         <module>niubi-job-scheduler</module>
+        <module>niubi-job-core</module>
     </modules>
 
     <properties>

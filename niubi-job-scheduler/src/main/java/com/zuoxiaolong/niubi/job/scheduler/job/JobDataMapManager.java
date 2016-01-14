@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.job;
 
-import com.zuoxiaolong.niubi.job.scheduler.NiubiException;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.scheduler.config.Context;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;

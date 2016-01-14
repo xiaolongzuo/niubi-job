@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.config;
-
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
+package com.zuoxiaolong.niubi.job.core.helper;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:19
+ * @since 16/1/13 02:43
  */
-public interface Context {
+public abstract class AssertHelper {
 
-    String DATA_MAP_KEY = "____context";
+    public static void notNull(Object o, String message) {
+        if (o == null) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 
-    JobScanClassLoader classLoader();
-
-    JobBeanFactory jobBeanFactory();
-
-    Configuration configuration();
+    public static void notEmpty(Object o, String message) {
+        if (o == null || o.toString().trim().length() == 0) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 
 }

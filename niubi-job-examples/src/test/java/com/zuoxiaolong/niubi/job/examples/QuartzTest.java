@@ -16,9 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.examples;
 
+import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.examples.jobs.TestJob;
 import com.zuoxiaolong.niubi.job.examples.util.MockUtils;
-import com.zuoxiaolong.niubi.job.tools.helper.JsonHelper;
 import org.junit.Test;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;

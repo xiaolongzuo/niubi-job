@@ -16,12 +16,12 @@ package com.zuoxiaolong.niubi.job.scheduler.scanner;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.scheduler.bean.RegisteredJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Context;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobParameter;
-import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
