@@ -17,8 +17,8 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
-import com.zuoxiaolong.niubi.job.core.container.Container;
-import com.zuoxiaolong.niubi.job.core.node.Node;
+import com.zuoxiaolong.niubi.job.scheduler.container.Container;
+import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 
 /**
  * @author Xiaolong Zuo

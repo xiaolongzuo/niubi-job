@@ -15,7 +15,7 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.container.Container;
+import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
 
 /**

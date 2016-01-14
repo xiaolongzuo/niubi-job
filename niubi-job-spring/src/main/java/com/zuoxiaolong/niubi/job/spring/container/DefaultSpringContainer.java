@@ -16,12 +16,12 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.core.scanner.LocalJobScanner;
-import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
-import com.zuoxiaolong.niubi.job.core.scanner.RemoteJobScanner;
-import com.zuoxiaolong.niubi.job.core.schedule.DefaultScheduleManager;
-import com.zuoxiaolong.niubi.job.core.schedule.ScheduleManager;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.RemoteJobScanner;
+import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
+import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 import com.zuoxiaolong.niubi.job.spring.context.DefaultSpringContext;
 import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
 import org.springframework.context.ApplicationContext;

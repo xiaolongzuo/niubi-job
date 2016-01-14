@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-core</artifactId>
+            <artifactId>niubi-job-scheduler</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.zookeeper</groupId>

@@ -14,11 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-tools</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <artifactId>niubi-job-core</artifactId>
         </dependency>
     </dependencies>
 </project>

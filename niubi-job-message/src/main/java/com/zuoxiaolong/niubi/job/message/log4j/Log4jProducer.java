@@ -30,9 +30,9 @@ public class Log4jProducer implements Producer<Log4jMessage.Data> {
     public void sendMessage(Message<Log4jMessage.Data> message) {
         Log4jMessage.Data data = message.getData();
         if (data.getThrowable() != null) {
-            LoggerHelper.error(data.getMessage(), data.getThrowable());
+            LoggerHelper.error(data.getClazz(), data.getMessage(), data.getThrowable());
         } else {
-            LoggerHelper.info(data.getMessage());
+            LoggerHelper.info(data.getClazz(), data.getMessage());
         }
     }
 

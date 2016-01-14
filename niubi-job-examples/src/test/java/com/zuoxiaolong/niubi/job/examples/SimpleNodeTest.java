@@ -16,8 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.examples;
 
-import com.zuoxiaolong.niubi.job.core.node.Node;
-import com.zuoxiaolong.niubi.job.core.node.SimpleNode;
+import com.zuoxiaolong.niubi.job.scheduler.node.Node;
+import com.zuoxiaolong.niubi.job.scheduler.node.SimpleNode;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -10,7 +10,6 @@
     <version>1.0-SNAPSHOT</version>
 
     <modules>
-        <module>niubi-job-core</module>
         <module>niubi-job-examples</module>
         <module>niubi-job-cluster</module>
         <module>niubi-job-spring</module>
@@ -19,8 +18,8 @@
         <module>niubi-job-service</module>
         <module>niubi-job-persistent</module>
         <module>niubi-job-message</module>
-        <module>niubi-job-tools</module>
         <module>niubi-job-launcher</module>
+        <module>niubi-job-scheduler</module>
     </modules>
 
     <properties>
@@ -61,7 +60,7 @@
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
-                <artifactId>niubi-job-tools</artifactId>
+                <artifactId>niubi-job-scheduler</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

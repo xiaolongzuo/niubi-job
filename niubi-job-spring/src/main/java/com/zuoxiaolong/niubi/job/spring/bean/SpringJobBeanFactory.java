@@ -16,7 +16,7 @@ package com.zuoxiaolong.niubi.job.spring.bean;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.bean.JobBeanFactory;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 

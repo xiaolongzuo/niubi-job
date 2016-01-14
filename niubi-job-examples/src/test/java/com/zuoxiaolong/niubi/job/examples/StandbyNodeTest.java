@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.examples;
 
 import com.zuoxiaolong.niubi.job.cluster.node.StandbyNode;
-import com.zuoxiaolong.niubi.job.core.node.Node;
+import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 
 import java.io.BufferedReader;
 import java.io.IOException;

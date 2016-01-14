@@ -33,9 +33,23 @@ public class Log4jMessage extends AbstractMessage<Log4jMessage.Data> {
         super(data);
     }
 
+    public static Log4jMessage.Data build(Class<?> clazz, String message) {
+        return build(clazz, message, null);
+    }
+
+    public static Log4jMessage.Data build(Class<?> clazz, String message, Throwable throwable) {
+        Data data = new Data();
+        data.setClazz(clazz);
+        data.setMessage(message);
+        data.setThrowable(throwable);
+        return data;
+    }
+
     @Setter
     @Getter
     public static class Data {
+
+        private Class<?> clazz;
 
         private String message;
 

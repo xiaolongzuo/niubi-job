@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.api.model;
 
-import com.zuoxiaolong.niubi.job.core.UnknownGenericTypeException;
+import com.zuoxiaolong.niubi.job.scheduler.UnknownGenericTypeException;
 import com.zuoxiaolong.niubi.job.tools.helper.JsonHelper;
 import lombok.Getter;
 import lombok.Setter;
