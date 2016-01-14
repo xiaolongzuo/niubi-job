@@ -15,7 +15,7 @@ package com.zuoxiaolong.niubi.job.spring.context;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.springframework.context.ApplicationContext;
 
 /**

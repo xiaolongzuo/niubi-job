@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.scheduler.bean.RegisteredJobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobParameter;
 
 import java.lang.reflect.Method;

@@ -16,8 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
-import com.zuoxiaolong.niubi.job.scheduler.config.DefaultContext;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.DefaultContext;
 import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;

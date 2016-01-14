@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
 import org.quartz.JobKey;
 

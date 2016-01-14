@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.spring.context;
 
 import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.config.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.scheduler.context.JobScanClassLoader;
 import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
 import org.springframework.context.ApplicationContext;
 

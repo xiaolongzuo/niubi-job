@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.config;
+package com.zuoxiaolong.niubi.job.scheduler.context;
 
 import java.net.URL;
 import java.net.URLClassLoader;

@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.helper;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * 日志工具类
@@ -27,6 +28,10 @@ import org.apache.log4j.Logger;
 public abstract class LoggerHelper {
 
     private static final Logger logger = Logger.getLogger(LoggerHelper.class);
+
+    static {
+        PropertyConfigurator.configure(ClassHelper.getDefaultClassLoader().getResourceAsStream("log4j.properties"));
+    }
 
     public static void info(Class<?> clazz, String message) {
         Logger logger = Logger.getLogger(clazz);

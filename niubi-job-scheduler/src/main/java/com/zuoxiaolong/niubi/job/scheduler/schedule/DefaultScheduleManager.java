@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobDataMapManager;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobTriggerFactory;
 import com.zuoxiaolong.niubi.job.scheduler.job.MethodDescriptor;

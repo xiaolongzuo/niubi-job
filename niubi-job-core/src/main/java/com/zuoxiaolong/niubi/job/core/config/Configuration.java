@@ -37,6 +37,8 @@ public class Configuration {
 
     private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
 
+    private static final String DEFAULT_LOG4J_FILE = "log4j-default.properties";
+
     private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
 
     private Properties properties;
@@ -51,6 +53,12 @@ public class Configuration {
             this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());
         } catch (IOException e) {
             LoggerHelper.error("read config file [" + DEFAULT_QUARTZ_FILE + "] failed.", e);
+            throw new NiubiException(e);
+        }
+        try {
+            this.properties.load(new ClasspathResource(classLoader, DEFAULT_LOG4J_FILE).getInputStream());
+        } catch (IOException e) {
+            LoggerHelper.error("read config file [" + DEFAULT_LOG4J_FILE + "] failed.", e);
             throw new NiubiException(e);
         }
         try {

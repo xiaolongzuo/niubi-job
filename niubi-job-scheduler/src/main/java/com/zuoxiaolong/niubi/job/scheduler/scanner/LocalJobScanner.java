@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.scanner;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 
 import java.io.File;
 import java.net.URL;

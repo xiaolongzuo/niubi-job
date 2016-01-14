@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.message.Factory;
 import com.zuoxiaolong.niubi.job.message.Producer;
 import com.zuoxiaolong.niubi.job.message.log4j.Log4jMessage;
-import com.zuoxiaolong.niubi.job.scheduler.config.Context;
+import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

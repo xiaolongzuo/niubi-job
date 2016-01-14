@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.config;
+package com.zuoxiaolong.niubi.job.scheduler.context;
 
 import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
