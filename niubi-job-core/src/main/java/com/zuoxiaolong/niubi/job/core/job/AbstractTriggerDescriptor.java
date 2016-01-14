@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.job;
 
 import com.zuoxiaolong.niubi.job.core.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
-import com.zuoxiaolong.niubi.job.tools.StringHelper;
+import com.zuoxiaolong.niubi.job.tools.helper.StringHelper;
 import org.quartz.ScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;

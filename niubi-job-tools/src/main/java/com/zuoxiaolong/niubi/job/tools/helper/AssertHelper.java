@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.tools;
+package com.zuoxiaolong.niubi.job.tools.helper;
 
 /**
  * @author Xiaolong Zuo
@@ -24,8 +24,13 @@ public abstract class AssertHelper {
 
     public static void notNull(Object o, String message) {
         if (o == null) {
-            NullPointerException nullPointerException = new NullPointerException();
-            throw new IllegalArgumentException(message, nullPointerException);
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static void notEmpty(Object o, String message) {
+        if (o == null || o.toString().trim().length() == 0) {
+            throw new IllegalArgumentException(message);
         }
     }
 

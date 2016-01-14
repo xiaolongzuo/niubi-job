@@ -23,7 +23,7 @@ import com.zuoxiaolong.niubi.job.core.job.JobTriggerFactory;
 import com.zuoxiaolong.niubi.job.core.job.MethodDescriptor;
 import com.zuoxiaolong.niubi.job.core.job.TriggerDescriptor;
 import com.zuoxiaolong.niubi.job.core.scanner.MethodTriggerDescriptor;
-import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
+import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 

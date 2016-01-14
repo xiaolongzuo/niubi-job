@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.examples;
 
-import com.zuoxiaolong.niubi.job.tools.JsonHelper;
+import com.zuoxiaolong.niubi.job.tools.helper.JsonHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.api.BackgroundCallback;

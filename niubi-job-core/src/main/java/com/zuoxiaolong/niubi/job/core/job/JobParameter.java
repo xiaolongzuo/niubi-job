@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.core.job;
 import java.util.HashMap;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 16:58
  */
 public class JobParameter extends HashMap<String, Object> {

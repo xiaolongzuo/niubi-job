@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.tools;
+package com.zuoxiaolong.niubi.job.tools.helper;
 
 import com.google.gson.Gson;
+
+import java.lang.reflect.Type;
 
 /**
  * @author Xiaolong Zuo
@@ -36,6 +38,10 @@ public abstract class JsonHelper {
 
     public static <T> T fromJson(String json, Class<T> clazz) {
         return GSON.fromJson(json, clazz);
+    }
+
+    public static <T> T fromJson(String json, Type type) {
+        return GSON.fromJson(json, type);
     }
 
     public static <T> T fromJson(byte[] bytes, Class<T> clazz) {

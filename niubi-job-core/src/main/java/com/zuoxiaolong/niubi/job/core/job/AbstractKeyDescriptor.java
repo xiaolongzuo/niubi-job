@@ -20,7 +20,7 @@ import org.quartz.JobKey;
 import org.quartz.TriggerKey;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 17:45
  */
 public abstract class AbstractKeyDescriptor implements KeyDescriptor {

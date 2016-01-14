@@ -1,5 +1,7 @@
+package com.zuoxiaolong.niubi.job.message.log4j;
+
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +16,31 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.message.protocol;
-
-import com.zuoxiaolong.niubi.job.tools.JsonHelper;
+import com.zuoxiaolong.niubi.job.message.AbstractMessage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * @author Xiaolong Zuo
- * @since 16/1/14 03:20
+ * @author 左潇龙
+ * @since 1/14/2016 12:37
  */
-public class JsonProtocol implements Protocol {
+public class Log4jMessage extends AbstractMessage<Log4jMessage.Data> {
 
-    @Override
-    public byte[] serialize(Object message) {
-        return JsonHelper.toBytes(message);
+    public Log4jMessage() {
     }
 
-    @Override
-    public <T> T deserialize(byte[] data, Class<T> clazz) {
-        return JsonHelper.fromJson(data, clazz);
+    public Log4jMessage(Data data) {
+        super(data);
+    }
+
+    @Setter
+    @Getter
+    public static class Data {
+
+        private String message;
+
+        private Throwable throwable;
+
     }
 
 }

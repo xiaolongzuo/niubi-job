@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 /**
  * 该接口代表一个job
  *
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 15:33
  */
 public interface MethodDescriptor {

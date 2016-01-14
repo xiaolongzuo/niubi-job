@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.tools;
+package com.zuoxiaolong.niubi.job.tools.helper;
 
 /*
  * Copyright 2002-2015 the original author or authors.

@@ -1,5 +1,4 @@
-package com.zuoxiaolong.niubi.job.core.job;
-
+package com.zuoxiaolong.niubi.job.message;
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -16,16 +15,12 @@ package com.zuoxiaolong.niubi.job.core.job;
  * limitations under the License.
  */
 
-import java.lang.reflect.Method;
-
 /**
- * @author Xiaolong Zuo
- * @since 1/12/2016 16:38
+ * @author 左潇龙
+ * @since 1/14/2016 12:26
  */
-public class DefaultMethodDescriptor extends AbstractMethodDescriptor {
+public interface Message<T> {
 
-    DefaultMethodDescriptor(Class<?> clazz, Method method, boolean hasParameter) {
-        super(clazz, method, hasParameter);
-    }
+    T getData();
 
 }

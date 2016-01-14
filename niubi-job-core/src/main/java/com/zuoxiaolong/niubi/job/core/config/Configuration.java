@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.config;
 
 import com.zuoxiaolong.niubi.job.core.NiubiException;
 import com.zuoxiaolong.niubi.job.core.io.ClasspathResource;
-import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
+import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.core.job;
 import java.lang.reflect.Method;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 17:29
  */
 public abstract class AbstractMethodDescriptor implements MethodDescriptor {

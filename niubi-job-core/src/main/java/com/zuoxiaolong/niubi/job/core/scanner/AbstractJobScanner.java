@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.core.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.core.bean.RegisteredJobBeanFactory;
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.job.JobParameter;
-import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
+import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;

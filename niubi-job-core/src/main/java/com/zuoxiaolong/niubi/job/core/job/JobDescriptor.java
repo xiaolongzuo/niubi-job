@@ -19,7 +19,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 17:38
  */
 public interface JobDescriptor extends KeyDescriptor {

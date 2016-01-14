@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.scanner;
 
 import com.zuoxiaolong.niubi.job.core.config.Context;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.tools.IOHelper;
+import com.zuoxiaolong.niubi.job.tools.helper.IOHelper;
 
 import java.io.File;
 import java.io.IOException;

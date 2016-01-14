@@ -1,5 +1,3 @@
-package com.zuoxiaolong.niubi.job.core.job;
-
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -16,16 +14,26 @@ package com.zuoxiaolong.niubi.job.core.job;
  * limitations under the License.
  */
 
-import java.lang.reflect.Method;
+
+package com.zuoxiaolong.niubi.job.message.log4j;
+
+import com.zuoxiaolong.niubi.job.message.Message;
+import com.zuoxiaolong.niubi.job.message.Producer;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 16:38
+ * @since 1/14/2016 15:05
  */
-public class DefaultMethodDescriptor extends AbstractMethodDescriptor {
+public class Log4jProducer implements Producer<Log4jMessage.Data> {
 
-    DefaultMethodDescriptor(Class<?> clazz, Method method, boolean hasParameter) {
-        super(clazz, method, hasParameter);
+    @Override
+    public void sendMessage(Message<Log4jMessage.Data> message) {
+        Log4jMessage.Data data = message.getData();
+        if (data.getThrowable() != null) {
+            LoggerHelper.error(data.getMessage(), data.getThrowable());
+        } else {
+            LoggerHelper.info(data.getMessage());
+        }
     }
 
 }

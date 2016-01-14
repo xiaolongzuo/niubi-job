@@ -71,6 +71,11 @@
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-persistent</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -148,6 +153,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

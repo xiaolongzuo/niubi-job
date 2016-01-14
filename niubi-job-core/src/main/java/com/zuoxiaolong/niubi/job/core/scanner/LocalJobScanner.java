@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.scanner;
 
 import com.zuoxiaolong.niubi.job.core.ConfigException;
 import com.zuoxiaolong.niubi.job.core.config.Context;
-import com.zuoxiaolong.niubi.job.message.protocol.LoggerHelper;
+import com.zuoxiaolong.niubi.job.message.log4j.LoggerHelper;
 
 import java.io.File;
 import java.net.URL;
