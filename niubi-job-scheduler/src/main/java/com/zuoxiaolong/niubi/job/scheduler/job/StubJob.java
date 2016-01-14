@@ -35,25 +35,25 @@ import org.quartz.JobExecutionException;
 public class StubJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        MethodDescriptor methodDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
+        JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
         JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
         Context context = JobDataMapManager.getContext(jobExecutionContext);
         Factory factory = context.jobBeanFactory().getJobBean(Factory.class);
         Producer<Log4jMessage> producer = factory.createProducer();
-        String jobMessageString = JsonHelper.toJson(methodDescriptor) + "  " + JsonHelper.toJson(jobParameter);
+        String jobMessageString = JsonHelper.toJson(jobDescriptor) + "  " + JsonHelper.toJson(jobParameter);
         try {
             String message = "begin execute job : " + jobMessageString;
-            producer.sendMessage(factory.createMessage(Log4jMessage.build(methodDescriptor.clazz(), message)));
-            if (methodDescriptor.hasParameter()) {
-                methodDescriptor.method().invoke(context.jobBeanFactory().getJobBean(methodDescriptor.clazz()), new Object[]{jobParameter});
+            producer.sendMessage(factory.createMessage(Log4jMessage.build(jobDescriptor.clazz(), message)));
+            if (jobDescriptor.hasParameter()) {
+                jobDescriptor.method().invoke(context.jobBeanFactory().getJobBean(jobDescriptor.clazz()), new Object[]{jobParameter});
             } else {
-                methodDescriptor.method().invoke(context.jobBeanFactory().getJobBean(methodDescriptor.clazz()), new Object[]{});
+                jobDescriptor.method().invoke(context.jobBeanFactory().getJobBean(jobDescriptor.clazz()), new Object[]{});
             }
             message = "begin execute job : " + jobMessageString;
-            producer.sendMessage(factory.createMessage(Log4jMessage.build(methodDescriptor.clazz(), message)));
+            producer.sendMessage(factory.createMessage(Log4jMessage.build(jobDescriptor.clazz(), message)));
         } catch (Exception e) {
             String message = "execute job failed: " + jobMessageString;
-            producer.sendMessage(factory.createMessage(Log4jMessage.build(methodDescriptor.clazz(), message, e)));
+            producer.sendMessage(factory.createMessage(Log4jMessage.build(jobDescriptor.clazz(), message, e)));
             throw new NiubiException(e);
         }
 

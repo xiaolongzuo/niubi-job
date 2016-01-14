@@ -28,20 +28,12 @@ import org.quartz.SchedulerException;
  */
 public abstract class JobDataMapManager {
 
-    public static TriggerDescriptor getTriggerDescriptor(JobDetail jobDetail) {
-        return (TriggerDescriptor) jobDetail.getJobDataMap().get(TriggerDescriptor.DATA_MAP_KEY);
+    public static JobDescriptor getJobDescriptor(JobDetail jobDetail) {
+        return (JobDescriptor) jobDetail.getJobDataMap().get(JobDescriptor.DATA_MAP_KEY);
     }
 
-    public static TriggerDescriptor getTriggerDescriptor(JobExecutionContext jobExecutionContext) {
-        return (TriggerDescriptor) jobExecutionContext.getMergedJobDataMap().get(TriggerDescriptor.DATA_MAP_KEY);
-    }
-
-    public static MethodDescriptor getJobDescriptor(JobDetail jobDetail) {
-        return (MethodDescriptor) jobDetail.getJobDataMap().get(MethodDescriptor.DATA_MAP_KEY);
-    }
-
-    public static MethodDescriptor getJobDescriptor(JobExecutionContext jobExecutionContext) {
-        return (MethodDescriptor) jobExecutionContext.getMergedJobDataMap().get(MethodDescriptor.DATA_MAP_KEY);
+    public static JobDescriptor getJobDescriptor(JobExecutionContext jobExecutionContext) {
+        return (JobDescriptor) jobExecutionContext.getMergedJobDataMap().get(JobDescriptor.DATA_MAP_KEY);
     }
 
     public static JobParameter getJobParameter(JobExecutionContext jobExecutionContext) {

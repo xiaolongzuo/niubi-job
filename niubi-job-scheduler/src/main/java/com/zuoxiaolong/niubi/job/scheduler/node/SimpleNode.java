@@ -24,6 +24,13 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
  */
 public class SimpleNode extends AbstractLocalJobNode {
 
+    public SimpleNode() {
+    }
+
+    public SimpleNode(String[] propertiesFileNames) {
+        super(propertiesFileNames);
+    }
+
     public void join() {
         getContainer().getScheduleManager().startup();
     }

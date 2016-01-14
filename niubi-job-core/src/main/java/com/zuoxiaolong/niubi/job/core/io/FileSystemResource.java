@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.core.io;
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
-import org.quartz.Trigger;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
- * 一个需要调度的方法元数据
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:33
+ * @since 16/1/14 22:44
  */
-public interface TriggerDescriptor extends KeyDescriptor {
+public class FileSystemResource implements Resource {
 
-    String DATA_MAP_KEY = "_trigger_detail";
+    private InputStream inputStream;
 
-    String cron();
+    public FileSystemResource(String fileName) {
+        try {
+            this.inputStream = new FileInputStream(fileName);
+        } catch (FileNotFoundException e) {
+            throw new NiubiException(e);
+        }
+    }
 
-    MisfirePolicy misfirePolicy();
-
-    Trigger trigger();
+    @Override
+    public InputStream getInputStream() {
+        return inputStream;
+    }
 
 }

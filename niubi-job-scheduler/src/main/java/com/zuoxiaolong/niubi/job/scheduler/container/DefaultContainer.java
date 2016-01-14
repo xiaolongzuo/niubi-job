@@ -16,16 +16,11 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.context.DefaultContext;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.RemoteJobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
-
-import java.util.List;
 
 /**
  * 默认的容器实现类
@@ -35,31 +30,26 @@ import java.util.List;
  */
 public class DefaultContainer implements Container {
 
-    private JobScanner jobScanner;
-
     private Context context;
 
     private ScheduleManager scheduleManager;
 
     public DefaultContainer() {
-        this.context = new DefaultContext();
-        this.jobScanner = new LocalJobScanner(context);
-        createScheduleManager();
+        this(StringHelper.emptyArray());
+    }
+
+    public DefaultContainer(String[] propertiesFileNames) {
+        this.context = new DefaultContext(propertiesFileNames);
+        this.scheduleManager = new DefaultScheduleManager(this.context);
     }
 
     public DefaultContainer(String jarUrl) {
-        this.context = new DefaultContext();
-        this.jobScanner = new RemoteJobScanner(context, jarUrl);
-        createScheduleManager();
+        this(StringHelper.emptyArray(), new String[]{jarUrl});
     }
 
-    private void createScheduleManager() {
-        scheduleManager = new DefaultScheduleManager(context);
-        List<MethodTriggerDescriptor> descriptorList = jobScanner.scan();
-        for (MethodTriggerDescriptor descriptor : descriptorList) {
-            scheduleManager.addJob(descriptor);
-        }
-        scheduleManager.bindContext(context);
+    public DefaultContainer(String[] propertiesFileNames, String[] jarUrls) {
+        this.context = new DefaultContext(propertiesFileNames);
+        this.scheduleManager = new DefaultScheduleManager(this.context, jarUrls);
     }
 
     public Context getContext() {

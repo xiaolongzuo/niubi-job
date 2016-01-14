@@ -16,42 +16,58 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
+import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
+import org.quartz.*;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 17:44
+ * @since 1/12/2016 16:38
  */
-public class DefaultJobDescriptor extends AbstractKeyDescriptor implements JobDescriptor {
+public class DefaultJobDescriptor extends AbstractJobDescriptor {
 
     private JobDataMap jobDataMap;
 
-    DefaultJobDescriptor(String group, String name) {
-        this(group, name, null);
-    }
-
-    DefaultJobDescriptor(String group, String name, JobDataMap jobDataMap) {
-        super(group, name);
+    DefaultJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule, JobDataMap jobDataMap) {
+        super(clazz, method, hasParameter, schedule);
         if (jobDataMap == null) {
             jobDataMap = new JobDataMap();
         }
         this.jobDataMap = jobDataMap;
     }
 
-    @Override
+    DefaultJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy, JobDataMap jobDataMap) {
+        super(clazz, method, hasParameter, cron, misfirePolicy);
+        if (jobDataMap == null) {
+            jobDataMap = new JobDataMap();
+        }
+        this.jobDataMap = jobDataMap;
+    }
+
     public JobDataMap jobDataMap() {
         return jobDataMap;
     }
 
-    @Override
     public JobDetail jobDetail() {
         return JobBuilder.newJob(StubJob.class)
                 .withIdentity(name(), group())
                 .storeDurably(true)
                 .setJobData(jobDataMap)
                 .build();
+    }
+
+    protected ScheduleBuilder scheduleBuilder() {
+        if (misfirePolicy() == MisfirePolicy.IgnoreMisfires) {
+            return CronScheduleBuilder.cronSchedule(cron()).withMisfireHandlingInstructionIgnoreMisfires();
+        } else if (misfirePolicy() == MisfirePolicy.DoNothing) {
+            return CronScheduleBuilder.cronSchedule(cron()).withMisfireHandlingInstructionDoNothing();
+        } else if (misfirePolicy() == MisfirePolicy.FireAndProceed){
+            return CronScheduleBuilder.cronSchedule(cron()).withMisfireHandlingInstructionFireAndProceed();
+        } else {
+            return CronScheduleBuilder.cronSchedule(cron());
+        }
     }
 
 }

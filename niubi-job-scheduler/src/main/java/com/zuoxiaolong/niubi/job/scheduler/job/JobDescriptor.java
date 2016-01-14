@@ -15,8 +15,12 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
+import org.quartz.Trigger;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Xiaolong Zuo
@@ -24,8 +28,26 @@ import org.quartz.JobDetail;
  */
 public interface JobDescriptor extends KeyDescriptor {
 
-    JobDataMap jobDataMap();
+    String DATA_MAP_KEY = "_job_detail";
+
+    Method method();
+
+    boolean hasParameter();
+
+    Class<?> clazz();
+
+    String cron();
+
+    MisfirePolicy misfirePolicy();
 
     JobDetail jobDetail();
+
+    JobDataMap jobDataMap();
+
+    Trigger trigger();
+
+    boolean isManualTrigger();
+
+    JobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy);
 
 }

@@ -17,13 +17,15 @@
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobDataMapManager;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobTriggerFactory;
-import com.zuoxiaolong.niubi.job.scheduler.job.MethodDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.job.TriggerDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
+import com.zuoxiaolong.niubi.job.scheduler.scanner.RemoteJobScanner;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
@@ -42,18 +44,32 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private ReentrantLock lock = new ReentrantLock();
 
+    private JobScanner jobScanner;
+
     private Scheduler scheduler;
 
-    private Map<String, List<JobKey>> jobKeyListMap;
+    private Map<String, List<String>> groupNameListMap;
 
-    private List<String> sortedGroupList;
+    private List<String> groupList;
 
-    private Map<String, ScheduleStatus> groupStatusMap;
+    private Map<String, ScheduleStatus> jobStatusMap;
 
     public DefaultScheduleManager(Context context) {
-        this.jobKeyListMap = new ConcurrentHashMap<String, List<JobKey>>();
-        this.sortedGroupList = new ArrayList<String>();
-        this.groupStatusMap = new ConcurrentHashMap<String, ScheduleStatus>();
+        initScheduler(context);
+        this.jobScanner = new LocalJobScanner(context);
+        initJobDetails(context);
+    }
+
+    public DefaultScheduleManager(Context context, String[] jarUrls) {
+        initScheduler(context);
+        this.jobScanner = new RemoteJobScanner(context, jarUrls);
+        initJobDetails(context);
+    }
+
+    protected void initScheduler(Context context) {
+        this.groupNameListMap = new ConcurrentHashMap<>();
+        this.groupList = new ArrayList<>();
+        this.jobStatusMap = new ConcurrentHashMap<>();
         try {
             StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
             schedulerFactory.initialize(context.configuration().getProperties());
@@ -65,95 +81,9 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    public void startup() {
-        lock.lock();
-        try {
-            for (String group : getGroupList()) {
-                startup(group);
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void shutdown() {
-        lock.lock();
-        try {
-            for (String group : getGroupList()) {
-                shutdown(group);
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void startup(String group) {
-        lock.lock();
-        try {
-            ScheduleStatus scheduleStatus = groupStatusMap.get(group);
-            if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
-                LoggerHelper.info("group [" + group + "] now is shutdown ,begin startup.");
-                scheduleJob(group);
-                LoggerHelper.info("group [" + group + "] has been started successfully.");
-            } else if (scheduleStatus == ScheduleStatus.PAUSE) {
-                for (JobKey jobKey : getJobKeyList(group)) {
-                    try {
-                        scheduler.resumeJob(jobKey);
-                    } catch (SchedulerException e) {
-                        LoggerHelper.error("resume [" + group + "] job failed.", e);
-                    }
-                }
-                LoggerHelper.warn("group [" + group + "] has been resumed.");
-            } else {
-                LoggerHelper.warn("group [" + group + "] has been started, skip.");
-            }
-            groupStatusMap.put(group, ScheduleStatus.STARTUP);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void scheduleJob(String group) {
-        List<JobKey> jobKeyList = jobKeyListMap.get(group);
-        for (JobKey jobKey : jobKeyList) {
-            try {
-                JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-                TriggerDescriptor triggerDescriptor = JobDataMapManager.getTriggerDescriptor(jobDetail);
-                scheduler.scheduleJob(triggerDescriptor.trigger());
-            } catch (SchedulerException e) {
-                LoggerHelper.error("trigger job failed.", e);
-                throw new NiubiException(e);
-            }
-        }
-    }
-
-    public void shutdown(String group) {
-        lock.lock();
-        try {
-            ScheduleStatus scheduleStatus = groupStatusMap.get(group);
-            if (scheduleStatus != ScheduleStatus.STARTUP) {
-                LoggerHelper.warn("group [" + group + "] has been paused.");
-            } else {
-                for (JobKey jobKey : getJobKeyList(group)) {
-                    try {
-                        scheduler.pauseJob(jobKey);
-                    } catch (SchedulerException e) {
-                        LoggerHelper.error("pause [" + group + "] job failed.", e);
-                    }
-                }
-                groupStatusMap.put(group, ScheduleStatus.PAUSE);
-                LoggerHelper.warn("group [" + group + "] has been paused successfully.");
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public ScheduleStatus getScheduleStatus(String group) {
-        return groupStatusMap.get(group);
-    }
-
-    public void bindContext(Context context) {
+    protected void initJobDetails(Context context) {
+        List<JobDescriptor> descriptorList = jobScanner.scan();
+        descriptorList.forEach(this::addJobDetail);
         try {
             scheduler.getContext().put(Context.DATA_MAP_KEY, context);
         } catch (SchedulerException e) {
@@ -162,36 +92,207 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    public List<JobKey> getJobKeyList(String group) {
-        return Collections.unmodifiableList(jobKeyListMap.get(group));
-    }
-
-    public List<String> getGroupList() {
-        return Collections.unmodifiableList(sortedGroupList);
-    }
-
-    public void addJob(MethodTriggerDescriptor descriptor) {
-        JobKey jobKey = descriptor.jobKey();
+    protected void addJobDetail(JobDescriptor descriptor) {
         JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(TriggerDescriptor.DATA_MAP_KEY, descriptor.getTriggerDescriptor());
-        jobDataMap.put(MethodDescriptor.DATA_MAP_KEY, descriptor.getMethodDescriptor());
-        JobDetail jobDetail = JobTriggerFactory.jobDetail(descriptor.group(), descriptor.name(), jobDataMap);
+        jobDataMap.put(JobDescriptor.DATA_MAP_KEY, descriptor);
         try {
-            scheduler.addJob(jobDetail, true);
+            scheduler.addJob(descriptor.jobDetail(), true);
         } catch (SchedulerException e) {
             LoggerHelper.error("add job failed.", e);
             throw new NiubiException(e);
         }
-        List<JobKey> jobKeyList = jobKeyListMap.get(descriptor.group());
+        List<String> jobKeyList = groupNameListMap.get(descriptor.group());
         if (jobKeyList == null) {
-            jobKeyList = new ArrayList<JobKey>();
+            jobKeyList = new ArrayList<>();
         }
-        jobKeyList.add(jobKey);
-        jobKeyListMap.put(descriptor.group(), jobKeyList);
-        if (!sortedGroupList.contains(descriptor.group())) {
-            sortedGroupList.add(descriptor.group());
+        jobKeyList.add(descriptor.name());
+        groupNameListMap.put(descriptor.group(), jobKeyList);
+        jobStatusMap.put(getUniqueId(descriptor.jobKey()), ScheduleStatus.SHUTDOWN);
+        if (!groupList.contains(descriptor.group())) {
+            groupList.add(descriptor.group());
         }
-        groupStatusMap.put(descriptor.group(), ScheduleStatus.SHUTDOWN);
+    }
+
+    protected String getUniqueId(JobKey jobKey) {
+        return jobKey.getGroup() + "." + jobKey.getName();
+    }
+
+    public List<String> getNameList(String group) {
+        return Collections.unmodifiableList(groupNameListMap.get(group));
+    }
+
+    public List<String> getGroupList() {
+        return Collections.unmodifiableList(groupList);
+    }
+
+    public void startup() {
+        lock.lock();
+        try {
+            getGroupList().forEach(this::startup);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void startup(String group) {
+        lock.lock();
+        try {
+            for (String name : getNameList(group)) {
+                startup(group, name);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void startup(String group, String name) {
+        lock.lock();
+        try {
+            JobKey jobKey = JobKey.jobKey(name, group);
+            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+            if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
+                LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
+                JobDescriptor jobDescriptor;
+                try {
+                    JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+                    jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+                    if (jobDescriptor.isManualTrigger()) {
+                        LoggerHelper.error("job need to trigger manual : " + JsonHelper.toJson(jobDescriptor));
+                        return;
+                    }
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
+                    return;
+                }
+                try {
+                    scheduler.scheduleJob(jobDescriptor.trigger());
+                    LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
+                    return;
+                }
+            } else if (scheduleStatus == ScheduleStatus.PAUSE) {
+                try {
+                    scheduler.resumeJob(jobKey);
+                    LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
+                    return;
+                }
+            } else {
+                LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
+            }
+            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void startup(String cron, MisfirePolicy misfirePolicy) {
+        lock.lock();
+        try {
+            for (String group : getGroupList()) {
+                startup(group, cron, misfirePolicy);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void startup(String group, String cron, MisfirePolicy misfirePolicy) {
+        lock.lock();
+        try {
+            for (String name : getNameList(group)) {
+                startup(group, name, cron, misfirePolicy);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public void startup(String group, String name, String cron, MisfirePolicy misfirePolicy) {
+        lock.lock();
+        try {
+            JobKey jobKey = JobKey.jobKey(name, group);
+            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+            JobDescriptor jobDescriptor;
+            try {
+                JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+                jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+            } catch (SchedulerException e) {
+                LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
+                return;
+            }
+            if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
+                LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
+                try {
+                    scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                    LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
+                    return;
+                }
+            } else {
+                try {
+                    scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                    LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("reschedule [" + group + "," + name + "] job failed.", e);
+                    return;
+                }
+            }
+            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void shutdown() {
+        lock.lock();
+        try {
+            getGroupList().forEach(this::shutdown);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void shutdown(String group) {
+        lock.lock();
+        try {
+            for (String name : getNameList(group)) {
+                shutdown(group, name);
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+
+
+    @Override
+    public void shutdown(String group, String name) {
+        lock.lock();
+        try {
+            JobKey jobKey = JobKey.jobKey(name, group);
+            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+            if (scheduleStatus != ScheduleStatus.STARTUP) {
+                LoggerHelper.warn("group [" + group + "] has been paused.");
+            } else {
+                try {
+                    scheduler.pauseJob(jobKey);
+                    LoggerHelper.info("group [" + group + "] has been paused successfully.");
+                } catch (SchedulerException e) {
+                    LoggerHelper.error("pause [" + group + "] job failed.", e);
+                    return;
+                }
+            }
+            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
+        } finally {
+            lock.unlock();
+        }
     }
 
 }

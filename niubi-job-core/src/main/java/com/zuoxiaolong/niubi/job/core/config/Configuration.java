@@ -19,8 +19,8 @@ package com.zuoxiaolong.niubi.job.core.config;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.io.ClasspathResource;
+import com.zuoxiaolong.niubi.job.core.io.FileSystemResource;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -31,40 +31,41 @@ import java.util.Properties;
  * @author Xiaolong Zuo
  * @since 16/1/9 04:15
  */
-@Setter
-@Getter
 public class Configuration {
 
     private static final String DEFAULT_QUARTZ_FILE = "quartz-default.properties";
 
     private static final String DEFAULT_LOG4J_FILE = "log4j-default.properties";
 
-    private static final String DEFAULT_CONFIG_FILE = "job-config.properties";
-
+    @Getter
     private Properties properties;
 
+    private ClassLoader classLoader;
+
     public Configuration(ClassLoader classLoader) {
-        this(classLoader, new Properties());
+        this.classLoader = classLoader;
+        this.properties = new Properties();
+        load(DEFAULT_QUARTZ_FILE, true);
+        load(DEFAULT_LOG4J_FILE, true);
     }
 
-    public Configuration(ClassLoader classLoader, Properties properties) {
-        this.properties = properties;
+    public void addProperties(String propertiesFileName) {
         try {
-            this.properties.load(new ClasspathResource(classLoader, DEFAULT_QUARTZ_FILE).getInputStream());
+            this.properties.load(new FileSystemResource(propertiesFileName).getInputStream());
         } catch (IOException e) {
-            LoggerHelper.error("read config file [" + DEFAULT_QUARTZ_FILE + "] failed.", e);
+            LoggerHelper.error("read config file [" + propertiesFileName + "] failed.", e);
             throw new NiubiException(e);
         }
+    }
+
+    private void load(String propertiesFileName, boolean throwException) {
         try {
-            this.properties.load(new ClasspathResource(classLoader, DEFAULT_LOG4J_FILE).getInputStream());
+            this.properties.load(new ClasspathResource(classLoader, propertiesFileName).getInputStream());
         } catch (IOException e) {
-            LoggerHelper.error("read config file [" + DEFAULT_LOG4J_FILE + "] failed.", e);
-            throw new NiubiException(e);
-        }
-        try {
-            this.properties.load(new ClasspathResource(classLoader, DEFAULT_CONFIG_FILE).getInputStream());
-        } catch (Exception e) {
-            LoggerHelper.info("read config file [" + DEFAULT_CONFIG_FILE + "] failed, has been ignored.", e);
+            LoggerHelper.error("read config file [" + propertiesFileName + "] failed.", e);
+            if (throwException) {
+                throw new NiubiException(e);
+            }
         }
     }
 

@@ -16,9 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
-import org.quartz.JobKey;
+import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
 
 import java.util.List;
 
@@ -30,20 +28,24 @@ public interface ScheduleManager {
 
     void startup();
 
-    void shutdown();
-
     void startup(String group);
+
+    void startup(String group, String name);
+
+    void startup(String cron, MisfirePolicy misfirePolicy);
+
+    void startup(String group, String cron, MisfirePolicy misfirePolicy);
+
+    void startup(String group, String name, String cron, MisfirePolicy misfirePolicy);
+
+    void shutdown();
 
     void shutdown(String group);
 
-    ScheduleStatus getScheduleStatus(String group);
+    void shutdown(String group, String name);
 
     List<String> getGroupList();
 
-    void bindContext(Context context);
-
-    List<JobKey> getJobKeyList(String group);
-
-    void addJob(MethodTriggerDescriptor descriptor);
+    List<String> getNameList(String group);
 
 }

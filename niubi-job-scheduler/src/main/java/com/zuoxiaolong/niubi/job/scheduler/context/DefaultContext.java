@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.context;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
@@ -25,39 +24,21 @@ import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
  * @author Xiaolong Zuo
  * @since 16/1/9 23:23
  */
-public class DefaultContext implements Context {
-
-    private JobScanClassLoader classLoader;
+public class DefaultContext extends AbstractContext {
 
     private JobBeanFactory jobBeanFactory;
 
-    private Configuration configuration;
-
-    public DefaultContext() {
-        this(ClassHelper.getDefaultClassLoader());
+    public DefaultContext(String[] propertiesFileNames) {
+        this(ClassHelper.getDefaultClassLoader(), propertiesFileNames);
     }
 
-    public DefaultContext(ClassLoader classLoader) {
-        this(classLoader, new DefaultJobBeanFactory());
-    }
-
-    public DefaultContext(ClassLoader classLoader, JobBeanFactory jobBeanFactory) {
-        this.classLoader = new JobScanClassLoader(classLoader);
-        this.configuration = new Configuration(this.classLoader);
-        this.jobBeanFactory = jobBeanFactory;
-    }
-
-    @Override
-    public JobScanClassLoader classLoader() {
-        return classLoader;
+    public DefaultContext(ClassLoader classLoader, String[] propertiesFileNames) {
+        super(classLoader, propertiesFileNames);
+        this.jobBeanFactory = new DefaultJobBeanFactory();
     }
 
     public JobBeanFactory jobBeanFactory() {
         return jobBeanFactory;
-    }
-
-    public Configuration configuration() {
-        return configuration;
     }
 
 }

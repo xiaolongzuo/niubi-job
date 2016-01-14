@@ -21,6 +21,8 @@ import com.zuoxiaolong.niubi.job.scheduler.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.scheduler.bean.RegisteredJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
+import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptorFactory;
 import com.zuoxiaolong.niubi.job.scheduler.job.JobParameter;
 
 import java.lang.reflect.Method;
@@ -43,7 +45,7 @@ public abstract class AbstractJobScanner implements JobScanner {
         return context;
     }
 
-    protected void scanClass(String className, List<MethodTriggerDescriptor> descriptorList) {
+    protected void scanClass(String className, List<JobDescriptor> descriptorList) {
         try {
             Class<?> clazz = context.classLoader().loadClass(className);
             Disabled classDisabled = clazz.getDeclaredAnnotation(Disabled.class);
@@ -62,13 +64,13 @@ public abstract class AbstractJobScanner implements JobScanner {
                 }
                 Type[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
-                    descriptorList.add(new MethodTriggerDescriptor(schedule, method, clazz, true));
+                    descriptorList.add(JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule));
                     if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
                         ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
                     }
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "(JobParameter)]");
                 } else if (parameterTypes == null || parameterTypes.length == 0){
-                    descriptorList.add(new MethodTriggerDescriptor(schedule, method, clazz, false));
+                    descriptorList.add(JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule));
                     if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
                         ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
                     }

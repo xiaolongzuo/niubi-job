@@ -16,9 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.spring.context;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.context.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.scheduler.context.AbstractContext;
 import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
 import org.springframework.context.ApplicationContext;
 
@@ -26,36 +25,21 @@ import org.springframework.context.ApplicationContext;
  * @author Xiaolong Zuo
  * @since 16/1/11 22:44
  */
-public class DefaultSpringContext implements SpringContext {
+public class DefaultSpringContext extends AbstractContext implements SpringContext {
 
     private ApplicationContext applicationContext;
 
-    private JobScanClassLoader classLoader;
-
     private JobBeanFactory jobBeanFactory;
 
-    private Configuration configuration;
-
-    public DefaultSpringContext(ApplicationContext applicationContext) {
-        this.classLoader = new JobScanClassLoader(applicationContext.getClassLoader());
+    public DefaultSpringContext(ApplicationContext applicationContext, String[] propertiesFileNames) {
+        super(applicationContext.getClassLoader(), propertiesFileNames);
         this.applicationContext = applicationContext;
-        this.configuration = new Configuration(this.classLoader);
         this.jobBeanFactory = new SpringJobBeanFactory(applicationContext);
-    }
-
-    @Override
-    public JobScanClassLoader classLoader() {
-        return classLoader;
     }
 
     @Override
     public JobBeanFactory jobBeanFactory() {
         return jobBeanFactory;
-    }
-
-    @Override
-    public Configuration configuration() {
-        return configuration;
     }
 
     @Override

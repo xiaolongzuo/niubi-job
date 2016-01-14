@@ -16,6 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.scanner;
 
+import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+
 import java.util.List;
 
 /**
@@ -26,6 +28,6 @@ import java.util.List;
  */
 public interface JobScanner {
 
-    List<MethodTriggerDescriptor> scan();
+    List<JobDescriptor> scan();
 
 }

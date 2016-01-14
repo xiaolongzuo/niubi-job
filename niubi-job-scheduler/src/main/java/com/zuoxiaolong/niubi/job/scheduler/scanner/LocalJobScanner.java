@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.scheduler.scanner;
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
+import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
 
 import java.io.File;
 import java.net.URL;
@@ -38,8 +39,8 @@ public class LocalJobScanner extends AbstractJobScanner {
     }
 
     @Override
-    public List<MethodTriggerDescriptor> scan() {
-        List<MethodTriggerDescriptor> descriptorList = new ArrayList<MethodTriggerDescriptor>();
+    public List<JobDescriptor> scan() {
+        List<JobDescriptor> descriptorList = new ArrayList<JobDescriptor>();
         URL url = getContext().classLoader().getResource("");
         if (url == null) {
             LoggerHelper.error("classpath can't be find.");
@@ -60,7 +61,7 @@ public class LocalJobScanner extends AbstractJobScanner {
         }
     }
 
-    public void fill(String packageName, File file, List<MethodTriggerDescriptor> descriptorList) {
+    public void fill(String packageName, File file, List<JobDescriptor> descriptorList) {
         String fileName = file.getName();
         if (file.isFile() && fileName.endsWith(".class")) {
             String className = packageName + "." + fileName.substring(0, fileName.lastIndexOf("."));

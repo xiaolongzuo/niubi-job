@@ -60,8 +60,16 @@ public abstract class StringHelper {
         }
     }
 
+    public static String[] emptyArray() {
+        return new String[0];
+    }
+
     public static boolean isEmpty(String s) {
         return s == null || s.trim().length() == 0;
+    }
+
+    public static boolean isEmpty(String[] s) {
+        return s == null || s.length == 0;
     }
 
     public static String isEmpty(String value, String defaultValue) {

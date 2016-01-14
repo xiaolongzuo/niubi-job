@@ -31,25 +31,11 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Schedule {
 
-    String DEFAULT_GROUP = "_default_group";
-
-    /**
-     * 分组名称
-     * @return group
-     */
-    String group() default DEFAULT_GROUP;
-
-    /**
-     * 任务名称
-     * @return group
-     */
-    String name() default "";
-
     /**
      * 仅当type为CRON时有效
      * @return cron
      */
-    String cron();
+    String cron() default "";
 
     /**
      * 丢失的任务策略

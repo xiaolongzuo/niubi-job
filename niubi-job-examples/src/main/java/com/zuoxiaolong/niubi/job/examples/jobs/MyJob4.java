@@ -28,13 +28,13 @@ import java.util.Date;
  */
 public class MyJob4 {
 
-    @Schedule(cron = "0/10 * * * * ?", group = "group4")
+    @Schedule(cron = "0/10 * * * * ?")
     public void test1() {
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group4][1]");
     }
 
     @Disabled
-    @Schedule(cron = "0/11 * * * * ?", group = "group4")
+    @Schedule(cron = "0/11 * * * * ?")
     public void test2() {
         System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group4][2]");
     }

@@ -16,10 +16,7 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.MethodTriggerDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.RemoteJobScanner;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 import com.zuoxiaolong.niubi.job.spring.context.DefaultSpringContext;
@@ -27,45 +24,34 @@ import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
-
 /**
  * @author 左潇龙
  * @since 1/13/2016 14:22
  */
 public class DefaultSpringContainer implements SpringContainer {
 
-    private JobScanner jobScanner;
-
     private SpringContext context;
 
     private ScheduleManager scheduleManager;
 
-    public DefaultSpringContainer() {
+    public DefaultSpringContainer(String[] propertiesFileNames) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_PATH);
-        this.context = new DefaultSpringContext(applicationContext);
-        this.jobScanner = new LocalJobScanner(context);
-        createScheduleManager();
+        this.context = new DefaultSpringContext(applicationContext, propertiesFileNames);
+        this.scheduleManager = new DefaultScheduleManager(this.context);
     }
 
     public DefaultSpringContainer(String jarUrl) {
-        this(APPLICATION_CONTEXT_XML_PATH, jarUrl);
+        this(APPLICATION_CONTEXT_XML_PATH, StringHelper.emptyArray(), new String[]{jarUrl});
     }
 
-    public DefaultSpringContainer(String applicationContextXmlPath, String jarUrl) {
+    public DefaultSpringContainer(String[] propertiesFileNames, String[] jarUrls) {
+        this(APPLICATION_CONTEXT_XML_PATH, propertiesFileNames, jarUrls);
+    }
+
+    public DefaultSpringContainer(String applicationContextXmlPath, String[] propertiesFileNames, String[] jarUrls) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(applicationContextXmlPath);
-        this.context = new DefaultSpringContext(applicationContext);
-        this.jobScanner = new RemoteJobScanner(context, jarUrl);
-        createScheduleManager();
-    }
-
-    private void createScheduleManager() {
-        scheduleManager = new DefaultScheduleManager(context);
-        List<MethodTriggerDescriptor> descriptorList = jobScanner.scan();
-        for (MethodTriggerDescriptor descriptor : descriptorList) {
-            scheduleManager.addJob(descriptor);
-        }
-        scheduleManager.bindContext(context);
+        this.context = new DefaultSpringContext(applicationContext, propertiesFileNames);
+        this.scheduleManager = new DefaultScheduleManager(this.context, jarUrls);
     }
 
     @Override
