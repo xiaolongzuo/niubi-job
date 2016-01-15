@@ -17,6 +17,8 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author 左潇龙
@@ -81,7 +83,14 @@ public abstract class StringHelper {
     }
 
     public static String[] split(String s) {
+        if (s == null || s.trim().length() == 0) {
+            return new String[0];
+        }
         return s.split(",|;|:");
+    }
+
+    public static List<String> splitToList(String s) {
+        return Arrays.asList(split(s));
     }
 
 }

@@ -22,6 +22,6 @@ package com.zuoxiaolong.niubi.job.service;
  */
 public interface JobJarService {
 
-    void save(String jarFilePath);
+    void save(String jarFilePath, String packagesToScan);
 
 }

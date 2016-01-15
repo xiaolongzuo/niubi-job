@@ -37,12 +37,12 @@
                     <table class="table table-bordered data-table">
                         <thead>
                             <tr>
-                                <th>Group</th>
-                                <th>Name</th>
                                 <th>State</th>
-                                <th>Mode</th>
-                                <th>Jar file</th>
+                                <th>Name</th>
                                 <th>Cron</th>
+                                <th>Mode</th>
+                                <th>Group</th>
+                                <th>Jar file</th>
                                 <th>Misfire policy</th>
                                 <th>Operation</th>
                             </tr>
@@ -50,14 +50,14 @@
                         <tbody>
                         <c:forEach items="${jobs}" var="job">
                             <tr class="gradeA">
-                                <td>${job.groupName}</td>
-                                <td>${job.jobName}</td>
                                 <td>
-                                    ${job.state}
+                                    ${job.stateLabel}
                                 </td>
-                                <td>${job.mode}</td>
-                                <td>${job.jarFileName}</td>
+                                <td>${job.jobName}</td>
                                 <td>${job.cron}</td>
+                                <td>${job.modeLabel}</td>
+                                <td>${job.groupName}</td>
+                                <td>${job.jobJar.jarFileName}</td>
                                 <td>${job.misfirePolicy}</td>
                                 <td>
                                     <button class="btn">Restart</button>

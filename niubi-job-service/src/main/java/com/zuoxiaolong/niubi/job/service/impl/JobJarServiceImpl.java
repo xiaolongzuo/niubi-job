@@ -51,11 +51,12 @@ public class JobJarServiceImpl extends AbstractService implements JobJarService,
     }
 
     @Override
-    public void save(String jarFilePath) {
+    public void save(String jarFilePath, String packagesToScan) {
         JobJar jobJar = new JobJar();
         jobJar.setJarFileName(jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1));
+        baseDao.persist(jobJar);
         List<Job> jobs = new ArrayList<>();
-        JobScanner jobScanner = new RemoteJobScanner(applicationContext.getClassLoader(), jarFilePath);
+        JobScanner jobScanner = new RemoteJobScanner(applicationContext.getClassLoader(), jarFilePath, packagesToScan);
         List<JobDescriptor> jobDescriptorList = jobScanner.scan();
         for (JobDescriptor jobDescriptor : jobDescriptorList) {
             Job job = new Job();

@@ -72,7 +72,7 @@ public abstract class AbstractJobScanner implements JobScanner {
                 }
             }
         } catch (Exception e) {
-            LoggerHelper.warn("scan class [" + className + "] failed, has been ignored.");
+            LoggerHelper.warn("scan class [" + className + " : " + e.getClass().getName() + "] failed, has been ignored.");
         }
     }
 

@@ -50,7 +50,7 @@ public abstract class ReflectHelper {
 	}
 
 	public static Class<?> getParameterizedType(List<?> list) {
-		if (!ArrayHelper.isEmpty(list)) {
+		if (!ListHelper.isEmpty(list)) {
 			return list.get(0).getClass();
 		}
 		return null;

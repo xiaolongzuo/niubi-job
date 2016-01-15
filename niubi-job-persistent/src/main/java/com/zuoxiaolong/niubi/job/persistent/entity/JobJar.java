@@ -20,6 +20,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -50,7 +51,7 @@ public class JobJar extends BaseEntity {
         return jarFileName;
     }
 
-    @OneToMany(mappedBy = "jobJar", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "jobJar", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     public List<Job> getJobs() {
         return jobs;
     }

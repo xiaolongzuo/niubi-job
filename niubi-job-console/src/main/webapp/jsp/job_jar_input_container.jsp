@@ -39,6 +39,12 @@
                                     <input name="jobJar" type="file"/>
                                 </div>
                             </div>
+                            <div class="control-group">
+                                <label class="control-label">Packages to scan :</label>
+                                <div class="controls">
+                                    <input name="packagesToScan" type="text" class="span11" placeholder="This is important!" />
+                                </div>
+                            </div>
                             <div class="form-actions">
                                 <button type="submit" class="btn btn-success">Upload</button>
                             </div>

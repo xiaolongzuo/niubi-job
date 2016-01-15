@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -46,8 +47,6 @@ public class Job extends BaseEntity {
     private String cron;
 
     private String misfirePolicy;
-
-    private String jarFileName;
 
     public String getGroupName() {
         return groupName;
@@ -82,9 +81,27 @@ public class Job extends BaseEntity {
         return misfirePolicy;
     }
 
+    /* Transient */
+
+    private String jarFileName;
+
+    private String stateLabel;
+
+    private String modeLabel;
+
     @Transient
     public String getJarFileName() {
         return jarFileName;
+    }
+
+    @Transient
+    public String getStateLabel() {
+        return StringHelper.isEmpty(state) ? "SHUTDOWN" : state;
+    }
+
+    @Transient
+    public String getModeLabel() {
+        return StringHelper.isEmpty(mode) ? "COMMON" : mode;
     }
 
 }

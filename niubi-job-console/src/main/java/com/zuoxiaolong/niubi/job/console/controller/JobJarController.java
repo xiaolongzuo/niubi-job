@@ -42,11 +42,11 @@ public class JobJarController {
     private JobJarService jobJarService;
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String upload(@RequestParam MultipartFile jobJar, HttpServletRequest request) {
+    public String upload(String packagesToScan, @RequestParam MultipartFile jobJar, HttpServletRequest request) {
         String jarFilePath = request.getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());
-            jobJarService.save(jarFilePath);
+            jobJarService.save(jarFilePath, packagesToScan);
         } catch (IOException e) {
             throw new NiubiException(e);
         }
