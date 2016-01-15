@@ -14,33 +14,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.annotation;
+package com.zuoxiaolong.niubi.job.scanner;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+
+import java.util.List;
 
 /**
- * 该注解可以用作方法上,代表该方法是一个需要调度的job
+ * job的扫描器
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:28
+ * @since 16/1/9 00:31
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Schedule {
+public interface JobScanner {
 
-    /**
-     * 仅当type为CRON时有效
-     * @return cron
-     */
-    String cron() default "";
-
-    /**
-     * 丢失的任务策略
-     * @return misfirePolicy
-     */
-    MisfirePolicy misfirePolicy() default MisfirePolicy.None;
+    List<JobDescriptor> scan();
 
 }

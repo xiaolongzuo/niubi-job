@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.scanner;
+package com.zuoxiaolong.niubi.job.scanner;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,8 +41,8 @@ public class RemoteJobScanner extends AbstractJobScanner {
 
     private String[] jarUrls;
 
-    public RemoteJobScanner(Context context, String... jarUrls) {
-        super(context);
+    public RemoteJobScanner(JobScanClassLoader classLoader, String... jarUrls) {
+        super(classLoader);
         this.jarUrls = jarUrls == null ? StringHelper.emptyArray() : jarUrls;
     }
 
@@ -53,17 +52,8 @@ public class RemoteJobScanner extends AbstractJobScanner {
         try {
             for (String jarUrl : jarUrls) {
                 String jarFilePath = downloadJarFile(jarUrl);
-                getContext().classLoader().addURL(new URL("file:/" + jarFilePath));
-                JarFile jarFile = new JarFile(jarFilePath);
-                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
-                while (jarEntryEnumeration.hasMoreElements()) {
-                    String jarEntryName = jarEntryEnumeration.nextElement().getName();
-                    if (jarEntryName == null || !jarEntryName.endsWith(".class")) {
-                        continue;
-                    }
-                    String className = ClassHelper.getClassName(jarEntryName);
-                    super.scanClass(className, descriptorList);
-                }
+                classLoader.addURL(new URL("file:/" + jarFilePath));
+                scan(descriptorList, jarFilePath);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,9 +61,22 @@ public class RemoteJobScanner extends AbstractJobScanner {
         return descriptorList;
     }
 
+    private void scan(List<JobDescriptor> descriptorList, String jarFilePath) throws IOException {
+        JarFile jarFile = new JarFile(jarFilePath);
+        Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+        while (jarEntryEnumeration.hasMoreElements()) {
+            String jarEntryName = jarEntryEnumeration.nextElement().getName();
+            if (jarEntryName == null || !jarEntryName.endsWith(".class")) {
+                continue;
+            }
+            String className = ClassHelper.getClassName(jarEntryName);
+            super.scanClass(className, descriptorList);
+        }
+    }
+
     private String downloadJarFile(String jarUrl) throws IOException {
         String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
-        String jarFilePath = getContext().classLoader().getResource("").getFile() + jarFileName;
+        String jarFilePath = classLoader.getResource("").getFile() + jarFileName;
         File file = new File(jarFilePath);
         if (file.exists()) {
             return jarFilePath;

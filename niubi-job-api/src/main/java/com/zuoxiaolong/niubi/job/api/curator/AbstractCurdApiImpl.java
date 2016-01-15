@@ -73,7 +73,7 @@ public abstract class AbstractCurdApiImpl {
 
     protected String insert(String path, byte[] data) {
         try {
-            return getClient().create().forPath(path, data);
+            return getClient().create().creatingParentsIfNeeded().forPath(path, data);
         } catch (Exception e) {
             throw new NiubiException(e);
         }
@@ -81,7 +81,7 @@ public abstract class AbstractCurdApiImpl {
 
     protected void delete(String path) {
         try {
-            getClient().delete().forPath(path);
+            getClient().delete().deletingChildrenIfNeeded().forPath(path);
         } catch (Exception e) {
             throw new NiubiException(e);
         }

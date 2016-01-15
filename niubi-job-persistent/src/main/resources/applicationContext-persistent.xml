@@ -28,6 +28,8 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="packagesToScan" value="com.zuoxiaolong.niubi.job.persistent.entity"/>
         <property name="hibernateProperties" ref="hibernateProperties"/>
+        <property name="entityInterceptor" ref="entityInterceptor"/>
+        <property name="physicalNamingStrategy" ref="hibernateNamingStrategy"/>
     </bean>
 
     <bean id="hibernateProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">

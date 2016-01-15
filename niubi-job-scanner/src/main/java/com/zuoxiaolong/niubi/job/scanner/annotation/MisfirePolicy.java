@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.zuoxiaolong.niubi.job.scanner.annotation;
 
 /**
- * 该注解可以关闭job
+ * 当容器处于暂停时,对于错过的任务的执行策略.
  *
  * @author Xiaolong Zuo
- * @since 16/1/10 06:46
+ * @since 16/1/9 04:24
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Disabled {
+public enum MisfirePolicy {
+
+    DoNothing, IgnoreMisfires, FireAndProceed, None
+
 }

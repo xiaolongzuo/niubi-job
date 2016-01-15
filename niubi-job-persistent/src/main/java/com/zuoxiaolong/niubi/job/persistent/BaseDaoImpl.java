@@ -1,0 +1,222 @@
+package com.zuoxiaolong.niubi.job.persistent;
+
+import com.zuoxiaolong.niubi.job.core.helper.ObjectHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.persistent.entity.BaseEntity;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.persistence.Entity;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Component("baseDao")
+public class BaseDaoImpl implements BaseDao {
+
+    @Autowired
+	private SessionFactory sessionFactory;
+
+    @Override
+	public <T> String save(T entity) {
+		return (String) getHibernateSession().save(entity);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T merge(T entity) {
+		return (T) getHibernateSession().merge(entity);
+	}
+
+	@Override
+	public <T> void persist(T entity) {
+		getHibernateSession().persist(entity);
+	}
+
+	@Override
+	public <T> void update(T entity) {
+		getHibernateSession().update(entity);
+	}
+
+	@Override
+	public <T> void delete(T entity) {
+		getHibernateSession().delete(entity);
+	}
+
+	@Override
+	public <T> List<String> save(List<T> entityList) {
+		List<String> idList = new ArrayList<String>();
+		Session session = getHibernateSession();
+        idList.addAll(entityList.stream().map(entity -> (String) session.save(entity)).collect(Collectors.toList()));
+		return idList;
+	}
+
+	@Override
+	public <T> void update(List<T> entityList) {
+		Session session = getHibernateSession();
+        entityList.forEach(session::update);
+	}
+
+	@Override
+	public <T> void delete(List<T> entityList) {
+		Session session = getHibernateSession();
+        entityList.forEach(session::delete);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getAll(Class<T> clazz) {
+		Query query = getHibernateSession().createQuery("from " + getEntityAnnotationName(clazz));
+		return query.list();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T get(Class<T> clazz, String id) {
+		return (T) getHibernateSession().get(clazz, id);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> T load(Class<T> clazz, String id) {
+		return (T) getHibernateSession().load(clazz, id);
+	}
+
+	@Override
+	public <T> List<T> getList(Class<T> clazz, T entity) {
+		return getList(clazz, entity, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> List<T> getList(Class<T> clazz, T entity, boolean useLike) {
+		StringBuffer sqlBuffer = new StringBuffer("from " + getEntityAnnotationName(clazz) + " where 1=1 ");
+
+		List<Object> valueList = generateValueListAndSetSql(clazz, entity, sqlBuffer, useLike);
+
+		String querySql = sqlBuffer.toString() + " order by createDate desc";
+		Query query = getHibernateSession().createQuery(querySql);
+		setParameters(query, valueList);
+
+		return query.list();
+	}
+
+	@Override
+	public <T> T getUnique(Class<T> clazz, T entity) {
+		return getUnique(clazz, entity, false);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getUnique(Class<T> clazz, T entity, boolean useLike) {
+		StringBuffer sqlBuffer = new StringBuffer("from " + getEntityAnnotationName(clazz) + " where 1=1 ");
+
+		List<Object> valueList = generateValueListAndSetSql(clazz, entity, sqlBuffer, useLike);
+
+		String querySql = sqlBuffer.toString();
+		Query query = getHibernateSession().createQuery(querySql);
+		setParameters(query, valueList);
+
+		return (T) query.uniqueResult();
+	}
+
+	@Override
+	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager) {
+		return getByPager(clazz, pager, null);
+	}
+
+	@Override
+	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity) {
+		return getByPager(clazz, pager, entity, true);
+	}
+
+	@Override
+	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike) {
+		if (pager == null) {
+			pager = new Pager<T>();
+		}
+
+		StringBuffer sqlBuffer = new StringBuffer("from " + getEntityAnnotationName(clazz) + " where 1=1 ");
+
+		List<Object> valueList = generateValueListAndSetSql(clazz, entity, sqlBuffer, useLike);
+
+		pager.setDataList(getDataList(valueList, sqlBuffer, pager));
+
+		pager.setTotalCount(getTotalCount(sqlBuffer, valueList));
+
+		return pager;
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T extends BaseEntity> List<T> getDataList(List<Object> valueList, StringBuffer sqlBuffer, Pager<T> pager) {
+		String querySql = sqlBuffer.toString() + " order by createDate desc";
+		Query query = getHibernateSession().createQuery(querySql);
+		setParameters(query, valueList);
+		query.setFirstResult(pager.getFirstIndex());
+		query.setMaxResults(pager.getPageSize());
+		return query.list();
+	}
+
+	private <T extends BaseEntity> int getTotalCount(StringBuffer sqlBuffer, List<Object> valueList) {
+		sqlBuffer.insert(0, "select count(id) ");
+		Query query = getHibernateSession().createQuery(sqlBuffer.toString());
+		setParameters(query, valueList);
+		return ((Long) query.uniqueResult()).intValue();
+	}
+
+	private <T> void setParameters(Query query, List<Object> valueList) {
+		for (int i = 0; i < valueList.size(); i++) {
+			query.setParameter(String.valueOf(i), valueList.get(i));
+		}
+	}
+
+	private <T> List<Object> generateValueListAndSetSql(Class<T> clazz, T entity, StringBuffer sqlBuffer, boolean useLike) {
+		List<Object> valueList = new ArrayList<Object>();
+		if (entity != null) {
+			Field[] fields = ReflectHelper.getAllFields(entity);
+			for (int i = 0, index = 0; i < fields.length; i++) {
+				Field field = fields[i];
+				int modifiers = field.getModifiers();
+				if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || Modifier.isFinal(modifiers) || ObjectHelper.isTransientId(clazz, field)) {
+					continue;
+				}
+				Object value = ReflectHelper.getFieldValue(entity, field);
+				if (ObjectHelper.isEmpty(value)) {
+					continue;
+				}
+				if (field.getType() == String.class && useLike) {
+					sqlBuffer.append("and " + field.getName() + " like ?" + index++ + " ");
+					valueList.add("%" + value + "%");
+				} else {
+					sqlBuffer.append("and " + field.getName() + "=?" + index++ + " ");
+					valueList.add(value);
+				}
+			}
+		}
+		return valueList;
+	}
+
+	private Session getHibernateSession() {
+		try {
+			return sessionFactory.getCurrentSession();
+		} catch (Exception ignored) {
+			return sessionFactory.openSession();
+		}
+	}
+
+    public String getEntityAnnotationName(Class<?> clazz) {
+        try {
+            Entity entityAnnotation = clazz.getAnnotation(Entity.class);
+            return StringHelper.isEmpty(entityAnnotation.name()) ? clazz.getSimpleName() : entityAnnotation.name();
+        } catch (Exception e) {
+            return clazz.getSimpleName();
+        }
+    }
+
+}

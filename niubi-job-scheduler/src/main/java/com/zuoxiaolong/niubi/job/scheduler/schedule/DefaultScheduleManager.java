@@ -19,14 +19,14 @@ package com.zuoxiaolong.niubi.job.scheduler.schedule;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDataMapManager;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.LocalJobScanner;
-import com.zuoxiaolong.niubi.job.scheduler.scanner.RemoteJobScanner;
-import org.quartz.*;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.ArrayList;
@@ -56,13 +56,13 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     public DefaultScheduleManager(Context context) {
         initScheduler(context);
-        this.jobScanner = new LocalJobScanner(context);
+        this.jobScanner = new ScheduleLocalJobScanner(context);
         initJobDetails(context);
     }
 
     public DefaultScheduleManager(Context context, String[] jarUrls) {
         initScheduler(context);
-        this.jobScanner = new RemoteJobScanner(context, jarUrls);
+        this.jobScanner = new ScheduleRemoteJobScanner(context, jarUrls);
         initJobDetails(context);
     }
 
@@ -83,7 +83,9 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     protected void initJobDetails(Context context) {
         List<JobDescriptor> descriptorList = jobScanner.scan();
-        descriptorList.forEach(this::addJobDetail);
+        for (JobDescriptor descriptor : descriptorList) {
+            addJobDetail(new DefaultScheduleJobDescriptor(descriptor));
+        }
         try {
             scheduler.getContext().put(Context.DATA_MAP_KEY, context);
         } catch (SchedulerException e) {
@@ -92,11 +94,9 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    protected void addJobDetail(JobDescriptor descriptor) {
-        JobDataMap jobDataMap = new JobDataMap();
-        jobDataMap.put(JobDescriptor.DATA_MAP_KEY, descriptor);
+    protected void addJobDetail(ScheduleJobDescriptor descriptor) {
         try {
-            scheduler.addJob(descriptor.jobDetail(), true);
+            scheduler.addJob(descriptor.putJobData(ScheduleJobDescriptor.DATA_MAP_KEY, descriptor).jobDetail(), true);
         } catch (SchedulerException e) {
             LoggerHelper.error("add job failed.", e);
             throw new NiubiException(e);
@@ -153,7 +153,7 @@ public class DefaultScheduleManager implements ScheduleManager {
             ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
             if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
                 LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
-                JobDescriptor jobDescriptor;
+                ScheduleJobDescriptor jobDescriptor;
                 try {
                     JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                     jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
@@ -219,7 +219,7 @@ public class DefaultScheduleManager implements ScheduleManager {
         try {
             JobKey jobKey = JobKey.jobKey(name, group);
             ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-            JobDescriptor jobDescriptor;
+            ScheduleJobDescriptor jobDescriptor;
             try {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                 jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);

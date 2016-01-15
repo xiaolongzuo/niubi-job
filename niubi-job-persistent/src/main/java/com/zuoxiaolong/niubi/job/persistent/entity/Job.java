@@ -17,25 +17,27 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 /**
  * @author Xiaolong Zuo
  * @since 1/15/2016 14:44
  */
 @Setter
-@Getter
 @Entity
+@DynamicInsert
+@DynamicUpdate
 public class Job extends BaseEntity {
 
-    private String group;
+    private String groupName;
 
-    private String name;
+    private String jobName;
 
-    private String jarFileName;
+    private JobJar jobJar;
 
     private String mode;
 
@@ -44,5 +46,45 @@ public class Job extends BaseEntity {
     private String cron;
 
     private String misfirePolicy;
+
+    private String jarFileName;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    public JobJar getJobJar() {
+        return jobJar;
+    }
+
+    @Column(length = 30)
+    public String getMode() {
+        return mode;
+    }
+
+    @Column(length = 30)
+    public String getState() {
+        return state;
+    }
+
+    @Column(length = 30)
+    public String getCron() {
+        return cron;
+    }
+
+    @Column(length = 30)
+    public String getMisfirePolicy() {
+        return misfirePolicy;
+    }
+
+    @Transient
+    public String getJarFileName() {
+        return jarFileName;
+    }
 
 }

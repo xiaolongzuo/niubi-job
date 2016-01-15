@@ -37,7 +37,7 @@ public class JobController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model) {
-        model.addAttribute("jobs", jobService.selectAllStandbyJobs());
+        model.addAttribute("jobs", jobService.getAllStandbyJobs());
         return "job_list";
     }
 

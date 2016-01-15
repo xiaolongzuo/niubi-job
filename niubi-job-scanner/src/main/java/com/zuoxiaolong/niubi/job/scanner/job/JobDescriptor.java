@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scanner.job;
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -15,10 +15,7 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Trigger;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 
 import java.lang.reflect.Method;
 
@@ -26,9 +23,13 @@ import java.lang.reflect.Method;
  * @author Xiaolong Zuo
  * @since 1/12/2016 17:38
  */
-public interface JobDescriptor extends KeyDescriptor {
+public interface JobDescriptor {
 
     String DATA_MAP_KEY = "_job_detail";
+
+    String group();
+
+    String name();
 
     Method method();
 
@@ -39,15 +40,5 @@ public interface JobDescriptor extends KeyDescriptor {
     String cron();
 
     MisfirePolicy misfirePolicy();
-
-    JobDetail jobDetail();
-
-    JobDataMap jobDataMap();
-
-    Trigger trigger();
-
-    boolean isManualTrigger();
-
-    JobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy);
 
 }

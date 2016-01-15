@@ -37,6 +37,10 @@ public class JobData extends GenericData<JobData.Data> {
         super(path, bytes);
     }
 
+    public JobData(String path, Data data) {
+        super(path, data);
+    }
+
     @Setter
     @Getter
     public static class Data {

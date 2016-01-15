@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.message.Factory;
 import com.zuoxiaolong.niubi.job.message.Producer;
 import com.zuoxiaolong.niubi.job.message.log4j.Log4jMessage;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

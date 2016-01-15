@@ -45,6 +45,12 @@ public class GenericData<T> extends BaseData {
         this.data = JsonHelper.fromJson(bytes, getGenericType());
     }
 
+    public GenericData(String path, T data) {
+        this.path = path;
+        this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
+        this.data = data;
+    }
+
     private Class<T> getGenericType() {
         Type type = getClass().getGenericSuperclass();
         if (type instanceof ParameterizedType) {

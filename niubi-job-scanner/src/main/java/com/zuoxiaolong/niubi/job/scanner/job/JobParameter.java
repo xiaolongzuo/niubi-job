@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scanner.job;
 
 /*
  * Copyright 2002-2015 the original author or authors.

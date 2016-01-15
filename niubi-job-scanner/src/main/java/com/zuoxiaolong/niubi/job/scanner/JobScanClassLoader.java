@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.service;
+package com.zuoxiaolong.niubi.job.scanner;
 
-
-import com.zuoxiaolong.niubi.job.service.view.NodeView;
-
-import java.util.List;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/14 01:06
+ * @since 16/1/12 03:39
  */
-public interface NodeService {
+public class JobScanClassLoader extends URLClassLoader {
 
-    List<NodeView> getAllStandbyNodes();
+    public JobScanClassLoader(ClassLoader parent) {
+        super(new URL[]{}, parent);
+    }
+
+    @Override
+    public void addURL(URL url) {
+        super.addURL(url);
+    }
 
 }

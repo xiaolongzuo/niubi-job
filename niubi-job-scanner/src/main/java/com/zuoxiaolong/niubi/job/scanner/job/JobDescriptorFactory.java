@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scanner.job;
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
-import org.quartz.JobDataMap;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 
 import java.lang.reflect.Method;
 
@@ -33,19 +32,11 @@ public class JobDescriptorFactory {
     private JobDescriptorFactory() {}
 
     public static JobDescriptor jobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
-        return jobDescriptor(clazz, method, hasParameter, schedule, new JobDataMap());
-    }
-
-    public static JobDescriptor jobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule, JobDataMap jobDataMap) {
-        return new DefaultJobDescriptor(clazz, method, hasParameter, schedule, jobDataMap);
+        return new DefaultJobDescriptor(clazz, method, hasParameter, schedule);
     }
 
     public static JobDescriptor jobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
-        return jobDescriptor(clazz, method, hasParameter, cron, misfirePolicy, new JobDataMap());
-    }
-
-    public static JobDescriptor jobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy, JobDataMap jobDataMap) {
-        return new DefaultJobDescriptor(clazz, method, hasParameter, cron, misfirePolicy, jobDataMap);
+        return new DefaultJobDescriptor(clazz, method, hasParameter, cron, misfirePolicy);
     }
 
 }

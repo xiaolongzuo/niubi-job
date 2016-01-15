@@ -37,7 +37,7 @@ public class NodeController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model) {
-        model.addAttribute("nodes", nodeService.selectAllStandbyNodes());
+        model.addAttribute("nodes", nodeService.getAllStandbyNodes());
         return "node_list";
     }
 

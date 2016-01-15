@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.scheduler.context;
 import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 
 /**
  * @author Xiaolong Zuo

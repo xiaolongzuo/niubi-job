@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,26 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.scanner;
 
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+package com.zuoxiaolong.niubi.job.service.view;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * job的扫描器
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:31
+ * @since 1/15/2016 12:02
  */
-public interface JobScanner {
+@Setter
+@Getter
+public class NodeView {
 
-    List<JobDescriptor> scan();
+    private String name;
+
+    private String ip;
+
+    private String state;
+
+    private Integer runningJobCount;
 
 }

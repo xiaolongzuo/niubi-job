@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.scheduler.scanner;
+package com.zuoxiaolong.niubi.job.scanner;
 
 /*
  * Copyright 2002-2015 the original author or authors.
@@ -17,13 +17,11 @@ package com.zuoxiaolong.niubi.job.scheduler.scanner;
  */
 
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Disabled;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
-import com.zuoxiaolong.niubi.job.scheduler.bean.RegisteredJobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptorFactory;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobParameter;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Disabled;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptorFactory;
+import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -35,19 +33,15 @@ import java.util.List;
  */
 public abstract class AbstractJobScanner implements JobScanner {
 
-    private Context context;
+    protected JobScanClassLoader classLoader;
 
-    public AbstractJobScanner(Context context) {
-        this.context = context;
-    }
-
-    protected Context getContext() {
-        return context;
+    public AbstractJobScanner(JobScanClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     protected void scanClass(String className, List<JobDescriptor> descriptorList) {
         try {
-            Class<?> clazz = context.classLoader().loadClass(className);
+            Class<?> clazz = classLoader.loadClass(className);
             Disabled classDisabled = clazz.getDeclaredAnnotation(Disabled.class);
             if (classDisabled != null) {
                 LoggerHelper.info("skip disabled class [" + className + "]");
@@ -64,16 +58,14 @@ public abstract class AbstractJobScanner implements JobScanner {
                 }
                 Type[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
-                    descriptorList.add(JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule));
-                    if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
-                        ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
-                    }
+                    JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule);
+                    descriptorList.add(jobDescriptor);
+                    postFindHasParameterJobDescriptor(jobDescriptor);
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "(JobParameter)]");
                 } else if (parameterTypes == null || parameterTypes.length == 0){
-                    descriptorList.add(JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule));
-                    if (context.jobBeanFactory() instanceof RegisteredJobBeanFactory) {
-                        ((RegisteredJobBeanFactory)context.jobBeanFactory()).registerJobBeanInstance(clazz);
-                    }
+                    JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule);
+                    descriptorList.add(jobDescriptor);
+                    postFindNotHasParameterJobDescriptor(jobDescriptor);
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "]");
                 } else {
                     LoggerHelper.error("schedule method must not have parameter or have a JobParameter parameter [" + className + "." + method.getName() + "]");
@@ -83,5 +75,9 @@ public abstract class AbstractJobScanner implements JobScanner {
             LoggerHelper.warn("scan class [" + className + "] failed, has been ignored.");
         }
     }
+
+    protected void postFindHasParameterJobDescriptor(JobDescriptor jobDescriptor) {}
+
+    protected void postFindNotHasParameterJobDescriptor(JobDescriptor jobDescriptor) {}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,38 @@
  * limitations under the License.
  */
 
-
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:02
+ * @since 16/1/15 23:28
  */
 @Setter
-@Getter
 @Entity
-public class Node extends BaseEntity {
+@DynamicInsert
+@DynamicUpdate
+public class JobJar extends BaseEntity {
 
-    private String name;
+    private String jarFileName;
 
-    private String ip;
+    private List<Job> jobs;
 
-    private String state;
+    public String getJarFileName() {
+        return jarFileName;
+    }
 
-    private Integer runningJobCount;
+    @OneToMany(mappedBy = "jobJar", fetch = FetchType.EAGER)
+    public List<Job> getJobs() {
+        return jobs;
+    }
 
 }

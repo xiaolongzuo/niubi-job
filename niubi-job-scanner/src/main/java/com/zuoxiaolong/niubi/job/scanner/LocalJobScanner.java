@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.scanner;
+package com.zuoxiaolong.niubi.job.scanner;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 
 import java.io.File;
 import java.net.URL;
@@ -34,14 +33,14 @@ import java.util.List;
  */
 public class LocalJobScanner extends AbstractJobScanner {
 
-    public LocalJobScanner(Context context) {
-        super(context);
+    public LocalJobScanner(JobScanClassLoader classLoader) {
+        super(classLoader);
     }
 
     @Override
     public List<JobDescriptor> scan() {
         List<JobDescriptor> descriptorList = new ArrayList<JobDescriptor>();
-        URL url = getContext().classLoader().getResource("");
+        URL url = classLoader.getResource("");
         if (url == null) {
             LoggerHelper.error("classpath can't be find.");
             throw new ConfigException();

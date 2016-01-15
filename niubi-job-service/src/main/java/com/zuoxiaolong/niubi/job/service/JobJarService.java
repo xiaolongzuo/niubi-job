@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.annotation;
+package com.zuoxiaolong.niubi.job.service;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 16/1/16 00:49
  */
-public enum MisfirePolicy {
+public interface JobJarService {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    void save(String jarFilePath);
 
 }

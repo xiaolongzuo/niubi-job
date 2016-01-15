@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scanner.job;
 
 /*
  * Copyright 2002-2015 the original author or authors.
@@ -16,11 +16,8 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
-import org.quartz.ScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 
 import java.lang.reflect.Method;
 
@@ -28,7 +25,11 @@ import java.lang.reflect.Method;
  * @author Xiaolong Zuo
  * @since 1/12/2016 17:29
  */
-public abstract class AbstractJobDescriptor extends AbstractKeyDescriptor implements JobDescriptor {
+public class DefaultJobDescriptor implements JobDescriptor {
+
+    private String group;
+
+    private String name;
 
     private Method method;
 
@@ -36,21 +37,32 @@ public abstract class AbstractJobDescriptor extends AbstractKeyDescriptor implem
 
     private boolean hasParameter;
 
-    private String cron;
+    protected String cron;
 
-    private MisfirePolicy misfirePolicy;
+    protected MisfirePolicy misfirePolicy;
 
-    public AbstractJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
+    public DefaultJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
         this(clazz, method, hasParameter, schedule.cron(), schedule.misfirePolicy());
     }
 
-    public AbstractJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
-        super(clazz.getName(), method.getName());
+    public DefaultJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
+        this.group = clazz.getName();
+        this.name = method.getName();
         this.clazz = clazz;
         this.method = method;
         this.hasParameter = hasParameter;
         this.cron = cron;
         this.misfirePolicy = misfirePolicy;
+    }
+
+    @Override
+    public String group() {
+        return group;
+    }
+
+    @Override
+    public String name() {
+        return name;
     }
 
 
@@ -78,28 +90,6 @@ public abstract class AbstractJobDescriptor extends AbstractKeyDescriptor implem
     public MisfirePolicy misfirePolicy() {
         return misfirePolicy;
     }
-
-    public Trigger trigger() {
-        return TriggerBuilder.newTrigger()
-                .forJob(name(), group())
-                .withIdentity(name(), group())
-                .withSchedule(scheduleBuilder())
-                .build();
-    }
-
-    @Override
-    public boolean isManualTrigger() {
-        return cron == null || misfirePolicy == null;
-    }
-
-    @Override
-    public JobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy) {
-        this.cron = cron;
-        this.misfirePolicy = misfirePolicy;
-        return this;
-    }
-
-    protected abstract ScheduleBuilder scheduleBuilder();
 
     @Override
     public String toString() {

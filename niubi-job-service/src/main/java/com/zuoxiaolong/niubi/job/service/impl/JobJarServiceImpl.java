@@ -17,13 +17,14 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
-import com.zuoxiaolong.niubi.job.api.data.JobData;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.Job;
-import com.zuoxiaolong.niubi.job.service.JobService;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobJar;
+import com.zuoxiaolong.niubi.job.service.JobJarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,27 +32,19 @@ import java.util.List;
  * @since 1/15/2016 12:04
  */
 @Service
-public class JobServiceImpl extends AbstractService implements JobService {
+public class JobJarServiceImpl extends AbstractService implements JobJarService {
 
     @Autowired
     private BaseDao baseDao;
 
     @Override
-    public List<Job> getAllStandbyJobs() {
-        return baseDao.getAll(Job.class);
-    }
+    public void save(String jarFileName) {
+        JobJar jobJar = new JobJar();
+        jobJar.setJarFileName(jarFileName);
+        List<Job> jobs = new ArrayList<>();
 
-    @Override
-    public void save(Job job) {
-        JobData.Data data = new JobData.Data();
-        data.setCron(job.getCron());
-        data.setJarFileName(job.getJarFileName());
-        data.setMisfirePolicy(JobData.MisfirePolicy.valueOf(job.getMisfirePolicy()));
-        data.setMode(JobData.Mode.valueOf(job.getMode()));
-        data.setState(JobData.State.valueOf(job.getState()));
-        JobData jobData = new JobData(apiFactory.pathApi().getStandbyNodeJobPath() + "/" + job.getGroupName() + "." + job.getJobName(), data);
-        baseDao.update(job);
-        apiFactory.jobApi().addStandbyJob(jobData);
+        jobJar.setJobs(jobs);
+        baseDao.save(jobJar);
     }
 
 }

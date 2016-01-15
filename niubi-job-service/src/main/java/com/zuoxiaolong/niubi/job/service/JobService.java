@@ -27,6 +27,8 @@ import java.util.List;
  */
 public interface JobService {
 
-    List<Job> selectAllStandbyJobs();
+    List<Job> getAllStandbyJobs();
+
+    void save(Job job);
 
 }

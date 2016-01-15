@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.job;
+package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
@@ -28,12 +29,12 @@ import org.quartz.SchedulerException;
  */
 public abstract class JobDataMapManager {
 
-    public static JobDescriptor getJobDescriptor(JobDetail jobDetail) {
-        return (JobDescriptor) jobDetail.getJobDataMap().get(JobDescriptor.DATA_MAP_KEY);
+    public static ScheduleJobDescriptor getJobDescriptor(JobDetail jobDetail) {
+        return (ScheduleJobDescriptor) jobDetail.getJobDataMap().get(ScheduleJobDescriptor.DATA_MAP_KEY);
     }
 
-    public static JobDescriptor getJobDescriptor(JobExecutionContext jobExecutionContext) {
-        return (JobDescriptor) jobExecutionContext.getMergedJobDataMap().get(JobDescriptor.DATA_MAP_KEY);
+    public static ScheduleJobDescriptor getJobDescriptor(JobExecutionContext jobExecutionContext) {
+        return (ScheduleJobDescriptor) jobExecutionContext.getMergedJobDataMap().get(ScheduleJobDescriptor.DATA_MAP_KEY);
     }
 
     public static JobParameter getJobParameter(JobExecutionContext jobExecutionContext) {

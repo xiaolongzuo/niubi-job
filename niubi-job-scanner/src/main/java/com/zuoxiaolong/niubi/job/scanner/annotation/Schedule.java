@@ -14,24 +14,33 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.context;
+package com.zuoxiaolong.niubi.job.scanner.annotation;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * 该注解可以用作方法上,代表该方法是一个需要调度的job
+ *
  * @author Xiaolong Zuo
- * @since 16/1/12 03:39
+ * @since 16/1/9 00:28
  */
-public class JobScanClassLoader extends URLClassLoader {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Schedule {
 
-    public JobScanClassLoader(ClassLoader parent) {
-        super(new URL[]{}, parent);
-    }
+    /**
+     * 仅当type为CRON时有效
+     * @return cron
+     */
+    String cron() default "";
 
-    @Override
-    public void addURL(URL url) {
-        super.addURL(url);
-    }
+    /**
+     * 丢失的任务策略
+     * @return misfirePolicy
+     */
+    MisfirePolicy misfirePolicy() default MisfirePolicy.None;
 
 }

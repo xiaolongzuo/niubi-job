@@ -18,7 +18,7 @@
 package com.zuoxiaolong.niubi.job.service.impl;
 
 import com.zuoxiaolong.niubi.job.api.data.NodeData;
-import com.zuoxiaolong.niubi.job.persistent.entity.Node;
+import com.zuoxiaolong.niubi.job.service.view.NodeView;
 import com.zuoxiaolong.niubi.job.service.NodeService;
 import org.springframework.stereotype.Service;
 
@@ -33,20 +33,20 @@ import java.util.List;
 public class NodeServiceImpl extends AbstractService implements NodeService {
 
     @Override
-    public List<Node> selectAllStandbyNodes() {
+    public List<NodeView> getAllStandbyNodes() {
         List<NodeData> nodeModelList = apiFactory.nodeApi().selectAllStandbyNodes();
-        List<Node> nodeList = new ArrayList<>();
+        List<NodeView> nodeViewList = new ArrayList<>();
         for (NodeData nodeData : nodeModelList) {
-            Node node = new Node();
-            node.setName(nodeData.getId());
+            NodeView nodeView = new NodeView();
+            nodeView.setName(nodeData.getId());
             if (nodeData.getData() != null) {
-                node.setIp(nodeData.getData().getIp());
-                node.setState(nodeData.getData().getState().name());
-                node.setRunningJobCount(nodeData.getData().getRunningJobCount());
+                nodeView.setIp(nodeData.getData().getIp());
+                nodeView.setState(nodeData.getData().getState().name());
+                nodeView.setRunningJobCount(nodeData.getData().getRunningJobCount());
             }
-            nodeList.add(node);
+            nodeViewList.add(nodeView);
         }
-        return nodeList;
+        return nodeViewList;
     }
 
 }

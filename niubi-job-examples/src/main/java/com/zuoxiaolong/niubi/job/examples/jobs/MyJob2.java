@@ -16,8 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.examples.jobs;
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Disabled;
-import com.zuoxiaolong.niubi.job.scheduler.annotation.Schedule;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Disabled;
+import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

@@ -1,6 +1,5 @@
-package com.zuoxiaolong.niubi.job.scheduler.job;
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,21 +14,20 @@ package com.zuoxiaolong.niubi.job.scheduler.job;
  * limitations under the License.
  */
 
-import org.quartz.JobKey;
-import org.quartz.TriggerKey;
+package com.zuoxiaolong.niubi.job.scanner.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * 该注解可以关闭job
+ *
  * @author Xiaolong Zuo
- * @since 1/12/2016 17:26
+ * @since 16/1/10 06:46
  */
-public interface KeyDescriptor {
-
-    String group();
-
-    String name();
-
-    TriggerKey triggerKey();
-
-    JobKey jobKey();
-
+@Target({ElementType.METHOD, ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Disabled {
 }

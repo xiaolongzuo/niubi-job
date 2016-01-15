@@ -44,18 +44,30 @@
                                 <th>Jar file</th>
                                 <th>Cron</th>
                                 <th>Misfire policy</th>
+                                <th>Operation</th>
                             </tr>
                         </thead>
                         <tbody>
                         <c:forEach items="${jobs}" var="job">
                             <tr class="gradeA">
-                                <td>${node.group}</td>
-                                <td>${node.name}</td>
-                                <td>${node.state}</td>
-                                <td>${node.mode}</td>
-                                <td>${node.jarFileName}</td>
-                                <td>${node.cron}</td>
-                                <td>${node.misfirePolicy}</td>
+                                <td>${job.groupName}</td>
+                                <td>${job.jobName}</td>
+                                <td>
+                                    ${job.state}
+                                </td>
+                                <td>${job.mode}</td>
+                                <td>${job.jarFileName}</td>
+                                <td>${job.cron}</td>
+                                <td>${job.misfirePolicy}</td>
+                                <td>
+                                    <button class="btn">Restart</button>
+                                    <button data-toggle="dropdown" class="btn dropdown-toggle"><span class="caret"></span></button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">Restart</a></li>
+                                        <li><a href="#">Shutdown</a></li>
+                                        <li><a href="#">Pause</a></li>
+                                    </ul>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>

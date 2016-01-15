@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.scheduler.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 
 import java.util.List;
 

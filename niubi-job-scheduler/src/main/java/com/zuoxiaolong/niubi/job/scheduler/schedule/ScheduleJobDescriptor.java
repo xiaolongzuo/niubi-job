@@ -14,24 +14,33 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.context;
+package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:19
+ * @since 16/1/16 01:30
  */
-public interface Context {
+public interface ScheduleJobDescriptor extends JobDescriptor {
 
-    String DATA_MAP_KEY = "____context";
+    boolean isManualTrigger();
 
-    JobScanClassLoader classLoader();
+    JobDetail jobDetail();
 
-    JobBeanFactory jobBeanFactory();
+    ScheduleJobDescriptor putJobData(String key, Object value);
 
-    Configuration configuration();
+    Trigger trigger();
+
+    ScheduleJobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy);
+
+    TriggerKey triggerKey();
+
+    JobKey jobKey();
 
 }

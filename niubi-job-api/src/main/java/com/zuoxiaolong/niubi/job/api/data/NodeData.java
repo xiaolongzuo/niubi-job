@@ -32,6 +32,14 @@ public class NodeData extends GenericData<NodeData.Data> {
         super(childData);
     }
 
+    public NodeData(String path, byte[] bytes) {
+        super(path, bytes);
+    }
+
+    public NodeData(String path, Data data) {
+        super(path, data);
+    }
+
     @Setter
     @Getter
     public static class Data {
