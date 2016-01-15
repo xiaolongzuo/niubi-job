@@ -15,18 +15,18 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.service;
+
+import com.zuoxiaolong.niubi.job.persistent.entity.Job;
+
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 1/15/2016 14:44
  */
-public interface ApiFactory {
+public interface JobService {
 
-    PathApi pathApi();
-
-    NodeApi nodeApi();
-
-    JobApi jobApi();
+    List<Job> selectAllStandbyJobs();
 
 }

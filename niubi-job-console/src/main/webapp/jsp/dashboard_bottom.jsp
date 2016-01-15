@@ -20,27 +20,27 @@
   Time: 16/1/15 02:04
 --%>
 
-<script src="js/excanvas.min.js"></script>
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.ui.custom.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery.flot.min.js"></script>
-<script src="js/jquery.flot.resize.min.js"></script>
-<script src="js/jquery.peity.min.js"></script>
-<script src="js/fullcalendar.min.js"></script>
-<script src="js/matrix.js"></script>
-<script src="js/matrix.dashboard.js"></script>
-<script src="js/jquery.gritter.min.js"></script>
-<script src="js/matrix.interface.js"></script>
-<script src="js/matrix.chat.js"></script>
-<script src="js/jquery.validate.js"></script>
-<script src="js/matrix.form_validation.js"></script>
-<script src="js/jquery.wizard.js"></script>
-<script src="js/jquery.uniform.js"></script>
-<script src="js/select2.min.js"></script>
-<script src="js/matrix.popover.js"></script>
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="js/matrix.tables.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/excanvas.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.ui.custom.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.flot.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.flot.resize.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.peity.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/fullcalendar.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.dashboard.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.gritter.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.interface.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.chat.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.validate.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.form_validation.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.wizard.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.uniform.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/select2.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.popover.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.tables.js"></script>
 
 <script type="text/javascript">
     // This function is called from the pop-up menus to transfer to

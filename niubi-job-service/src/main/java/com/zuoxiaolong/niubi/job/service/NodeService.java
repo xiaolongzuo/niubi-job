@@ -1,6 +1,5 @@
-package com.zuoxiaolong.niubi.job.api;
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +14,19 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
+package com.zuoxiaolong.niubi.job.service;
+
+
+import com.zuoxiaolong.niubi.job.persistent.entity.Node;
 
 import java.util.List;
 
 /**
- * @author 左潇龙
- * @since 1/12/2016 13:00
+ * @author Xiaolong Zuo
+ * @since 16/1/14 01:06
  */
-public interface JobJarApi {
+public interface NodeService {
 
-    List<JobJarModel> getStandbyNodeJobJarList() throws Exception;
+    List<Node> selectAllStandbyNodes();
 
 }

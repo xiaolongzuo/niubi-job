@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,21 @@
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.api.data;
 
-package com.zuoxiaolong.niubi.job.api;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 16/1/13 22:46
  */
-public interface ApiFactory {
+@Getter
+@Setter
+public abstract class BaseData {
 
-    PathApi pathApi();
+    protected String id;
 
-    NodeApi nodeApi();
-
-    JobApi jobApi();
+    protected String path;
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,38 +14,29 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
+
+package com.zuoxiaolong.niubi.job.persistent.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.curator.framework.recipes.cache.ChildData;
+
+import javax.persistence.Entity;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:11
+ * @since 1/15/2016 12:02
  */
-@Getter
 @Setter
-public class NodeModel extends ChildDataModel<NodeModel.NodeData> {
+@Getter
+@Entity
+public class Node extends BaseEntity {
 
-    public NodeModel(ChildData childData) {
-        super(childData);
-    }
+    private String name;
 
-    @Setter
-    @Getter
-    public static class NodeData {
+    private String ip;
 
-        private String name;
+    private String state;
 
-        private NodeStatus status;
-
-    }
-
-    public enum NodeStatus {
-
-        RUNNING, STARTED
-
-    }
+    private Integer runningJobCount;
 
 }

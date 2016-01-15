@@ -16,10 +16,16 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.api.data.NodeData;
+
+import java.util.List;
+
 /**
  * @author 左潇龙
  * @since 1/12/2016 12:56
  */
 public interface NodeApi {
+
+    List<NodeData> selectAllStandbyNodes();
 
 }

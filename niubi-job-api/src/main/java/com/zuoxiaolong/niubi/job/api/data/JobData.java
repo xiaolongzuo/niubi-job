@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,42 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
+
+package com.zuoxiaolong.niubi.job.api.data;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
-import java.util.List;
-
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 23:20
+ * @since 1/15/2016 14:46
  */
 @Setter
 @Getter
-public class JobJarModel extends ChildDataModel<JobJarModel.JobJarData> {
+public class JobData extends GenericData<JobData.Data> {
 
-    public JobJarModel(ChildData childData) {
+    public JobData(ChildData childData) {
         super(childData);
     }
 
-    public JobJarModel(String path, byte[] bytes) {
+    public JobData(String path, byte[] bytes) {
         super(path, bytes);
     }
 
     @Setter
     @Getter
-    public static class JobJarData {
+    public static class Data {
+
+        private String jarFileName;
 
         private Mode mode;
 
-        private List<String> jobs;
+        private State state;
+
+        private String cron;
+
+        private MisfirePolicy misfirePolicy;
 
         public boolean isSpring() {
             return mode == Mode.SPRING;
@@ -54,6 +59,14 @@ public class JobJarModel extends ChildDataModel<JobJarModel.JobJarData> {
 
     public enum Mode {
         SPRING, COMMON
+    }
+
+    public enum State {
+        STARTUP, PAUSE, SHUTDOWN
+    }
+
+    public enum MisfirePolicy {
+        DoNothing, IgnoreMisfires, FireAndProceed, None
     }
 
 }

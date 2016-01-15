@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,35 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.service;
+
+package com.zuoxiaolong.niubi.job.persistent.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Entity;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/14 01:06
+ * @since 1/15/2016 14:44
  */
-public interface JobJarService {
+@Setter
+@Getter
+@Entity
+public class Job extends BaseEntity {
 
+    private String group;
 
+    private String name;
+
+    private String jarFileName;
+
+    private String mode;
+
+    private String state;
+
+    private String cron;
+
+    private String misfirePolicy;
 
 }

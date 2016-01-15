@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
+package com.zuoxiaolong.niubi.job.api.data;
 
 import com.zuoxiaolong.niubi.job.core.exception.UnknownGenericTypeException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
@@ -31,17 +31,17 @@ import java.lang.reflect.Type;
  */
 @Setter
 @Getter
-public class ChildDataModel<T> extends BaseModel {
+public class GenericData<T> extends BaseData {
 
     private T data;
 
-    public ChildDataModel(ChildData childData) {
+    public GenericData(ChildData childData) {
         this(childData.getPath(), childData.getData());
     }
 
-    public ChildDataModel(String path, byte[] bytes) {
+    public GenericData(String path, byte[] bytes) {
         this.path = path;
-        this.id = this.path.substring(0, this.path.lastIndexOf("/"));
+        this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
         this.data = JsonHelper.fromJson(bytes, getGenericType());
     }
 

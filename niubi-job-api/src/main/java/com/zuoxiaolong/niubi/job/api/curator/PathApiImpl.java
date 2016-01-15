@@ -24,11 +24,15 @@ import com.zuoxiaolong.niubi.job.api.PathApi;
  */
 public class PathApiImpl implements PathApi {
 
+    public static final PathApi INSTANCE = new PathApiImpl();
+
     private static final String ROOT_PATH = "/job-root";
 
     private static final String STANDBY_NODE_PATH = ROOT_PATH + "/standby-node";
 
     private static final String MASTER_SLAVE_NODE_PATH = ROOT_PATH + "/master-slave-node";
+
+    private PathApiImpl() {}
 
     @Override
     public String getStandbyNodeMasterPath() {
@@ -36,8 +40,8 @@ public class PathApiImpl implements PathApi {
     }
 
     @Override
-    public String getStandbyNodeJobJarPath() {
-        return STANDBY_NODE_PATH + "/job-jar";
+    public String getStandbyNodeJobPath() {
+        return STANDBY_NODE_PATH + "/job";
     }
 
     @Override

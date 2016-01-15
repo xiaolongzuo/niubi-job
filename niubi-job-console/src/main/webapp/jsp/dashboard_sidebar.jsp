@@ -22,7 +22,7 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="active"><a href="node_list.jsp"><i class="icon icon-home"></i> <span>节点管理</span></a> </li>
+        <li class="active"><a href="/node"><i class="icon icon-home"></i> <span>Node Manager</span></a> </li>
         <!--
         <li> <a href="charts.html"><i class="icon icon-signal"></i> <span>Charts &amp; graphs</span></a> </li>
         <li> <a href="widgets.html"><i class="icon icon-inbox"></i> <span>Widgets</span></a> </li>

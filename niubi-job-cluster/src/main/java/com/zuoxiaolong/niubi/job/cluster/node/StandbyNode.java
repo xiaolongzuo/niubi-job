@@ -17,10 +17,9 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.JobJarApi;
-import com.zuoxiaolong.niubi.job.api.PathApi;
+import com.zuoxiaolong.niubi.job.api.curator.ApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
-import com.zuoxiaolong.niubi.job.api.model.JobJarModel;
+import com.zuoxiaolong.niubi.job.api.data.JobData;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
@@ -56,9 +55,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private PathChildrenCache pathChildrenCache;
 
-    private PathApi pathApi;
-
-    private JobJarApi jobJarApi;
+    private ApiFactory apiFactory;
 
     private String zookeeperAddresses;
 
@@ -69,9 +66,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
-        this.pathApi = ApiFactory.instance().pathApi();
-        this.jobJarApi = ApiFactory.instance().jobJarApi(client);
-        this.pathChildrenCache = new PathChildrenCache(client, pathApi.getStandbyNodeJobJarPath(), true);
+        this.apiFactory = new ApiFactoryImpl(client);
+        this.pathChildrenCache = new PathChildrenCache(client, apiFactory.pathApi().getStandbyNodeJobPath(), true);
         this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
         try {
             this.pathChildrenCache.start();
@@ -79,7 +75,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
             LoggerHelper.error("path children path start failed.", e);
             throw new NiubiException(e);
         }
-        this.leaderSelector = new LeaderSelector(client, pathApi.getStandbyNodeMasterPath(), createLeaderSelectorListener());
+        this.leaderSelector = new LeaderSelector(client, apiFactory.pathApi().getStandbyNodeMasterPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
     }
 
@@ -95,12 +91,12 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getName() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        List<JobJarModel> jobJarList = jobJarApi.getStandbyNodeJobJarList();
-                        for (JobJarModel jobJarModel : jobJarList) {
+                        List<JobData> jobModelList = apiFactory.jobApi().selectAllStandbyJobs();
+                        for (JobData jobModel : jobModelList) {
                             try {
-                                getContainer(jarRepertoryUrl, jobJarModel).getScheduleManager().startup();
+                                getContainer(jarRepertoryUrl, jobModel).getScheduleManager().startup();
                             } catch (Exception e) {
-                                LoggerHelper.error("start jar failed [" + jobJarModel.getPath() + "]", e);
+                                LoggerHelper.error("start jar failed [" + jobModel.getPath() + "]", e);
                             }
                         }
                         mutex.wait();
@@ -136,8 +132,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
             if (!hasLeadership || !isAddOrRemoveEvent) {
                 return;
             }
-            JobJarModel jobJarModel = new JobJarModel(event.getData());
-            Container container = getContainer(jarRepertoryUrl, jobJarModel);
+            JobData jobModel = new JobData(event.getData());
+            Container container = getContainer(jarRepertoryUrl, jobModel);
             if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
                 container.getScheduleManager().startup();
             } else {

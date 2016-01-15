@@ -24,7 +24,7 @@ public interface PathApi {
 
     String getStandbyNodeMasterPath();
 
-    String getStandbyNodeJobJarPath();
+    String getStandbyNodeJobPath();
 
     String getMasterSlaveNodeMasterSelectorPath();
 

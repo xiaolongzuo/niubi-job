@@ -17,16 +17,18 @@
 
 package com.zuoxiaolong.niubi.job.api;
 
+import com.zuoxiaolong.niubi.job.api.data.JobData;
+
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 1/15/2016 14:45
  */
-public interface ApiFactory {
+public interface JobApi {
 
-    PathApi pathApi();
+    List<JobData> selectAllStandbyJobs();
 
-    NodeApi nodeApi();
-
-    JobApi jobApi();
+    void addStandbyJob(JobData jobData);
 
 }

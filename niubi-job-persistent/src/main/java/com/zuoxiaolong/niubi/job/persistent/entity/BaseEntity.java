@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.model;
 
-import lombok.Getter;
-import lombok.Setter;
+package com.zuoxiaolong.niubi.job.persistent.entity;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Date;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:46
+ * @since 1/15/2016 20:02
  */
-@Getter
-@Setter
-public abstract class BaseModel {
+public abstract class BaseEntity {
 
-    protected String id;
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
 
-    protected String path;
+    private Date createTime;
+
+    private Date updateTime;
 
 }

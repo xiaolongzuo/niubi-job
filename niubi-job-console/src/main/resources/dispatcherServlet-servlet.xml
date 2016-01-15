@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+   		 http://www.springframework.org/schema/context 
+   		 http://www.springframework.org/schema/context/spring-context.xsd  
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <context:component-scan base-package="com.zuoxiaolong.niubi.job.console.controller" />
+
+    <mvc:annotation-driven/>
+
+    <mvc:resources mapping="/jsp/css/**" location="/jsp/css/"/>
+    <mvc:resources mapping="/jsp/img/**" location="/jsp/img/"/>
+    <mvc:resources mapping="/jsp/js/**" location="/jsp/js/"/>
+    <mvc:resources mapping="/jsp/font-awesome/**" location="/jsp/font-awesome/"/>
+    <mvc:resources mapping="/jsp/images/**" location="/jsp/images/"/>
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix">
+            <value>/jsp/</value>
+        </property>
+        <property name="suffix">
+            <value>.jsp</value>
+        </property>
+    </bean>
+
+    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+
+</beans>

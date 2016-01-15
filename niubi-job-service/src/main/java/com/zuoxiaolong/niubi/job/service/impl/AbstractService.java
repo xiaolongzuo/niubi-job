@@ -15,18 +15,29 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.service.impl;
+
+import com.zuoxiaolong.niubi.job.api.curator.ApiFactoryImpl;
+import org.apache.curator.framework.CuratorFramework;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 1/15/2016 12:04
  */
-public interface ApiFactory {
+@Service
+public class AbstractService implements InitializingBean {
 
-    PathApi pathApi();
+    @Autowired
+    private CuratorFramework client;
 
-    NodeApi nodeApi();
+    protected ApiFactoryImpl apiFactory;
 
-    JobApi jobApi();
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.apiFactory = new ApiFactoryImpl(client);
+    }
 
 }

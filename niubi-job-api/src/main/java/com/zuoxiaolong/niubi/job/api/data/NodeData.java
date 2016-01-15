@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,40 @@
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.api.data;
 
-package com.zuoxiaolong.niubi.job.api;
+import lombok.Getter;
+import lombok.Setter;
+import org.apache.curator.framework.recipes.cache.ChildData;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 16/1/13 22:11
  */
-public interface ApiFactory {
+@Getter
+@Setter
+public class NodeData extends GenericData<NodeData.Data> {
 
-    PathApi pathApi();
+    public NodeData(ChildData childData) {
+        super(childData);
+    }
 
-    NodeApi nodeApi();
+    @Setter
+    @Getter
+    public static class Data {
 
-    JobApi jobApi();
+        private String ip;
+
+        private State state;
+
+        private Integer runningJobCount;
+
+    }
+
+    public enum State {
+
+        RUNNING, STOP
+
+    }
 
 }
