@@ -47,21 +47,21 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         return Collections.unmodifiableMap(containerCache);
     }
 
-    public Container getContainer(String jarRepertoryUrl, JobData jobModel) {
-        Container container = containerCache.get(jobModel.getId());
+    public Container getContainer(String jarRepertoryUrl, JobData jobData) {
+        Container container = containerCache.get(jobData.getId());
         if (container != null) {
             return container;
         }
         lock.lock();
         try {
-            container = containerCache.get(jobModel.getId());
+            container = containerCache.get(jobData.getId());
             if (container == null) {
-                if (jobModel.getData().isSpring()) {
-                    container = new DefaultSpringContainer(getConfiguration(), jarRepertoryUrl + jobModel.getId());
+                if (jobData.getData().isSpring()) {
+                    container = new DefaultSpringContainer(getConfiguration(), jarRepertoryUrl + jobData.getId());
                 } else {
-                    container = new DefaultContainer(getConfiguration(), jarRepertoryUrl + jobModel.getId());
+                    container = new DefaultContainer(getConfiguration(), jarRepertoryUrl + jobData.getId());
                 }
-                containerCache.put(jobModel.getId(), container);
+                containerCache.put(jobData.getId(), container);
             }
             return container;
         } finally {

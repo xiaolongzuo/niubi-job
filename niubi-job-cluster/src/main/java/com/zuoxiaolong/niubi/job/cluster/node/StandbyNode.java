@@ -92,12 +92,12 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getName() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        List<JobData> jobModelList = apiFactory.jobApi().selectAllStandbyJobs();
-                        for (JobData jobModel : jobModelList) {
+                        List<JobData> jobDataList = apiFactory.jobApi().selectAllStandbyJobs();
+                        for (JobData jobData : jobDataList) {
                             try {
-                                getContainer(jarRepertoryUrl, jobModel).getScheduleManager().startup();
+                                getContainer(jarRepertoryUrl, jobData).getScheduleManager().startup();
                             } catch (Exception e) {
-                                LoggerHelper.error("start jar failed [" + jobModel.getPath() + "]", e);
+                                LoggerHelper.error("start jar failed [" + jobData.getPath() + "]", e);
                             }
                         }
                         mutex.wait();
@@ -133,8 +133,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
             if (!hasLeadership || !isAddOrRemoveEvent) {
                 return;
             }
-            JobData jobModel = new JobData(event.getData());
-            Container container = getContainer(jarRepertoryUrl, jobModel);
+            JobData jobData = new JobData(event.getData());
+            Container container = getContainer(jarRepertoryUrl, jobData);
             if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
                 container.getScheduleManager().startup();
             } else {

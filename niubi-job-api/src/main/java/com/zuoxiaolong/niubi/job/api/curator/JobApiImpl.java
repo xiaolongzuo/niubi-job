@@ -38,7 +38,7 @@ public class JobApiImpl extends AbstractCurdApiImpl implements JobApi {
 
     @Override
     public List<JobData> selectAllStandbyJobs() {
-        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyNodeMasterPath());
+        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyNodeJobPath());
         List<JobData> nodeModelList = childDataList.stream().map(JobData::new).collect(Collectors.toList());
         return nodeModelList;
     }
