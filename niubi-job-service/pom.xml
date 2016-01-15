@@ -14,10 +14,6 @@
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-message</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
             <artifactId>niubi-job-persistent</artifactId>
         </dependency>
         <dependency>

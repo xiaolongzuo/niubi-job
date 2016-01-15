@@ -17,7 +17,6 @@
         <module>niubi-job-api</module>
         <module>niubi-job-service</module>
         <module>niubi-job-persistent</module>
-        <module>niubi-job-message</module>
         <module>niubi-job-launcher</module>
         <module>niubi-job-scheduler</module>
         <module>niubi-job-core</module>
@@ -72,11 +71,6 @@
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-scheduler</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.zuoxiaolong</groupId>
-                <artifactId>niubi-job-message</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
