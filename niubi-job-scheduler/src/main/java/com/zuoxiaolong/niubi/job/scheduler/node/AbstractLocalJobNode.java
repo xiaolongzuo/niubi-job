@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 
@@ -28,12 +27,9 @@ public abstract class AbstractLocalJobNode extends AbstractNode implements Local
 
     private Container container;
 
-    public AbstractLocalJobNode() {
-        this(StringHelper.emptyArray());
-    }
-
-    public AbstractLocalJobNode(String[] propertiesFileNames) {
-        this.container = new DefaultContainer(propertiesFileNames);
+    public AbstractLocalJobNode(ClassLoader classLoader, String[] propertiesFileNames) {
+        super(classLoader, propertiesFileNames);
+        this.container = new DefaultContainer(getConfiguration());
     }
 
     public Container getContainer() {

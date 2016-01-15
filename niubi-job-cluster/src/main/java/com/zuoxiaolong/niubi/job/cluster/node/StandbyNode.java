@@ -18,8 +18,8 @@ package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.api.ApiFactory;
 import com.zuoxiaolong.niubi.job.api.curator.ApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
@@ -61,7 +61,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private String jarRepertoryUrl;
 
-    public StandbyNode(String zookeeperAddresses, String jarRepertoryUrl) {
+    public StandbyNode(String zookeeperAddresses, String jarRepertoryUrl, String[] propertiesFileNames) {
+        super(propertiesFileNames);
         this.zookeeperAddresses = zookeeperAddresses;
         this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);

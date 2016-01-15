@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.examples.jobs;
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,7 +31,7 @@ import java.util.Date;
 public class TestJob implements Job {
 
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 这是一个TestJob");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 这是一个TestJob");
     }
 
 }

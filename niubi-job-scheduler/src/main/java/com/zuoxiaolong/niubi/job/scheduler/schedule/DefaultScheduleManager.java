@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -54,25 +55,25 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> jobStatusMap;
 
-    public DefaultScheduleManager(Context context) {
-        initScheduler(context);
+    public DefaultScheduleManager(Context context, Configuration configuration) {
+        initScheduler(configuration);
         this.jobScanner = new ScheduleLocalJobScanner(context);
         initJobDetails(context);
     }
 
-    public DefaultScheduleManager(Context context, String[] jarUrls) {
-        initScheduler(context);
+    public DefaultScheduleManager(Context context, Configuration configuration, String[] jarUrls) {
+        initScheduler(configuration);
         this.jobScanner = new ScheduleRemoteJobScanner(context, jarUrls);
         initJobDetails(context);
     }
 
-    protected void initScheduler(Context context) {
+    protected void initScheduler(Configuration configuration) {
         this.groupNameListMap = new ConcurrentHashMap<>();
         this.groupList = new ArrayList<>();
         this.jobStatusMap = new ConcurrentHashMap<>();
         try {
             StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            schedulerFactory.initialize(context.configuration().getProperties());
+            schedulerFactory.initialize(configuration.getProperties());
             scheduler = schedulerFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException e) {

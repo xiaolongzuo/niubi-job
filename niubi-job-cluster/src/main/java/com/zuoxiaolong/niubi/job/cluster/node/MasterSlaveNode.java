@@ -23,6 +23,11 @@ package com.zuoxiaolong.niubi.job.cluster.node;
  * @since 16/1/9 14:43
  */
 public class MasterSlaveNode extends AbstractRemoteJobNode {
+
+    public MasterSlaveNode(String[] propertiesFileNames) {
+        super(propertiesFileNames);
+    }
+
     @Override
     public void join() {
 

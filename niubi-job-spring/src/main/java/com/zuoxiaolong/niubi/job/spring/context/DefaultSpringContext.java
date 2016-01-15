@@ -31,8 +31,8 @@ public class DefaultSpringContext extends AbstractContext implements SpringConte
 
     private JobBeanFactory jobBeanFactory;
 
-    public DefaultSpringContext(ApplicationContext applicationContext, String[] propertiesFileNames) {
-        super(applicationContext.getClassLoader(), propertiesFileNames);
+    public DefaultSpringContext(ApplicationContext applicationContext) {
+        super(applicationContext.getClassLoader());
         this.applicationContext = applicationContext;
         this.jobBeanFactory = new SpringJobBeanFactory(applicationContext);
     }

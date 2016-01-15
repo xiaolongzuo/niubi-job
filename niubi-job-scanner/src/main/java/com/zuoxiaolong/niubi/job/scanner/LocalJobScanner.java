@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.scanner;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 
 import java.io.File;
@@ -39,7 +40,7 @@ public class LocalJobScanner extends AbstractJobScanner {
 
     @Override
     public List<JobDescriptor> scan() {
-        List<JobDescriptor> descriptorList = new ArrayList<JobDescriptor>();
+        List<JobDescriptor> descriptorList = new ArrayList<>();
         URL url = classLoader.getResource("");
         if (url == null) {
             LoggerHelper.error("classpath can't be find.");
@@ -69,7 +70,11 @@ public class LocalJobScanner extends AbstractJobScanner {
             File[] children = file.listFiles();
             if (children != null && children.length > 0) {
                 for (File child : children) {
-                    fill(packageName + "." + fileName, child, descriptorList);
+                    if (StringHelper.isEmpty(packageName)) {
+                        fill(fileName, child, descriptorList);
+                    } else {
+                        fill(packageName + "." + fileName, child, descriptorList);
+                    }
                 }
             }
         }

@@ -38,7 +38,7 @@ public class StubJob implements Job {
         JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
         JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
         Context context = JobDataMapManager.getContext(jobExecutionContext);
-        String jobMessageString = JsonHelper.toJson(jobDescriptor) + "  " + JsonHelper.toJson(jobParameter);
+        String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
             if (jobDescriptor.hasParameter()) {

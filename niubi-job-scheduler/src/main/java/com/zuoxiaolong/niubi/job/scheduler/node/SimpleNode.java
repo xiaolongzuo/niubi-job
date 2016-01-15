@@ -16,6 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+
 /**
  * 单机版实现
  *
@@ -25,10 +28,15 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 public class SimpleNode extends AbstractLocalJobNode {
 
     public SimpleNode() {
+        this(ClassHelper.getDefaultClassLoader(), StringHelper.emptyArray());
     }
 
-    public SimpleNode(String[] propertiesFileNames) {
-        super(propertiesFileNames);
+    public SimpleNode(ClassLoader classLoader) {
+        this(classLoader, StringHelper.emptyArray());
+    }
+
+    public SimpleNode(ClassLoader classLoader, String[] propertiesFileNames) {
+        super(classLoader, propertiesFileNames);
     }
 
     public void join() {

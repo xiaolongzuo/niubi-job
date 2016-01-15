@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.examples;
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 import com.zuoxiaolong.niubi.job.scheduler.node.SimpleNode;
 
@@ -28,23 +29,19 @@ import java.util.Date;
  */
 public class SimpleNodeTest {
 
-    @org.junit.Test
-    public void test() throws InterruptedException {
-        System.out.println(SimpleNodeTest.class.getClassLoader().getResource(""));
-        System.out.println(SimpleNodeTest.class.getClassLoader().getResource("com/"));
-        System.out.println(SimpleNodeTest.class.getClassLoader().getResource("com/zuoxiaolong/niubi/job/examples/jobs"));
+    public static void main(String[] args) throws InterruptedException {
         Node node = new SimpleNode();
         node.join();
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 启动容器");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 启动容器");
         Thread.sleep(1000 * 40);
         node.exit();
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 暂停容器");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 暂停容器");
         Thread.sleep(1000 * 30);
         node.join();
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 恢复容器");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 恢复容器");
         Thread.sleep(1000 * 40);
         node.exit();
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 关闭容器");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 关闭容器");
         Thread.sleep(1000 * 2);
     }
 

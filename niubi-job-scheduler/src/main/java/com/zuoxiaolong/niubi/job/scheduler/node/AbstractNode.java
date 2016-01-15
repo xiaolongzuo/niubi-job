@@ -16,6 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
+import org.apache.log4j.PropertyConfigurator;
+
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
@@ -28,7 +32,16 @@ public abstract class AbstractNode implements Node {
 
     private String name;
 
-    public AbstractNode() {
+    private Configuration configuration;
+
+    public AbstractNode(ClassLoader classLoader, String[] propertiesFileNames) {
+        this.configuration = new Configuration(classLoader);
+        if (!StringHelper.isEmpty(propertiesFileNames)) {
+            for (String propertiesFileName : propertiesFileNames) {
+                this.configuration.addProperties(propertiesFileName);
+            }
+        }
+        PropertyConfigurator.configure(this.configuration.getProperties());
         try {
             this.name = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -38,6 +51,10 @@ public abstract class AbstractNode implements Node {
 
     public String getName() {
         return name;
+    }
+
+    protected Configuration getConfiguration() {
+        return configuration;
     }
 
 }

@@ -93,9 +93,8 @@ public class DefaultJobDescriptor implements JobDescriptor {
 
     @Override
     public String toString() {
-        return "AbstractJobDescriptor{" +
+        return "JobDescriptor:{" +
                 "method=" + method +
-                ", clazz=" + clazz +
                 ", hasParameter=" + hasParameter +
                 ", cron='" + cron + '\'' +
                 ", misfirePolicy=" + misfirePolicy +

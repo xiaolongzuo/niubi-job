@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.context;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 
@@ -31,7 +30,5 @@ public interface Context {
     JobScanClassLoader classLoader();
 
     JobBeanFactory jobBeanFactory();
-
-    Configuration configuration();
 
 }

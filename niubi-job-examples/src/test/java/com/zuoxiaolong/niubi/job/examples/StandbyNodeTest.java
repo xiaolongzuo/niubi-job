@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.examples;
 
 import com.zuoxiaolong.niubi.job.cluster.node.StandbyNode;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ public class StandbyNodeTest {
 
     @org.junit.Test
     public void test() throws InterruptedException, IOException {
-        Node node = new StandbyNode("localhost:2181,localhost:3181,localhost:4181", "http://localhost:8080/job");
+        Node node = new StandbyNode("localhost:2181,localhost:3181,localhost:4181", "http://localhost:8080/job", StringHelper.emptyArray());
         node.join();
         new BufferedReader(new InputStreamReader(System.in)).readLine();
     }

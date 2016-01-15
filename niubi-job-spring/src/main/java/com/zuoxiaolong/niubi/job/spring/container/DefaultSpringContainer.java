@@ -16,7 +16,7 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 import com.zuoxiaolong.niubi.job.spring.context.DefaultSpringContext;
@@ -34,24 +34,24 @@ public class DefaultSpringContainer implements SpringContainer {
 
     private ScheduleManager scheduleManager;
 
-    public DefaultSpringContainer(String[] propertiesFileNames) {
+    public DefaultSpringContainer(Configuration configuration) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_PATH);
-        this.context = new DefaultSpringContext(applicationContext, propertiesFileNames);
-        this.scheduleManager = new DefaultScheduleManager(this.context);
+        this.context = new DefaultSpringContext(applicationContext);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration);
     }
 
-    public DefaultSpringContainer(String jarUrl) {
-        this(APPLICATION_CONTEXT_XML_PATH, StringHelper.emptyArray(), new String[]{jarUrl});
+    public DefaultSpringContainer(Configuration configuration, String jarUrl) {
+        this(configuration, APPLICATION_CONTEXT_XML_PATH, new String[]{jarUrl});
     }
 
-    public DefaultSpringContainer(String[] propertiesFileNames, String[] jarUrls) {
-        this(APPLICATION_CONTEXT_XML_PATH, propertiesFileNames, jarUrls);
+    public DefaultSpringContainer(Configuration configuration, String[] jarUrls) {
+        this(configuration, APPLICATION_CONTEXT_XML_PATH, jarUrls);
     }
 
-    public DefaultSpringContainer(String applicationContextXmlPath, String[] propertiesFileNames, String[] jarUrls) {
+    public DefaultSpringContainer(Configuration configuration, String applicationContextXmlPath, String[] jarUrls) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(applicationContextXmlPath);
-        this.context = new DefaultSpringContext(applicationContext, propertiesFileNames);
-        this.scheduleManager = new DefaultScheduleManager(this.context, jarUrls);
+        this.context = new DefaultSpringContext(applicationContext);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, jarUrls);
     }
 
     @Override

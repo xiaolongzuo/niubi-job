@@ -16,7 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import com.zuoxiaolong.niubi.job.scheduler.context.DefaultContext;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
@@ -34,22 +35,18 @@ public class DefaultContainer implements Container {
 
     private ScheduleManager scheduleManager;
 
-    public DefaultContainer() {
-        this(StringHelper.emptyArray());
+    public DefaultContainer(Configuration configuration) {
+        this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration);
     }
 
-    public DefaultContainer(String[] propertiesFileNames) {
-        this.context = new DefaultContext(propertiesFileNames);
-        this.scheduleManager = new DefaultScheduleManager(this.context);
+    public DefaultContainer(Configuration configuration, String jarUrl) {
+        this(configuration, new String[]{jarUrl});
     }
 
-    public DefaultContainer(String jarUrl) {
-        this(StringHelper.emptyArray(), new String[]{jarUrl});
-    }
-
-    public DefaultContainer(String[] propertiesFileNames, String[] jarUrls) {
-        this.context = new DefaultContext(propertiesFileNames);
-        this.scheduleManager = new DefaultScheduleManager(this.context, jarUrls);
+    public DefaultContainer(Configuration configuration, String[] jarUrls) {
+        this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, jarUrls);
     }
 
     public Context getContext() {

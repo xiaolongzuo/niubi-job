@@ -16,9 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.context;
 
-import com.zuoxiaolong.niubi.job.core.config.Configuration;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 
 /**
@@ -29,27 +27,15 @@ public abstract class AbstractContext implements Context {
 
     private JobScanClassLoader classLoader;
 
-    private Configuration configuration;
-
-    public AbstractContext(ClassLoader classLoader, String[] propertiesFileNames) {
+    public AbstractContext(ClassLoader classLoader) {
         AssertHelper.notNull(classLoader, "classLoader can't be null.");
         AssertHelper.notNull(classLoader, "jobBeanFactory can't be null.");
         this.classLoader = new JobScanClassLoader(classLoader);
-        this.configuration = new Configuration(this.classLoader);
-        if (!StringHelper.isEmpty(propertiesFileNames)) {
-            for (String propertiesFileName : propertiesFileNames) {
-                this.configuration.addProperties(propertiesFileName);
-            }
-        }
     }
 
     @Override
     public JobScanClassLoader classLoader() {
         return classLoader;
-    }
-
-    public Configuration configuration() {
-        return configuration;
     }
 
 }

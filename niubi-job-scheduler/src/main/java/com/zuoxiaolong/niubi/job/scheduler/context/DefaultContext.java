@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.context;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 
@@ -28,12 +27,8 @@ public class DefaultContext extends AbstractContext {
 
     private JobBeanFactory jobBeanFactory;
 
-    public DefaultContext(String[] propertiesFileNames) {
-        this(ClassHelper.getDefaultClassLoader(), propertiesFileNames);
-    }
-
-    public DefaultContext(ClassLoader classLoader, String[] propertiesFileNames) {
-        super(classLoader, propertiesFileNames);
+    public DefaultContext(ClassLoader classLoader) {
+        super(classLoader);
         this.jobBeanFactory = new DefaultJobBeanFactory();
     }
 

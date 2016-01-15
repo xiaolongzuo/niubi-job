@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.examples.jobs;
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 
@@ -30,13 +31,13 @@ public class MyJob5 {
 
     @Schedule(cron = "0/10 * * * * ?")
     public void test1() {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group5][1]");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group5][1]");
     }
 
     @Disabled
     @Schedule(cron = "0/11 * * * * ?")
     public void test2() {
-        System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group5][2]");
+        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group5][2]");
     }
 
 }

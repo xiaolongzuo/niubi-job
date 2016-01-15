@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
@@ -37,7 +38,8 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
 
     private Map<String, Container> containerCache;
 
-    public AbstractRemoteJobNode() {
+    public AbstractRemoteJobNode(String[] propertiesFileNames) {
+        super(ClassHelper.getDefaultClassLoader(), propertiesFileNames);
         this.containerCache = new ConcurrentHashMap<>();
     }
 
@@ -55,9 +57,9 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
             container = containerCache.get(jobModel.getId());
             if (container == null) {
                 if (jobModel.getData().isSpring()) {
-                    container = new DefaultSpringContainer(jarRepertoryUrl + jobModel.getId());
+                    container = new DefaultSpringContainer(getConfiguration(), jarRepertoryUrl + jobModel.getId());
                 } else {
-                    container = new DefaultContainer(jarRepertoryUrl + jobModel.getId());
+                    container = new DefaultContainer(getConfiguration(), jarRepertoryUrl + jobModel.getId());
                 }
                 containerCache.put(jobModel.getId(), container);
             }
