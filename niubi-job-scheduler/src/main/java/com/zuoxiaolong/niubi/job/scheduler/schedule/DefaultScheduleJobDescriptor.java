@@ -68,6 +68,12 @@ public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implement
                 .build();
     }
 
+    @Override
+    public ScheduleJobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy) {
+        this.cron = cron;
+        this.misfirePolicy = misfirePolicy;
+        return this;
+    }
 
     public Trigger trigger() {
         return TriggerBuilder.newTrigger()
@@ -80,13 +86,6 @@ public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implement
     @Override
     public boolean isManualTrigger() {
         return cron == null || misfirePolicy == null;
-    }
-
-    @Override
-    public ScheduleJobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy) {
-        this.cron = cron;
-        this.misfirePolicy = misfirePolicy;
-        return this;
     }
 
     protected ScheduleBuilder scheduleBuilder() {
