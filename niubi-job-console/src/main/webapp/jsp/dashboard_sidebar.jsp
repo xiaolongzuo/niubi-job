@@ -22,10 +22,10 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="active"><a href="/node"><i class="icon icon-home"></i> <span>Node Manager</span></a> </li>
+        <li class="active"><a href="/node"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li> <a href="/job"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
+        <li> <a href="/jsp/job_jar_input.jsp"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
         <!--
-        <li> <a href="charts.html"><i class="icon icon-signal"></i> <span>Charts &amp; graphs</span></a> </li>
-        <li> <a href="widgets.html"><i class="icon icon-inbox"></i> <span>Widgets</span></a> </li>
         <li><a href="tables.html"><i class="icon icon-th"></i> <span>Tables</span></a></li>
         <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>
         <li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Forms</span> <span class="label label-important">3</span></a>

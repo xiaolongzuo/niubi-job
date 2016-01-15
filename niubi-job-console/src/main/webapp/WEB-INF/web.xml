@@ -49,27 +49,27 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/jsp/dashboard_index.jsp</welcome-file>
+        <welcome-file>/dashboard/index</welcome-file>
     </welcome-file-list>
 
     <error-page>
         <error-code>403</error-code>
-        <location>/jsp/error_403.html</location>
+        <location>/jsp/error_403.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>404</error-code>
-        <location>/jsp/error_404.html</location>
+        <location>/jsp/error_404.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>405</error-code>
-        <location>/jsp/error_405.html</location>
+        <location>/jsp/error_405.jsp</location>
     </error-page>
 
     <error-page>
         <error-code>500</error-code>
-        <location>/jsp/error_500.html</location>
+        <location>/jsp/error_500.jsp</location>
     </error-page>
 
 </web-app>

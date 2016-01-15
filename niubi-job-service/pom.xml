@@ -20,6 +20,10 @@
             <groupId>com.zuoxiaolong</groupId>
             <artifactId>niubi-job-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-scanner</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.aspectj</groupId>

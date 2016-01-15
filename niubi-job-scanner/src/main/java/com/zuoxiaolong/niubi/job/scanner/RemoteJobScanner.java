@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scanner;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 
 import java.io.File;
@@ -39,19 +39,46 @@ import java.util.jar.JarFile;
  */
 public class RemoteJobScanner extends AbstractJobScanner {
 
-    private String[] jarUrls;
+    private String[] jarFilePaths;
+
+    public RemoteJobScanner(ClassLoader classLoader, String jarFilePath) {
+        super(new JobScanClassLoader(classLoader));
+        this.jarFilePaths = new String[]{jarFilePath};
+    }
 
     public RemoteJobScanner(JobScanClassLoader classLoader, String... jarUrls) {
         super(classLoader);
-        this.jarUrls = jarUrls == null ? StringHelper.emptyArray() : jarUrls;
+        if (jarUrls != null) {
+            this.jarFilePaths = new String[jarUrls.length];
+            for (int i = 0;i < this.jarFilePaths.length; i++) {
+                try {
+                    this.jarFilePaths[i] = downloadJarFile(jarUrls[i]);
+                } catch (IOException e) {
+                    LoggerHelper.error("download jar file [" + jarUrls[i] + "] failed,has been ignored.");
+                }
+            }
+        }
+    }
+
+    private String downloadJarFile(String jarUrl) throws IOException {
+        String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
+        String jarFilePath = classLoader.getResource("").getFile() + jarFileName;
+        File file = new File(jarFilePath);
+        if (file.exists()) {
+            return jarFilePath;
+        }
+        HttpURLConnection connection = (HttpURLConnection) new URL(jarUrl).openConnection();
+        connection.connect();
+        byte[] bytes = IOHelper.readStreamBytesAndClose(connection.getInputStream());
+        IOHelper.writeFile(jarFilePath, bytes);
+        return jarFilePath;
     }
 
     @Override
     public List<JobDescriptor> scan() {
         List<JobDescriptor> descriptorList = new ArrayList<JobDescriptor>();
         try {
-            for (String jarUrl : jarUrls) {
-                String jarFilePath = downloadJarFile(jarUrl);
+            for (String jarFilePath : jarFilePaths) {
                 classLoader.addURL(new URL("file:/" + jarFilePath));
                 scan(descriptorList, jarFilePath);
             }
@@ -72,20 +99,6 @@ public class RemoteJobScanner extends AbstractJobScanner {
             String className = ClassHelper.getClassName(jarEntryName);
             super.scanClass(className, descriptorList);
         }
-    }
-
-    private String downloadJarFile(String jarUrl) throws IOException {
-        String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
-        String jarFilePath = classLoader.getResource("").getFile() + jarFileName;
-        File file = new File(jarFilePath);
-        if (file.exists()) {
-            return jarFilePath;
-        }
-        HttpURLConnection connection = (HttpURLConnection) new URL(jarUrl).openConnection();
-        connection.connect();
-        byte[] bytes = IOHelper.readStreamBytesAndClose(connection.getInputStream());
-        IOHelper.writeFile(jarFilePath, bytes);
-        return jarFilePath;
     }
 
 }

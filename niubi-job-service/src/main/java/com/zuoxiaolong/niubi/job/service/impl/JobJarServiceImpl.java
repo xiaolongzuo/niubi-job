@@ -20,8 +20,14 @@ package com.zuoxiaolong.niubi.job.service.impl;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.Job;
 import com.zuoxiaolong.niubi.job.persistent.entity.JobJar;
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.RemoteJobScanner;
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.service.JobJarService;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,17 +38,34 @@ import java.util.List;
  * @since 1/15/2016 12:04
  */
 @Service
-public class JobJarServiceImpl extends AbstractService implements JobJarService {
+public class JobJarServiceImpl extends AbstractService implements JobJarService, ApplicationContextAware {
 
     @Autowired
     private BaseDao baseDao;
 
-    @Override
-    public void save(String jarFileName) {
-        JobJar jobJar = new JobJar();
-        jobJar.setJarFileName(jarFileName);
-        List<Job> jobs = new ArrayList<>();
+    private ApplicationContext applicationContext;
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
+    @Override
+    public void save(String jarFilePath) {
+        JobJar jobJar = new JobJar();
+        jobJar.setJarFileName(jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1));
+        List<Job> jobs = new ArrayList<>();
+        JobScanner jobScanner = new RemoteJobScanner(applicationContext.getClassLoader(), jarFilePath);
+        List<JobDescriptor> jobDescriptorList = jobScanner.scan();
+        for (JobDescriptor jobDescriptor : jobDescriptorList) {
+            Job job = new Job();
+            job.setGroupName(jobDescriptor.group());
+            job.setJobName(jobDescriptor.name());
+            job.setJobJar(jobJar);
+            job.setCron(jobDescriptor.cron());
+            job.setMisfirePolicy(jobDescriptor.misfirePolicy().name());
+            jobs.add(job);
+        }
         jobJar.setJobs(jobs);
         baseDao.save(jobJar);
     }

@@ -39,6 +39,13 @@ public class JobJar extends BaseEntity {
 
     private List<Job> jobs;
 
+    public JobJar() {
+    }
+
+    public JobJar(String jarFileName) {
+        this.jarFileName = jarFileName;
+    }
+
     public String getJarFileName() {
         return jarFileName;
     }
