@@ -22,7 +22,6 @@ import org.apache.log4j.PropertyConfigurator;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.UUID;
 
 /**
  * @author Xiaolong Zuo
@@ -30,7 +29,7 @@ import java.util.UUID;
  */
 public abstract class AbstractNode implements Node {
 
-    private String name;
+    private String ip;
 
     private Configuration configuration;
 
@@ -43,14 +42,14 @@ public abstract class AbstractNode implements Node {
         }
         PropertyConfigurator.configure(this.configuration.getProperties());
         try {
-            this.name = InetAddress.getLocalHost().getHostAddress();
+            this.ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            this.name = UUID.randomUUID().toString();
+            this.ip = "unknown";
         }
     }
 
-    public String getName() {
-        return name;
+    protected String getIp() {
+        return ip;
     }
 
     protected Configuration getConfiguration() {

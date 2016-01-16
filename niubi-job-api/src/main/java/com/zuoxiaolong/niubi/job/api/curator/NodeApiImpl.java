@@ -36,9 +36,25 @@ public class NodeApiImpl extends AbstractCurdApiImpl implements NodeApi {
 
     @Override
     public List<NodeData> selectAllStandbyNodes() {
-        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyNodeMasterPath());
+        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyNodePath());
         List<NodeData> nodeModelList = childDataList.stream().map(NodeData::new).collect(Collectors.toList());
         return nodeModelList;
     }
+
+    @Override
+    public String createStandbyNode(NodeData nodeData) {
+        return insertEphemeralSequential(nodeData.getPath(), nodeData.getDataBytes());
+    }
+
+    @Override
+    public void updateStandbyNode(NodeData nodeData) {
+        update(nodeData.getPath(), nodeData.getDataBytes());
+    }
+
+    @Override
+    public NodeData selectStandbyNode(String path) {
+        return new NodeData(selectChildData(path));
+    }
+
 
 }

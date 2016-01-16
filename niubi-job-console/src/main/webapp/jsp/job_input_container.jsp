@@ -31,13 +31,14 @@
             <div class="span6">
                 <div class="widget-box">
                     <div class="widget-title"><span class="icon"> <i class="icon-align-justify"></i> </span>
-                        <h5>Edit Job : [${job.groupName}.${job.jobName}]</h5>
+                        <h5>Edit Job : [${job.groupName}.${job.jobName}-->(${job.state})]</h5>
                     </div>
                     <div class="widget-content nopadding">
                         <form action="/job" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <input name="id" type="hidden" value="${job.id}" />
                             <input name="groupName" type="hidden" value="${job.groupName}" />
                             <input name="jobName" type="hidden" value="${job.jobName}" />
+                            <input name="originalJarFileName" type="hidden" value="${job.jobJar.jarFileName}" />
                             <div class="control-group">
                                 <label class="control-label">Cron :</label>
                                 <div class="controls">
@@ -47,9 +48,11 @@
                             <div class="control-group">
                                 <label class="control-label">Environment :</label>
                                 <div class="controls">
-                                    <select name="jarFileName" class="span11">
+                                    <select name="currentJarFileName" class="span11">
                                         <c:forEach items="${sameGroupAndNameJobs}" var="sameGroupAndNameJob">
-                                            <option value="${sameGroupAndNameJob.jobJar.jarFileName}">${sameGroupAndNameJob.jobJar.jarFileName}</option>
+                                            <option value="${sameGroupAndNameJob.jobJar.jarFileName}"
+                                            <c:if test="${sameGroupAndNameJob.jobJar.jarFileName == job.jobJar.jarFileName}">selected</c:if>
+                                                    >${sameGroupAndNameJob.jobJar.jarFileName}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -58,29 +61,35 @@
                                 <label class="control-label">Mode :</label>
                                 <div class="controls">
                                     <select name="mode" class="span11">
-                                        <option value="COMMON">COMMON</option>
-                                        <option value="SPRING">SPRING</option>
+                                        <option value="Common" <c:if test="${job.mode == 'Common'}">selected</c:if>>Common</option>
+                                        <option value="Spring" <c:if test="${job.mode == 'Spring'}">selected</c:if>>Spring</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label">Misfire Policy :</label>
                                 <div class="controls">
-                                    <select name="mode" class="span11">
-                                        <option value="None">None</option>
-                                        <option value="DoNothing">DoNothing</option>
-                                        <option value="IgnoreMisfires">IgnoreMisfires</option>
-                                        <option value="FireAndProceed">FireAndProceed</option>
+                                    <select name="misfirePolicy" class="span11">
+                                        <option value="None" <c:if test="${job.misfirePolicy == 'None'}">selected</c:if>>None</option>
+                                        <option value="DoNothing" <c:if test="${job.misfirePolicy == 'DoNothing'}">selected</c:if>>DoNothing</option>
+                                        <option value="IgnoreMisfires" <c:if test="${job.misfirePolicy == 'IgnoreMisfires'}">selected</c:if>>IgnoreMisfires</option>
+                                        <option value="FireAndProceed" <c:if test="${job.misfirePolicy == 'FireAndProceed'}">selected</c:if>>FireAndProceed</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label">Operation :</label>
                                 <div class="controls">
-                                    <select name="operation" class="span11">
-                                        <option value="Start">Start</option>
-                                        <option value="Shutdown">Shutdown</option>
+                                    <c name="operation" class="span11">
+                                        <c:if test="${job.state == 'Shutdown' || job.state == 'Pause'}">
+                                            <option value="Start">Start</option>
+                                        </c:if>
+                                        <c:if test="${job.state == 'Startup'}">
+                                        <option value="Pause">Pause</option>
+                                        </c:if>
+                                        <c:if test="${job.state == 'Startup'}">
                                         <option value="Restart">Restart</option>
+                                        </c:if>
                                     </select>
                                 </div>
                             </div>

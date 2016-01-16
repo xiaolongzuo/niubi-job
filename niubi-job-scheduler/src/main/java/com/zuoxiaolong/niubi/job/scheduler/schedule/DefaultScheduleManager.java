@@ -121,6 +121,11 @@ public class DefaultScheduleManager implements ScheduleManager {
         return Collections.unmodifiableList(groupNameListMap.get(group));
     }
 
+    @Override
+    public ScheduleStatus getScheduleStatus(String group, String name) {
+        return jobStatusMap.get(getUniqueId(JobKey.jobKey(name, group)));
+    }
+
     public List<String> getGroupList() {
         return Collections.unmodifiableList(groupList);
     }

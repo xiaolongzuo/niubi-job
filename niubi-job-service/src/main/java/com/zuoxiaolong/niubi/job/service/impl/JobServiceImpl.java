@@ -64,7 +64,7 @@ public class JobServiceImpl extends AbstractService implements JobService {
     public void update(Job job) {
         JobJar jobJar = jobJarService.getJobJar(job.getJarFileName());
         //set properties
-        String path = apiFactory.pathApi().getStandbyNodeJobPath() + "/" + job.getGroupName() + "." +job.getJobName();
+        String path = apiFactory.pathApi().getStandbyJobPath() + "/" + job.getGroupName() + "." +job.getJobName();
         JobData.Data data = new JobData.Data();
         data.setGroup(job.getGroupName());
         data.setName(job.getJobName());
@@ -77,16 +77,16 @@ public class JobServiceImpl extends AbstractService implements JobService {
         if ("Start".equals(job.getOperation()) || "Restart".equals(job.getOperation())) {
             job.setState("STARTUP");
             data.setState("STARTUP");
-        } else if ("Shutdown".equals(job.getOperation())) {
-            job.setState("SHUTDOWN");
-            data.setState("SHUTDOWN");
+        } else if ("Pause".equals(job.getOperation())) {
+            job.setState("Pause");
+            data.setState("Pause");
         } else {
             LoggerHelper.warn("invalid operation [" + job.getOperation() + "]");
             return;
         }
 
         JobData jobData = new JobData(path, data);
-        apiFactory.jobApi().addStandbyJob(jobData);
+        apiFactory.jobApi().createStandbyJob(jobData);
         job.setJobJar(jobJar);
         baseDao.update(job);
     }

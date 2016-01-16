@@ -35,37 +35,42 @@ public class PathApiImpl implements PathApi {
     private PathApiImpl() {}
 
     @Override
-    public String getStandbyNodeMasterPath() {
+    public String getStandbyNodePath() {
+        return STANDBY_NODE_PATH + "/nodes/child";
+    }
+
+    @Override
+    public String getStandbyMasterPath() {
         return STANDBY_NODE_PATH + "/master";
     }
 
     @Override
-    public String getStandbyNodeJobPath() {
-        return STANDBY_NODE_PATH + "/job";
+    public String getStandbyJobPath() {
+        return STANDBY_NODE_PATH + "/jobs";
     }
 
     @Override
-    public String getMasterSlaveNodeMasterSelectorPath() {
+    public String getMasterSlaveMasterSelectorPath() {
         return MASTER_SLAVE_NODE_PATH + "/master-selector";
     }
 
     @Override
-    public String getMasterSlaveNodeEphemeralNodePath() {
+    public String getMasterSlaveEphemeralNodePath() {
         return MASTER_SLAVE_NODE_PATH + "/ephemeral-node";
     }
 
     @Override
-    public String getMasterSlaveNodePersistentNodePath() {
+    public String getMasterSlavePersistentNodePath() {
         return MASTER_SLAVE_NODE_PATH + "/persistent-node";
     }
 
     @Override
-    public String getMasterSlaveNodeCounterPath() {
+    public String getMasterSlaveCounterPath() {
         return MASTER_SLAVE_NODE_PATH + "/counter";
     }
 
     @Override
-    public String getMasterSlaveNodeLockPath() {
+    public String getMasterSlaveLockPath() {
         return MASTER_SLAVE_NODE_PATH + "/lock";
     }
 

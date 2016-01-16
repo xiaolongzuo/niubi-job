@@ -53,18 +53,18 @@ public class JobData extends GenericData<JobData.Data> {
 
         private String packagesToScan;
 
-        private String mode;
-
-        private String state;
-
         private String operation;
 
         private String cron;
 
-        private String misfirePolicy;
+        private String mode = "Common";
+
+        private String state = "Shutdown";
+
+        private String misfirePolicy = "None";
 
         public boolean isSpring() {
-            return mode != null && mode.equals("SPRING");
+            return mode != null && mode.equals("Spring");
         }
 
     }

@@ -24,8 +24,6 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
  */
 public interface Node {
 
-    String getName();
-
     void join();
 
     void exit();

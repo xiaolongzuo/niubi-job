@@ -29,6 +29,8 @@ public interface JobApi {
 
     List<JobData> selectAllStandbyJobs();
 
-    void addStandbyJob(JobData jobData);
+    void createStandbyJob(JobData jobData);
+
+    void updateStandbyJob(JobData jobData);
 
 }

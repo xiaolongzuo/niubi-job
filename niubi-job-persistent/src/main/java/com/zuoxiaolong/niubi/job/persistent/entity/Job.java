@@ -40,13 +40,13 @@ public class Job extends BaseEntity {
 
     private JobJar jobJar;
 
-    private String mode;
+    private String mode = "Common";
 
-    private String state;
+    private String state = "Shutdown";
 
     private String cron;
 
-    private String misfirePolicy;
+    private String misfirePolicy = "None";
 
     public String getGroupName() {
         return groupName;

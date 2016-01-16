@@ -46,4 +46,6 @@ public interface ScheduleManager {
 
     List<String> getNameList(String group);
 
+    ScheduleStatus getScheduleStatus(String group, String name);
+
 }

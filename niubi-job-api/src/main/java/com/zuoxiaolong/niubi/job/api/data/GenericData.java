@@ -60,4 +60,14 @@ public class GenericData<T> extends BaseData {
         throw new UnknownGenericTypeException();
     }
 
+    public byte[] getDataBytes() {
+        return JsonHelper.toBytes(data);
+    }
+
+    @Override
+    public String toString() {
+        return "GenericData{" +
+                "data=" + JsonHelper.toJson(data) +
+                '}';
+    }
 }

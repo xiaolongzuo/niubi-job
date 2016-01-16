@@ -18,7 +18,6 @@ package com.zuoxiaolong.niubi.job.api.curator;
 
 import com.zuoxiaolong.niubi.job.api.JobApi;
 import com.zuoxiaolong.niubi.job.api.data.JobData;
-import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -38,18 +37,19 @@ public class JobApiImpl extends AbstractCurdApiImpl implements JobApi {
 
     @Override
     public List<JobData> selectAllStandbyJobs() {
-        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyNodeJobPath());
+        List<ChildData> childDataList = selectChildDataList(getPathApi().getStandbyJobPath());
         List<JobData> nodeModelList = childDataList.stream().map(JobData::new).collect(Collectors.toList());
         return nodeModelList;
     }
 
     @Override
-    public void addStandbyJob(JobData jobData) {
-        try {
-            insert(jobData.getPath(), JsonHelper.toBytes(jobData.getData()));
-        } catch (Exception e) {
-            throw new NiubiException(e);
-        }
+    public void createStandbyJob(JobData jobData) {
+        insert(jobData.getPath(), JsonHelper.toBytes(jobData.getData()));
+    }
+
+    @Override
+    public void updateStandbyJob(JobData jobData) {
+        update(jobData.getPath(), jobData.getDataBytes());
     }
 
 }

@@ -46,15 +46,17 @@ public class NodeData extends GenericData<NodeData.Data> {
 
         private String ip;
 
-        private State state;
+        private String state = "BACKUP";
 
-        private Integer runningJobCount;
+        private Integer runningJobCount = 0;
 
-    }
+        public Data() {
+        }
 
-    public enum State {
+        public Data(String ip) {
+            this.ip = ip;
+        }
 
-        RUNNING, STOP
 
     }
 

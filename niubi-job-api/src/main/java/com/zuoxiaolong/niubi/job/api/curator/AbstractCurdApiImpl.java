@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.PathApi;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
+import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 
 import java.util.ArrayList;
@@ -74,6 +75,46 @@ public abstract class AbstractCurdApiImpl {
     protected String insert(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().forPath(path, data);
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    protected String insertWithProtection(String path, byte[] data) {
+        try {
+            return getClient().create().creatingParentsIfNeeded().withProtection().forPath(path, data);
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    protected String insertPersistentWithProtection(String path, byte[] data) {
+        try {
+            return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, data);
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    protected String insertPersistentSequentialWithProtection(String path, byte[] data) {
+        try {
+            return getClient().create().creatingParentsIfNeeded().withProtection().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(path, data);
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    protected String insertPersistentSequential(String path, byte[] data) {
+        try {
+            return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(path, data);
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    protected String insertEphemeralSequential(String path, byte[] data) {
+        try {
+            return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(path, data);
         } catch (Exception e) {
             throw new NiubiException(e);
         }

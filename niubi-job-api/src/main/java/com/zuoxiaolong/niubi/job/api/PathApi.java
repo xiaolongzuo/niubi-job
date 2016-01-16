@@ -22,19 +22,21 @@ package com.zuoxiaolong.niubi.job.api;
  */
 public interface PathApi {
 
-    String getStandbyNodeMasterPath();
+    String getStandbyNodePath();
 
-    String getStandbyNodeJobPath();
+    String getStandbyMasterPath();
 
-    String getMasterSlaveNodeMasterSelectorPath();
+    String getStandbyJobPath();
 
-    String getMasterSlaveNodeEphemeralNodePath();
+    String getMasterSlaveMasterSelectorPath();
 
-    String getMasterSlaveNodePersistentNodePath();
+    String getMasterSlaveEphemeralNodePath();
 
-    String getMasterSlaveNodeCounterPath();
+    String getMasterSlavePersistentNodePath();
 
-    String getMasterSlaveNodeLockPath();
+    String getMasterSlaveCounterPath();
+
+    String getMasterSlaveLockPath();
 
 }
 

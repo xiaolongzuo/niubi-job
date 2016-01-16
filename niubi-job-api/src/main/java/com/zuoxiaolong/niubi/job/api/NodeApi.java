@@ -28,4 +28,10 @@ public interface NodeApi {
 
     List<NodeData> selectAllStandbyNodes();
 
+    String createStandbyNode(NodeData nodeData);
+
+    void updateStandbyNode(NodeData nodeData);
+
+    NodeData selectStandbyNode(String path);
+
 }
