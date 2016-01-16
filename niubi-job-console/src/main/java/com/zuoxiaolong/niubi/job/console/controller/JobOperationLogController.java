@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 @RequestMapping("/jobOperationLogs")
-public class JobOperationLogController {
+public class JobOperationLogController extends BaseController {
 
     @Autowired
     private JobOperationLogService jobOperationLogService;

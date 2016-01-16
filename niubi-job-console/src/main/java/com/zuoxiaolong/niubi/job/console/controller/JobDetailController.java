@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -37,7 +36,7 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/jobDetails")
-public class JobDetailController {
+public class JobDetailController extends BaseController {
 
     @Autowired
     private JobDetailService jobDetailService;
@@ -54,8 +53,8 @@ public class JobDetailController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String upload(String packagesToScan, @RequestParam MultipartFile jobJar, HttpServletRequest request) {
-        String jarFilePath = request.getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
+    public String upload(String packagesToScan, @RequestParam MultipartFile jobJar) {
+        String jarFilePath = getRequest().getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());
             jobDetailService.save(jarFilePath, packagesToScan);

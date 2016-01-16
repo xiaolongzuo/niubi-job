@@ -48,7 +48,7 @@
                             <tr class="gradeA">
                                 <td><span class="label ${node.stateLabelClass}">${node.state}</span></td>
                                 <td>${node.ip}</td>
-                                <td>${node.runningJobCount}</td>
+                                <td><span class="badge badge-info">${node.runningJobCount}</span></td>
                                 <td>${node.id}</td>
                             </tr>
                         </c:forEach>

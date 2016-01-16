@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  */
 @Controller
 @RequestMapping("/jobRuntimeDetails")
-public class JobRuntimeDetailController {
+public class JobRuntimeDetailController extends BaseController {
 
     @Autowired
     private JobRuntimeDetailService jobRuntimeDetailService;
