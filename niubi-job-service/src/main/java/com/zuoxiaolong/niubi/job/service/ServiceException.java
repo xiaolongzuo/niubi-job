@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-
 package com.zuoxiaolong.niubi.job.service;
-
-import com.zuoxiaolong.niubi.job.persistent.entity.Job;
-
-import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:44
+ * @since 16/1/17 00:05
  */
-public interface JobService {
+public class ServiceException extends RuntimeException {
 
-    List<Job> getAllStandbyJobs();
+    public ServiceException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-    Job getJob(String id);
-
-    List<Job> getSameGroupAndNameJobs(String group, String name);
-
-    void update(Job job);
+    public ServiceException(String message) {
+        super(message);
+    }
 
 }

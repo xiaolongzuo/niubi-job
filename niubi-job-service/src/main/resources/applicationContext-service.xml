@@ -15,5 +15,7 @@
         <property name="connectString" value="${connectString}"/>
     </bean>
 
+    <bean class="com.zuoxiaolong.niubi.job.service.spring.JobRuntimeDetailListener" init-method="listen"/>
+
 </beans>
 

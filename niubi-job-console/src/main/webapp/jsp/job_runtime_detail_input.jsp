@@ -29,9 +29,9 @@
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
 <jsp:include page="dashboard_sidebar.jsp">
-    <jsp:param name="job" value="active"/>
+    <jsp:param name="jobRuntimeDetails" value="active"/>
 </jsp:include>
-<jsp:include page="job_input_container.jsp"/>
+<jsp:include page="job_runtime_detail_input_container.jsp"/>
 <jsp:include page="dashboard_footer.jsp"/>
 <jsp:include page="input_bottom.jsp"/>
 </body>

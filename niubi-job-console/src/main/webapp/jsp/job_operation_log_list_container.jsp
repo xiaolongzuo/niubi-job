@@ -17,7 +17,7 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/16 17:37
+  Time: 16/1/17 05:21
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -31,23 +31,29 @@
         <div class="row-fluid">
             <div class="widget-box">
                 <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-                    <h5>Job Jar Manager</h5>
+                    <h5>Operation log</h5>
                 </div>
                 <div class="widget-content nopadding">
                     <table class="table table-bordered data-table">
                         <thead>
                         <tr>
-                            <th>File name</th>
-                            <th>Packages to scan</th>
-                            <th>Upload time</th>
+                            <th>Result</th>
+                            <th>Job id</th>
+                            <th>Operation</th>
+                            <th>Cron</th>
+                            <th>Create time</th>
+                            <th>Response time</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobJars}" var="jobJar">
+                        <c:forEach items="${jobOperationLogs}" var="jobOperationLog">
                             <tr class="gradeA">
-                                <td>${jobJar.jarFileName}</td>
-                                <td>${jobJar.packagesToScan}</td>
-                                <td>${jobJar.createDateString}</td>
+                                <td><span class="label ${jobOperationLog.operationResultLabelClass}">${jobOperationLog.operationResult}</span></td>
+                                <td>${jobOperationLog.groupName}.${jobOperationLog.jobName}</td>
+                                <td>${jobOperationLog.operation}</td>
+                                <td>${jobOperationLog.cron}</td>
+                                <td>${jobOperationLog.createDateString}</td>
+                                <td>${jobOperationLog.modifyDateString}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

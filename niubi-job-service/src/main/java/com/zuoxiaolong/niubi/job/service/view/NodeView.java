@@ -28,12 +28,22 @@ import lombok.Setter;
 @Getter
 public class NodeView {
 
-    private String name;
+    private String id;
 
     private String ip;
 
     private String state;
 
     private Integer runningJobCount;
+
+    public String getStateLabelClass() {
+        if ("Master".equals(state)) {
+            return "label-important";
+        }
+        if ("Backup".equals(state)) {
+            return "label-info";
+        }
+        return "";
+    }
 
 }

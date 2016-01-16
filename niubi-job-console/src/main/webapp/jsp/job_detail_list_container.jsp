@@ -37,25 +37,17 @@
                     <table class="table table-bordered data-table">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>State</th>
-                                <th>Cron</th>
-                                <th>Mode</th>
-                                <th>Group</th>
-                                <th>Misfire policy</th>
+                                <th>Method</th>
+                                <th>Jar file name</th>
+                                <th>Upload time</th>
                             </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobs}" var="job">
+                        <c:forEach items="${jobDetails}" var="jobDetail">
                             <tr class="gradeA">
-                                <td><a href="/job/${job.id}">${job.jobName}</a></td>
-                                <td>
-                                    <span class="label label-success">${job.stateLabel}</span>
-                                </td>
-                                <td>${job.cron}</td>
-                                <td>${job.modeLabel}</td>
-                                <td>${job.groupName}</td>
-                                <td>${job.misfirePolicy}</td>
+                                <td>${jobDetail.groupName}.${jobDetail.jobName}</td>
+                                <td>${jobDetail.jarFileName}</td>
+                                <td>${jobDetail.createDateString}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

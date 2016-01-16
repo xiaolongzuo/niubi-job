@@ -1,22 +1,158 @@
 package com.zuoxiaolong.niubi.job.core.helper;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public abstract class ReflectHelper {
 
-	private static final String GET_METHOD_PREFIX = "get";
+    public static void copyFieldValues(Object source, Object target) {
+        if (source == null || target == null) {
+            return;
+        }
+        Class<?> sourceClass = source.getClass();
+        Class<?> targetClass = target.getClass();
+        Field[] fields = getAllFields(targetClass);
+        for (int i = 0; i < fields.length; i++) {
+            Field targetField = fields[i];
+            if (targetField.isSynthetic()) {
+                continue;
+            }
+            String fieldName = targetField.getName();
+            try {
+                Object sourceValue = getFieldValueWithGetterMethod(source, sourceClass, fieldName);
+                setFieldValueWithSetterMethod(target, sourceValue, targetClass, targetField);
+            } catch (Exception e) {
+                //ignored
+            }
+        }
+    }
 
-	private static final String SET_METHOD_PREFIX = "set";
+    public static void copyFieldValuesSkipNull(Object source, Object target) {
+        if (source == null || target == null) {
+            return;
+        }
+        Class<?> sourceClass = source.getClass();
+        Class<?> targetClass = target.getClass();
+        Field[] fields = getAllFields(targetClass);
+        for (int i = 0; i < fields.length; i++) {
+            Field targetField = fields[i];
+            if (targetField.isSynthetic()) {
+                continue;
+            }
+            String fieldName = targetField.getName();
+            try {
+                Object sourceValue = getFieldValueWithGetterMethod(source, sourceClass, fieldName);
+                if (sourceValue != null) {
+                    setFieldValueWithSetterMethod(target, sourceValue, targetClass, targetField);
+                }
+            } catch (Exception e) {
+                //ignored
+            }
+        }
+    }
 
-	public static boolean hasField(Class<?> clazz) {
+    public static Field[] getAllFields(Object object) {
+        Class<?> clazz;
+        if (object instanceof Class) {
+            clazz = (Class<?>) object;
+        } else {
+            clazz = object.getClass();
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        Class<?> superClass = clazz.getSuperclass();
+        while (superClass != null && superClass != Object.class) {
+            Field[] copy = fields;
+            Field[] superClassFields = superClass.getDeclaredFields();
+            Field[] newFields = new Field[copy.length + superClassFields.length];
+            System.arraycopy(copy, 0, newFields, 0, copy.length);
+            System.arraycopy(superClassFields, 0, newFields, copy.length, superClassFields.length);
+            fields = newFields;
+            superClass = superClass.getSuperclass();
+        }
+        return fields;
+    }
+
+    public static Method getGetterMethod(Class<?> clazz, String fieldName) {
+        String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        try {
+            return clazz.getDeclaredMethod(methodName, new Class<?>[]{});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Method getGetterMethod(Class<?> clazz, Field field) {
+        String fieldName = field.getName();
+        String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        try {
+            return getInheritMethod(clazz, methodName, new Class<?>[]{});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Method getSetterMethod(Class<?> clazz, Field field) {
+        String fieldName = field.getName();
+        String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        try {
+            return getInheritMethod(clazz, methodName, new Class<?>[]{field.getType()});
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Method getInheritMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+        try {
+            return clazz.getDeclaredMethod(methodName, parameterTypes);
+        } catch (NoSuchMethodException e) {
+            Class<?> superClass = clazz.getSuperclass();
+            if (superClass != null && superClass != Object.class) {
+                return getInheritMethod(superClass, methodName, parameterTypes);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public static Object getFieldValueWithGetterMethod(Object object, Class<?> clazz, Field field) {
+        Method method = getGetterMethod(clazz, field);
+        try {
+            return method.invoke(object);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object getFieldValueWithGetterMethod(Object object, Class<?> clazz, String fieldName) {
+        Method method = getGetterMethod(clazz, fieldName);
+        try {
+            return method.invoke(object);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Object setFieldValueWithSetterMethod(Object target, Object value, Class<?> clazz, Field field) {
+        Method method = getSetterMethod(clazz, field);
+        try {
+            return method.invoke(target, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public static boolean hasField(Class<?> clazz) {
 		if (clazz.getDeclaredFields() == null || clazz.getDeclaredFields().length == 0) {
 			return false;
 		}
@@ -54,25 +190,6 @@ public abstract class ReflectHelper {
 			return list.get(0).getClass();
 		}
 		return null;
-	}
-
-	public static <T> T copyFieldValue(Class<T> clazz, T source, T target) {
-		Field[] fields = clazz.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			Field field = fields[i];
-			if (field.getName().equals("serialVersionUID")) {
-				continue;
-			}
-			try {
-				Object value = getFieldValue(source, field);
-				if (value != null && value.toString().trim().length() > 0) {
-					field.set(target, value);
-				}
-			} catch (Exception exception) {
-				LoggerHelper.warn("field set failed", exception);
-			}
-		}
-		return target;
 	}
 
 	public static boolean isPrimitive(Class<?> clazz) {
@@ -117,95 +234,6 @@ public abstract class ReflectHelper {
 		}
 	}
 
-	public static Field getAllField(Class<?> clazz, String fieldName) {
-		if (clazz == null) {
-			return null;
-		}
-		Field result = null;
-		try {
-			result = clazz.getDeclaredField(fieldName);
-			return result;
-		} catch (NoSuchFieldException e) {
-			while (clazz.getSuperclass() != null) {
-				try {
-					result = clazz.getSuperclass().getDeclaredField(fieldName);
-					return result;
-				} catch (NoSuchFieldException e1) {
-					clazz = clazz.getSuperclass();
-				}
-			}
-		}
-		return null;
-	}
-
-	public static Field[] getAllFields(Class<?> clazz) {
-		Field[] result = null;
-		Field[] fields = clazz.getDeclaredFields();
-		while (clazz.getSuperclass() != null) {
-			Field[] tempFields = clazz.getSuperclass().getDeclaredFields();
-			result = new Field[fields.length + tempFields.length];
-			System.arraycopy(fields, 0, result, 0, fields.length);
-			System.arraycopy(tempFields, 0, result, fields.length, tempFields.length);
-			fields = result;
-			clazz = clazz.getSuperclass();
-		}
-		if (result == null) {
-			result = fields;
-		}
-		return result;
-	}
-
-	public static Field[] getAllFields(Object entity) {
-		if (entity == null) {
-			return new Field[0];
-		}
-		Class<?> clazz = entity instanceof Class ? (Class<?>) entity : entity.getClass();
-		return getAllFields(clazz);
-	}
-
-	public static Set<Class<?>> findAllClasses(ClassLoader classLoader, String[] packages) {
-		LoggerHelper.info("��ʼ����domainʵ����......");
-		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
-		try {
-			for (int i = 0; i < packages.length; i++) {
-				URL url = classLoader.getResource(packages[i].replace('.', '/'));
-				String protocol = url.getProtocol();
-				if ("file".equals(protocol)) {
-					String filePath = URLDecoder.decode(url.getFile(), "UTF-8");
-					LoggerHelper.info("domainʵ�����ļ���·��[" + filePath + "]");
-					File domainDir = new File(filePath);
-					if (!domainDir.exists() || !domainDir.isDirectory()) {
-						LoggerHelper.warn("δ�����κ�domainʵ����......");
-						return classes;
-					}
-					File[] classFiles = domainDir.listFiles(new FileFilter() {
-						@Override
-						public boolean accept(File file) {
-							return file.getName().endsWith(".class");
-						}
-					});
-					int successCount = 0;
-					int errorCount = 0;
-					for (File classFile : classFiles) {
-						LoggerHelper.info("��ʼ����[" + classFile.getAbsolutePath() + "]");
-						String className = classFile.getName().substring(0, classFile.getName().length() - 6);
-						try {
-							classes.add(classLoader.loadClass(packages[i] + '.' + className));
-							successCount++;
-						} catch (ClassNotFoundException e) {
-							LoggerHelper.warn("δ�ҵ�������[" + classFile.getAbsolutePath() + "]ʧ��......");
-							errorCount++;
-						}
-					}
-					LoggerHelper.info("������[" + successCount + "]��domainʵ���࣬ʧ�ܸ���[" + errorCount + "]......");
-				}
-			}
-		} catch (IOException cause) {
-			throw new RuntimeException(cause);
-		}
-		return classes;
-	}
-
 	public static Method getMethodByName(Class<?> clazz, String methodName) {
 		Method[] methods = clazz.getDeclaredMethods();
 		if (methods == null || methods.length == 0) {
@@ -227,59 +255,6 @@ public abstract class ReflectHelper {
 			return null;
 		}
 		return methodList.get(0);
-	}
-
-	public static <T> Method getGetMethod(Class<T> clazz, Field field) {
-		if (field == null || clazz == null) {
-			return null;
-		}
-		String upperName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-		try {
-			return clazz.getMethod(GET_METHOD_PREFIX + upperName, new Class<?>[] {});
-		} catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-
-	public static <T> Method getSetMethod(Class<T> clazz, Field field) {
-		if (field == null || clazz == null) {
-			return null;
-		}
-		String upperName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-		try {
-			return clazz.getMethod(SET_METHOD_PREFIX + upperName, new Class<?>[] {});
-		} catch (Exception exception) {
-			throw new RuntimeException(exception);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T> T copyFieldsByName(T source, T target) {
-		if (source == null) {
-			return target;
-		}
-		Class<T> clazz = (Class<T>) source.getClass();
-		if (target == null) {
-			try {
-				target = clazz.newInstance();
-			} catch (Exception exception) {
-				LoggerHelper.warn("copy failed", exception);
-				return target;
-			}
-		}
-		return ReflectHelper.copyFieldValue(clazz, source, target);
-	}
-
-	public static <T> Map<String, Object> beanToMap(Object bean) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Class<?> clazz = bean.getClass();
-		Field[] fields = clazz.getDeclaredFields();
-		for (int i = 0; i < fields.length; i++) {
-			if (Modifier.isPrivate(fields[i].getModifiers()) && !Modifier.isStatic(fields[i].getModifiers()) && !Modifier.isFinal(fields[i].getModifiers())) {
-				map.put(fields[i].getName(), ReflectHelper.getFieldValue(bean, fields[i]));
-			}
-		}
-		return map;
 	}
 
 }

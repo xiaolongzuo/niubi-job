@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.console.controller;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
-import com.zuoxiaolong.niubi.job.service.JobJarService;
+import com.zuoxiaolong.niubi.job.service.JobDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,16 +36,21 @@ import java.io.IOException;
  * @since 1/15/2016 12:23
  */
 @Controller
-@RequestMapping("/jobJar")
-public class JobJarController {
+@RequestMapping("/jobDetails")
+public class JobDetailController {
 
     @Autowired
-    private JobJarService jobJarService;
+    private JobDetailService jobDetailService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model) {
-        model.addAttribute("jobJars", jobJarService.getAllJobJars());
-        return "job_jar_list";
+        model.addAttribute("jobDetails", jobDetailService.getAllStandbyJobDetails());
+        return "job_detail_list";
+    }
+
+    @RequestMapping(value = "/upload", method = RequestMethod.GET)
+    public String upload() {
+        return "job_detail_upload";
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
@@ -53,11 +58,11 @@ public class JobJarController {
         String jarFilePath = request.getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());
-            jobJarService.save(jarFilePath, packagesToScan);
+            jobDetailService.save(jarFilePath, packagesToScan);
         } catch (IOException e) {
             throw new NiubiException(e);
         }
-        return "redirect:/job";
+        return "redirect:/jobDetails";
     }
 
 }

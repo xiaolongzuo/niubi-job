@@ -1,11 +1,9 @@
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
+import com.zuoxiaolong.niubi.job.core.helper.DateHelper;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -46,6 +44,16 @@ public abstract class BaseEntity implements Serializable {
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
 	}
+
+    @Transient
+    public String getModifyDateString() {
+        return DateHelper.format(getModifyDate());
+    }
+
+    @Transient
+    public String getCreateDateString() {
+        return DateHelper.format(getCreateDate());
+    }
 
 	@Override
 	public int hashCode() {

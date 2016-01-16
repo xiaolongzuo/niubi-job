@@ -22,48 +22,43 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/15 23:28
+ * @since 16/1/16 23:30
  */
 @Setter
 @Entity
 @DynamicInsert
 @DynamicUpdate
-public class JobJar extends BaseEntity {
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"jar_file_name","group_name","job_name"})})
+public class JobDetail extends BaseEntity {
+
+    private String groupName;
+
+    private String jobName;
 
     private String jarFileName;
 
     private String packagesToScan;
 
-    private List<Job> jobs;
-
-    public JobJar() {
-    }
-
-    public JobJar(String jarFileName) {
-        this.jarFileName = jarFileName;
-    }
-
-    public String getPackagesToScan() {
-        return packagesToScan;
-    }
-
-    @Column(unique = true)
+    @Column(name = "jar_file_name")
     public String getJarFileName() {
         return jarFileName;
     }
 
-    @OneToMany(mappedBy = "jobJar", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
-    public List<Job> getJobs() {
-        return jobs;
+    @Column(name = "group_name")
+    public String getGroupName() {
+        return groupName;
     }
 
-    @Transient
-    public String getCreateDateString() {
-        return DateHelper.format(getCreateDate());
+    @Column(name = "job_name")
+    public String getJobName() {
+        return jobName;
+    }
+
+    public String getPackagesToScan() {
+        return packagesToScan;
     }
 
 }

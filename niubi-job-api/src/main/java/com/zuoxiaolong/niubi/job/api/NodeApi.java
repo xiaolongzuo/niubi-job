@@ -28,9 +28,9 @@ public interface NodeApi {
 
     List<NodeData> selectAllStandbyNodes();
 
-    String createStandbyNode(NodeData nodeData);
+    String createStandbyNode(NodeData.Data data);
 
-    void updateStandbyNode(NodeData nodeData);
+    void updateStandbyNode(String path, NodeData.Data data);
 
     NodeData selectStandbyNode(String path);
 

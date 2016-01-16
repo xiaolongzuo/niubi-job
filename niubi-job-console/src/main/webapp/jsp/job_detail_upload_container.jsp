@@ -32,7 +32,7 @@
                         <h5>Upload jar</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="/jobJar/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form action="/jobDetails/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <div class="control-group">
                                 <label class="control-label">File upload input</label>
                                 <div class="controls">

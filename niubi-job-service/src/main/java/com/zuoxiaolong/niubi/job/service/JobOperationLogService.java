@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
+
 package com.zuoxiaolong.niubi.job.service;
 
-import com.zuoxiaolong.niubi.job.persistent.entity.JobJar;
+import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobOperationLog;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobRuntimeDetail;
 
 import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 00:49
+ * @since 1/15/2016 14:44
  */
-public interface JobJarService {
+public interface JobOperationLogService {
 
-    void save(String jarFilePath, String packagesToScan);
+    List<JobOperationLog> getAllJobOperationLog();
 
-    List<JobJar> getAllJobJars();
+    String save(JobRuntimeDetail jobRuntimeDetail);
 
-    JobJar getJobJar(String jarFileName);
+    void update(JobData.Data data);
 
 }

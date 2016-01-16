@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.service;
 
 import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobRuntimeDetail;
 
 import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:45
+ * @since 16/1/16 23:51
  */
-public interface JobApi {
+public interface JobRuntimeDetailService {
 
-    List<JobData> selectAllStandbyJobs();
+    List<JobRuntimeDetail> getAllStandbyJobRuntimeDetails();
 
-    void createStandbyJob(String group, String name, JobData.Data data);
+    void createStandbyJob(JobRuntimeDetail jobRuntimeDetail);
 
-    void updateStandbyJob(String group, String name, JobData.Data data);
+    JobRuntimeDetail getStandbyJobRuntimeDetail(String id);
 
-    JobData selectStandbyJob(String group, String name);
+    void update(JobData.Data data);
 
 }

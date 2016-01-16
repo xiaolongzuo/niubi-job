@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.api.data.JobData;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 
@@ -26,6 +25,6 @@ import com.zuoxiaolong.niubi.job.scheduler.node.Node;
  */
 public interface RemoteJobNode extends Node {
 
-    Container getContainer(String jarRepertoryUrl, JobData jobModel);
+    Container getContainer(String jarUrl, String packagesToScan, boolean isSpring);
 
 }

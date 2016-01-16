@@ -17,18 +17,20 @@
 
 package com.zuoxiaolong.niubi.job.service.spring;
 
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import lombok.Setter;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.FactoryBean;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author Xiaolong Zuo
  * @since 1/15/2016 12:36
  */
-public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework> {
+public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework>, InitializingBean {
 
     private static final int DEFAULT_SESSION_TIMEOUT_MS = Integer.getInteger("curator-default-session-timeout", 60 * 1000);
 
@@ -48,10 +50,10 @@ public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework
     @Setter
     private RetryPolicy retryPolicy = DEFAULT_RETRY_POLICY;
 
+    private CuratorFramework client;
+
     @Override
     public CuratorFramework getObject() throws Exception {
-        CuratorFramework client = CuratorFrameworkFactory.newClient(connectString, sessionTimeoutMs, connectionTimeoutMs, retryPolicy);
-        client.start();
         return client;
     }
 
@@ -63,6 +65,13 @@ public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework
     @Override
     public boolean isSingleton() {
         return true;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        AssertHelper.notNull(connectString, "connectString property must be set in config.properties.");
+        client = CuratorFrameworkFactory.newClient(connectString, sessionTimeoutMs, connectionTimeoutMs, retryPolicy);
+        client.start();
     }
 
 }

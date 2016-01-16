@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -26,39 +24,47 @@ import javax.persistence.*;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:44
+ * @since 16/1/16 23:33
  */
 @Setter
 @Entity
 @DynamicInsert
 @DynamicUpdate
-public class Job extends BaseEntity {
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"group_name","job_name"})})
+public class JobRuntimeDetail extends BaseEntity {
 
     private String groupName;
 
     private String jobName;
 
-    private JobJar jobJar;
+    private String jarFileName;
 
-    private String mode = "Common";
+    private String packagesToScan;
 
-    private String state = "Shutdown";
+    private String mode;
+
+    private String state;
 
     private String cron;
 
-    private String misfirePolicy = "None";
+    private String misfirePolicy;
 
+    @Column(name = "group_name")
     public String getGroupName() {
         return groupName;
     }
 
+    @Column(name = "job_name")
     public String getJobName() {
         return jobName;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    public JobJar getJobJar() {
-        return jobJar;
+    public String getJarFileName() {
+        return jarFileName;
+    }
+
+    public String getPackagesToScan() {
+        return packagesToScan;
     }
 
     @Column(length = 30)
@@ -81,15 +87,18 @@ public class Job extends BaseEntity {
         return misfirePolicy;
     }
 
-    /* Transient */
+    public void setDefaultState() {
+        this.state = "Shutdown";
+    }
 
-    private String jarFileName;
-
-    private String stateLabel;
-
-    private String modeLabel;
+    private String originalJarFileName;
 
     private String operation;
+
+    @Transient
+    public String getOriginalJarFileName() {
+        return originalJarFileName;
+    }
 
     @Transient
     public String getOperation() {
@@ -97,18 +106,28 @@ public class Job extends BaseEntity {
     }
 
     @Transient
-    public String getJarFileName() {
-        return jarFileName;
+    public String getStateLabelClass() {
+        if ("Shutdown".equals(state)) {
+            return "label-warning";
+        }
+        if ("Startup".equals(state)) {
+            return "label-success";
+        }
+        if ("Pause".equals(state)) {
+            return "label-inverse";
+        }
+        return "";
     }
 
     @Transient
-    public String getStateLabel() {
-        return StringHelper.isEmpty(state) ? "SHUTDOWN" : state;
-    }
-
-    @Transient
-    public String getModeLabel() {
-        return StringHelper.isEmpty(mode) ? "COMMON" : mode;
+    public String getModeLabelClass() {
+        if ("Common".equals(mode)) {
+            return "label-Info";
+        }
+        if ("Spring".equals(mode)) {
+            return "label-success";
+        }
+        return "";
     }
 
 }

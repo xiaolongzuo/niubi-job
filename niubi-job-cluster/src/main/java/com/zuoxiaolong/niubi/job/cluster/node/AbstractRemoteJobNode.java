@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.api.data.JobData;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
@@ -47,21 +46,21 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         return Collections.unmodifiableMap(containerCache);
     }
 
-    public Container getContainer(String jarRepertoryUrl, JobData jobData) {
-        Container container = containerCache.get(jobData.getId());
+    public Container getContainer(String jarUrl, String packagesToScan, boolean isSpring) {
+        Container container = containerCache.get(jarUrl);
         if (container != null) {
             return container;
         }
         lock.lock();
         try {
-            container = containerCache.get(jobData.getId());
+            container = containerCache.get(jarUrl);
             if (container == null) {
-                if (jobData.getData().isSpring()) {
-                    container = new DefaultSpringContainer(getConfiguration(), jobData.getData().getPackagesToScan(), jarRepertoryUrl + jobData.getId());
+                if (isSpring) {
+                    container = new DefaultSpringContainer(getConfiguration(), packagesToScan, jarUrl);
                 } else {
-                    container = new DefaultContainer(getConfiguration(), jobData.getData().getPackagesToScan(), jarRepertoryUrl + jobData.getId());
+                    container = new DefaultContainer(getConfiguration(), packagesToScan, jarUrl);
                 }
-                containerCache.put(jobData.getId(), container);
+                containerCache.put(jarUrl, container);
             }
             return container;
         } finally {

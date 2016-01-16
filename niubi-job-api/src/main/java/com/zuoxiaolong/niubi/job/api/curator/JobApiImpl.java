@@ -43,13 +43,33 @@ public class JobApiImpl extends AbstractCurdApiImpl implements JobApi {
     }
 
     @Override
-    public void createStandbyJob(JobData jobData) {
-        insert(jobData.getPath(), JsonHelper.toBytes(jobData.getData()));
+    public void createStandbyJob(String group, String name, JobData.Data data) {
+        data.prepareOperation();
+        JobData jobData = new JobData(getStandbyJobPath(group, name), data);
+        if (exists(jobData.getPath())) {
+            update(jobData.getPath(), jobData.getDataBytes());
+        } else {
+            insert(jobData.getPath(), JsonHelper.toBytes(jobData.getData()));
+        }
     }
 
     @Override
-    public void updateStandbyJob(JobData jobData) {
+    public void updateStandbyJob(String group, String name, JobData.Data data) {
+        JobData jobData = new JobData(getStandbyJobPath(group, name), data);
         update(jobData.getPath(), jobData.getDataBytes());
+    }
+
+    @Override
+    public JobData selectStandbyJob(String group, String name) {
+        String path = getStandbyJobPath(group, name);
+        if (!exists(path)) {
+            return null;
+        }
+        return new JobData(selectChildData(path));
+    }
+
+    private String getStandbyJobPath(String group , String name) {
+        return getPathApi().getStandbyJobPath() + "/" + group + "." + name;
     }
 
 }

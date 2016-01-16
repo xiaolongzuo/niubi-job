@@ -25,12 +25,14 @@
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
         <li class="${param.index}"> <a href="/"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
-        <li class="${param.node}"> <a href="/node"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
-        <li class="${param.job}"> <a href="/job"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
-        <li class="${param.jobJar}"> <a href="/jobJar"><i class="icon icon-inbox"></i> <span>Job jar manager</span></a> </li>
-        <li class="${param.jobJarInput}"> <a href="/jsp/job_jar_input.jsp"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
+        <li class="${param.nodes}"> <a href="/nodes"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li class="${param.jobRuntimeDetails}"> <a href="/jobRuntimeDetails"><i class="icon icon-inbox"></i> <span>Job runtime manager</span></a> </li>
+        <li class="${param.jobOperationLogs}"><a href="/jobOperationLogs"><i class="icon icon-th"></i> <span>Operation log</span></a></li>
+        <li class="${param.jobDetailsUpload}"> <a href="/jobDetails/upload"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
+        <li class="${param.jobDetails}"> <a href="/jobDetails"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
+
+
         <!--
-        <li><a href="tables.html"><i class="icon icon-th"></i> <span>Tables</span></a></li>
         <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>
         <li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Forms</span> <span class="label label-important">3</span></a>
             <ul>

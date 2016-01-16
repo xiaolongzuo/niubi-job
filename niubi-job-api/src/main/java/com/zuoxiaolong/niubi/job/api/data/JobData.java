@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.api.data;
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -45,15 +46,13 @@ public class JobData extends GenericData<JobData.Data> {
     @Getter
     public static class Data {
 
-        private String group;
+        private String groupName;
 
-        private String name;
+        private String jobName;
 
         private String jarFileName;
 
         private String packagesToScan;
-
-        private String operation;
 
         private String cron;
 
@@ -63,8 +62,80 @@ public class JobData extends GenericData<JobData.Data> {
 
         private String misfirePolicy = "None";
 
+        private String jobOperationLogId;
+
+        private String operationResult;
+
+        private String errorMessage;
+
+        private String originalJarFileName;
+
+        private String operation;
+
+        public void prepareOperation() {
+            this.operationResult = "Waiting";
+            this.errorMessage = null;
+        }
+
+        public void clearOperationLog() {
+            this.jobOperationLogId = null;
+            this.operationResult = null;
+            this.errorMessage = null;
+        }
+
+        public boolean isOperated() {
+            return StringHelper.isEmpty(this.operation) && StringHelper.isEmpty(this.originalJarFileName)
+                    && this.operationResult != null && !this.operationResult.equals("Waiting")
+                    && !StringHelper.isEmpty(this.jobOperationLogId);
+        }
+
+        public void operateSuccess() {
+            this.operationResult = "Success";
+            this.operation = null;
+            this.originalJarFileName = null;
+        }
+
+        public void operateFailed(String errorMessage) {
+            this.operationResult = "Failed";
+            this.errorMessage = errorMessage;
+            this.operation = null;
+            this.originalJarFileName = null;
+        }
+
         public boolean isSpring() {
             return mode != null && mode.equals("Spring");
+        }
+
+        public boolean isStart() {
+            return operation != null && operation.equals("Start");
+        }
+
+        public boolean isRestart() {
+            return operation != null && operation.equals("Restart");
+        }
+
+        public boolean isPause() {
+            return operation != null && operation.equals("Pause");
+        }
+
+        public boolean isUnknownOperation() {
+            return !isStart() && !isRestart() && !isPause();
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "groupName='" + groupName + '\'' +
+                    ", jobName='" + jobName + '\'' +
+                    ", originalJarFileName='" + originalJarFileName + '\'' +
+                    ", jarFileName='" + jarFileName + '\'' +
+                    ", packagesToScan='" + packagesToScan + '\'' +
+                    ", operation='" + operation + '\'' +
+                    ", cron='" + cron + '\'' +
+                    ", mode='" + mode + '\'' +
+                    ", state='" + state + '\'' +
+                    ", misfirePolicy='" + misfirePolicy + '\'' +
+                    '}';
         }
 
     }

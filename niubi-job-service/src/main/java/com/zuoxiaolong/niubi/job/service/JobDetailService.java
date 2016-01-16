@@ -15,24 +15,22 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.service;
 
-import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobDetail;
 
 import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:45
+ * @since 1/15/2016 14:44
  */
-public interface JobApi {
+public interface JobDetailService {
 
-    List<JobData> selectAllStandbyJobs();
+    void save(String jarFilePath, String packagesToScan);
 
-    void createStandbyJob(String group, String name, JobData.Data data);
+    List<JobDetail> getAllStandbyJobDetails();
 
-    void updateStandbyJob(String group, String name, JobData.Data data);
-
-    JobData selectStandbyJob(String group, String name);
+    List<String> getJarFileNameList(String group, String name);
 
 }

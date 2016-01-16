@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @since 1/15/2016 12:23
  */
 @Controller
-@RequestMapping("/node")
+@RequestMapping("/nodes")
 public class NodeController {
 
     @Autowired

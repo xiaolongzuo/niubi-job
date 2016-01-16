@@ -17,12 +17,10 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
-import com.zuoxiaolong.niubi.job.persistent.entity.Job;
-import com.zuoxiaolong.niubi.job.service.JobService;
+import com.zuoxiaolong.niubi.job.service.JobOperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -31,30 +29,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * @since 1/15/2016 12:23
  */
 @Controller
-@RequestMapping("/job")
-public class JobController {
+@RequestMapping("/jobOperationLogs")
+public class JobOperationLogController {
 
     @Autowired
-    private JobService jobService;
+    private JobOperationLogService jobOperationLogService;
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String list(Model model) {
-        model.addAttribute("jobs", jobService.getAllStandbyJobs());
-        return "job_list";
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String input(@PathVariable String id, Model model) {
-        Job job = jobService.getJob(id);
-        model.addAttribute("job", job);
-        model.addAttribute("sameGroupAndNameJobs", jobService.getSameGroupAndNameJobs(job.getGroupName(), job.getJobName()));
-        return "job_input";
-    }
-
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public String update(Job job) {
-        jobService.update(job);
-        return "redirect:/job";
+        model.addAttribute("jobOperationLogs", jobOperationLogService.getAllJobOperationLog());
+        return "job_operation_log_list";
     }
 
 }

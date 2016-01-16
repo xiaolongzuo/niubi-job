@@ -23,7 +23,7 @@ public abstract class ObjectHelper {
 		if (!field.getName().endsWith(TRANSIENT_ID_SUFFIX)) {
 			return false;
 		}
-		Method getMethod = ReflectHelper.getGetMethod(clazz, field);
+		Method getMethod = ReflectHelper.getGetterMethod(clazz, field);
 		if (getMethod != null && getMethod.getAnnotation(Transient.class) != null) {
 			return true;
 		}

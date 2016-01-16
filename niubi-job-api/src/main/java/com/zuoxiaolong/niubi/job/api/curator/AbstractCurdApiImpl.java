@@ -72,6 +72,14 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
+    protected boolean exists(String path) {
+        try {
+            return client.checkExists().forPath(path) != null;
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        }
+    }
+
     protected String insert(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().forPath(path, data);

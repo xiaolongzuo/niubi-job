@@ -17,7 +17,7 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/15 02:08
+  Time: 16/1/17 00:52
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -31,25 +31,29 @@
         <div class="row-fluid">
             <div class="widget-box">
                 <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-                    <h5>Node Manager</h5>
+                    <h5>Job Manager</h5>
                 </div>
                 <div class="widget-content nopadding">
                     <table class="table table-bordered data-table">
                         <thead>
-                            <tr>
-                                <th>Role</th>
-                                <th>Ip address</th>
-                                <th>Running job count</th>
-                                <th>Id</th>
-                            </tr>
+                        <tr>
+                            <th>State</th>
+                            <th>Method</th>
+                            <th>Mode</th>
+                            <th>Cron</th>
+                            <th>Jar file name</th>
+                            <th>Modify time</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${nodes}" var="node">
+                        <c:forEach items="${jobRuntimeDetails}" var="jobRuntimeDetail">
                             <tr class="gradeA">
-                                <td><span class="label ${node.stateLabelClass}">${node.state}</span></td>
-                                <td>${node.ip}</td>
-                                <td>${node.runningJobCount}</td>
-                                <td>${node.id}</td>
+                                <td><span class="label ${jobRuntimeDetail.stateLabelClass}">${jobRuntimeDetail.state}</span></td>
+                                <td><a href="/jobRuntimeDetails/${jobRuntimeDetail.id}">${jobRuntimeDetail.groupName}.${jobRuntimeDetail.jobName}</a></td>
+                                <td><span class="label ${jobRuntimeDetail.modeLabelClass}">${jobRuntimeDetail.mode}</span></td>
+                                <td>${jobRuntimeDetail.cron}</td>
+                                <td>${jobRuntimeDetail.jarFileName}</td>
+                                <td>${jobRuntimeDetail.modifyDateString}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

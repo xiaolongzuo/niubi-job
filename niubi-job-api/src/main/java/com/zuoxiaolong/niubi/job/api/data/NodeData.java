@@ -46,7 +46,7 @@ public class NodeData extends GenericData<NodeData.Data> {
 
         private String ip;
 
-        private String state = "BACKUP";
+        private String state = "Backup";
 
         private Integer runningJobCount = 0;
 
@@ -57,6 +57,14 @@ public class NodeData extends GenericData<NodeData.Data> {
             this.ip = ip;
         }
 
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "ip='" + ip + '\'' +
+                    ", state='" + state + '\'' +
+                    ", runningJobCount=" + runningJobCount +
+                    '}';
+        }
 
     }
 

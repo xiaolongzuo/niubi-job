@@ -57,14 +57,14 @@ public abstract class AbstractJobScanner implements JobScanner {
                     }
                 }
                 if (skipPackage) {
-                    LoggerHelper.info("skip un-need ro scanned class [" + className + "]");
+                    LoggerHelper.debug("skip un-need ro scanned class [" + className + "]");
                     return;
                 }
             }
             Class<?> clazz = classLoader.loadClass(className);
             Disabled classDisabled = clazz.getDeclaredAnnotation(Disabled.class);
             if (classDisabled != null) {
-                LoggerHelper.info("skip disabled class [" + className + "]");
+                LoggerHelper.debug("skip disabled class [" + className + "]");
                 return;
             }
             Method[] methods = clazz.getDeclaredMethods();
@@ -73,7 +73,7 @@ public abstract class AbstractJobScanner implements JobScanner {
                 Schedule schedule = method.getDeclaredAnnotation(Schedule.class);
                 Disabled methodDisabled = method.getDeclaredAnnotation(Disabled.class);
                 if (methodDisabled != null || schedule == null) {
-                    LoggerHelper.info("skip disabled or un-scheduled method [" + className + "." + method.getName() + "]");
+                    LoggerHelper.debug("skip disabled or un-scheduled method [" + className + "." + method.getName() + "]");
                     continue;
                 }
                 Type[] parameterTypes = method.getParameterTypes();
@@ -91,7 +91,7 @@ public abstract class AbstractJobScanner implements JobScanner {
                     LoggerHelper.error("schedule method must not have parameter or have a JobParameter parameter [" + className + "." + method.getName() + "]");
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             LoggerHelper.warn("scan class [" + className + " : " + e.getClass().getName() + "] failed, has been ignored.");
         }
     }

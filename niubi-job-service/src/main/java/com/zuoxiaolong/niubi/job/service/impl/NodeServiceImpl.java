@@ -45,10 +45,10 @@ public class NodeServiceImpl extends AbstractService implements NodeService {
         }
         for (NodeData nodeData : nodeModelList) {
             NodeView nodeView = new NodeView();
-            nodeView.setName(nodeData.getId());
+            nodeView.setId(nodeData.getId());
             if (nodeData.getData() != null) {
                 nodeView.setIp(nodeData.getData().getIp());
-                nodeView.setState(nodeData.getData().getState().name());
+                nodeView.setState(nodeData.getData().getState());
                 nodeView.setRunningJobCount(nodeData.getData().getRunningJobCount());
             }
             nodeViewList.add(nodeView);

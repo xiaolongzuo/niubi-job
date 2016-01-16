@@ -25,7 +25,6 @@ import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -74,8 +73,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
         this.apiFactory = new ApiFactoryImpl(client);
-        NodeData nodeData = new NodeData(apiFactory.pathApi().getStandbyNodePath(), new NodeData.Data(getIp()));
-        this.nodePath = apiFactory.nodeApi().createStandbyNode(nodeData);
+        this.nodePath = this.apiFactory.nodeApi().createStandbyNode(new NodeData.Data(getIp()));
         this.pathChildrenCache = new PathChildrenCache(client, apiFactory.pathApi().getStandbyJobPath(), true);
         this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
         try {
@@ -101,26 +99,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        List<JobData> jobDataList = apiFactory.jobApi().selectAllStandbyJobs();
-                        int runningJobCount = 0;
-                        for (JobData jobData : jobDataList) {
-                            try {
-                                JobData.Data data = jobData.getData();
-                                if ("STARTUP".equals(data.getState())) {
-                                    ScheduleManager scheduleManager = getContainer(jarRepertoryUrl, jobData).getScheduleManager();
-                                    scheduleManager.startupManual(data.getGroup(), data.getName(), data.getCron(), data.getMisfirePolicy());
-                                    runningJobCount++;
-                                }
-                            } catch (Exception e) {
-                                LoggerHelper.error("start jar failed [" + jobData.getPath() + "]", e);
-                            }
-                        }
-                        NodeData.Data data = new NodeData.Data(getIp());
-                        data.setRunningJobCount(runningJobCount);
-                        data.setState("MASTER");
-                        NodeData nodeData = new NodeData(nodePath, data);
-                        apiFactory.nodeApi().updateStandbyNode(nodeData);
-                        LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
+                        NodeData.Data nodeData = new NodeData.Data(getIp());
+                        int runningJobCount = startupJobs();
+                        updateNodeData(nodeData, runningJobCount);
                         mutex.wait();
                     }
                 } catch (Exception e) {
@@ -128,6 +109,31 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 } finally {
                     LoggerHelper.info(getIp() + " relinquishing leadership.");
                 }
+            }
+
+            private Integer startupJobs() {
+                List<JobData> jobDataList = apiFactory.jobApi().selectAllStandbyJobs();
+                int runningJobCount = 0;
+                for (JobData jobData : jobDataList) {
+                    try {
+                        JobData.Data data = jobData.getData();
+                        if ("Startup".equals(data.getState())) {
+                            Container container = getContainer(jarRepertoryUrl + jobData.getData().getJarFileName(), jobData.getData().getPackagesToScan(), jobData.getData().isSpring());
+                            container.getScheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                            runningJobCount++;
+                        }
+                    } catch (Exception e) {
+                        LoggerHelper.error("start jar failed [" + jobData.getPath() + "]", e);
+                    }
+                }
+                return runningJobCount;
+            }
+
+            private void updateNodeData(NodeData.Data data, Integer runningJobCount) {
+                data.setRunningJobCount(runningJobCount);
+                data.setState("Master");
+                apiFactory.nodeApi().updateStandbyNode(nodePath, data);
+                LoggerHelper.info(getIp() + " has been updated. [" + data + "]");
             }
 
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
@@ -138,9 +144,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         for (Container container : getContainerCache().values()) {
                             container.getScheduleManager().shutdown();
                         }
-                        NodeData nodeData = new NodeData(nodePath, new NodeData.Data(getIp()));
-                        apiFactory.nodeApi().updateStandbyNode(nodeData);
-                        LoggerHelper.info(getIp() + " has been shutdown");
+                        NodeData.Data data = new NodeData.Data(getIp());
+                        apiFactory.nodeApi().updateStandbyNode(nodePath, data);
+                        LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
                         mutex.notify();
                     }
                 }
@@ -164,20 +170,43 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 if (StringHelper.isEmpty(jobData.getData().getOperation())) {
                     return;
                 }
-                Container container = getContainer(jarRepertoryUrl, jobData);
                 JobData.Data data = jobData.getData();
-                if (jobData.getData().getOperation().equals("Start") || jobData.getData().getOperation().equals("Restart")) {
-                    container.getScheduleManager().startupManual(data.getGroup(), data.getName(), data.getCron(), data.getMisfirePolicy());
-                } else {
-                    container.getScheduleManager().shutdown(data.getGroup(), data.getName());
+                if (data.isUnknownOperation()) {
+                    return;
                 }
-                NodeData nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath);
-                nodeData.getData().setRunningJobCount(nodeData.getData().getRunningJobCount() + 1);
-                apiFactory.nodeApi().updateStandbyNode(nodeData);
+                NodeData.Data nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath).getData();
+                executeOperation(nodeData, data);
             } finally {
                 lock.unlock();
             }
         };
+    }
+
+    private void executeOperation(NodeData.Data nodeData, JobData.Data data) {
+        try {
+            if (data.isStart() || data.isRestart()) {
+                if (data.isRestart()) {
+                    Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    container.getScheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                    nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                }
+                Container container = getContainer(jarRepertoryUrl + data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
+                container.getScheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                nodeData.setRunningJobCount(nodeData.getRunningJobCount() + 1);
+                data.setState("Startup");
+            } else {
+                Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                container.getScheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                data.setState("Pause");
+            }
+            data.operateSuccess();
+            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+            apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
+        } catch (Throwable e) {
+            data.operateFailed(e.getMessage());
+            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+        }
     }
 
     public synchronized void join() {
