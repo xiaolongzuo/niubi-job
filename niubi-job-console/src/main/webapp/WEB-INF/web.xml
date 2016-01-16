@@ -49,7 +49,7 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/dashboard/index</welcome-file>
+        <welcome-file>/jsp/dashboard_index.jsp</welcome-file>
     </welcome-file-list>
 
     <error-page>

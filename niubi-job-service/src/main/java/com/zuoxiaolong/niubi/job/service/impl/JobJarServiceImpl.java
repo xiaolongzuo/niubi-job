@@ -54,7 +54,7 @@ public class JobJarServiceImpl extends AbstractService implements JobJarService,
     public void save(String jarFilePath, String packagesToScan) {
         JobJar jobJar = new JobJar();
         jobJar.setJarFileName(jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1));
-        baseDao.persist(jobJar);
+        jobJar.setPackagesToScan(packagesToScan);
         List<Job> jobs = new ArrayList<>();
         JobScanner jobScanner = new RemoteJobScanner(applicationContext.getClassLoader(), jarFilePath, packagesToScan);
         List<JobDescriptor> jobDescriptorList = jobScanner.scan();
@@ -69,6 +69,21 @@ public class JobJarServiceImpl extends AbstractService implements JobJarService,
         }
         jobJar.setJobs(jobs);
         baseDao.save(jobJar);
+    }
+
+    @Override
+    public List<JobJar> getAllJobJars() {
+        return baseDao.getAll(JobJar.class);
+    }
+
+    @Override
+    public JobJar getJobJar(String jarFileName) {
+        JobJar jobJar = new JobJar(jarFileName);
+        List<JobJar> jobJars = baseDao.getList(JobJar.class, jobJar);
+        if (jobJars == null || jobJars.size() == 0) {
+            return null;
+        }
+        return jobJars.get(0);
     }
 
 }

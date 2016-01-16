@@ -66,6 +66,10 @@ public abstract class StringHelper {
         return new String[0];
     }
 
+    public static String emptyString() {
+        return "";
+    }
+
     public static boolean isEmpty(String s) {
         return s == null || s.trim().length() == 0;
     }

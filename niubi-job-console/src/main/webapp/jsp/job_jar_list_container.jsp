@@ -17,7 +17,7 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/15 02:08
+  Time: 16/1/16 17:37
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
@@ -31,31 +31,23 @@
         <div class="row-fluid">
             <div class="widget-box">
                 <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-                    <h5>Job Manager</h5>
+                    <h5>Job Jar Manager</h5>
                 </div>
                 <div class="widget-content nopadding">
                     <table class="table table-bordered data-table">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>State</th>
-                                <th>Cron</th>
-                                <th>Mode</th>
-                                <th>Group</th>
-                                <th>Misfire policy</th>
-                            </tr>
+                        <tr>
+                            <th>File name</th>
+                            <th>Packages to scan</th>
+                            <th>Upload time</th>
+                        </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobs}" var="job">
+                        <c:forEach items="${jobJars}" var="jobJar">
                             <tr class="gradeA">
-                                <td><a href="/job/${job.id}">${job.jobName}</a></td>
-                                <td>
-                                    <span class="label label-success">${job.stateLabel}</span>
-                                </td>
-                                <td>${job.cron}</td>
-                                <td>${job.modeLabel}</td>
-                                <td>${job.groupName}</td>
-                                <td>${job.misfirePolicy}</td>
+                                <td>${jobJar.jarFileName}</td>
+                                <td>${jobJar.packagesToScan}</td>
+                                <td>${jobJar.createDateString}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

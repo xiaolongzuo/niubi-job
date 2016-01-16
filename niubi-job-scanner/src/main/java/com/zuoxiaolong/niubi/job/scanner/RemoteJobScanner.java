@@ -19,7 +19,6 @@ package com.zuoxiaolong.niubi.job.scanner;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 
 import java.io.File;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -43,16 +41,14 @@ public class RemoteJobScanner extends AbstractJobScanner {
 
     private String[] jarFilePaths;
 
-    private List<String> packagesToScan = Collections.emptyList();
-
     public RemoteJobScanner(ClassLoader classLoader, String jarFilePath, String packagesToScan) {
-        super(new JobScanClassLoader(classLoader));
+        super(new JobScanClassLoader(classLoader), packagesToScan);
         this.jarFilePaths = new String[]{jarFilePath};
-        this.packagesToScan = StringHelper.splitToList(packagesToScan);
+
     }
 
-    public RemoteJobScanner(JobScanClassLoader classLoader, String... jarUrls) {
-        super(classLoader);
+    public RemoteJobScanner(JobScanClassLoader classLoader, String packagesToScan, String... jarUrls) {
+        super(classLoader, packagesToScan);
         if (jarUrls != null) {
             this.jarFilePaths = new String[jarUrls.length];
             for (int i = 0;i < this.jarFilePaths.length; i++) {
@@ -104,10 +100,6 @@ public class RemoteJobScanner extends AbstractJobScanner {
         while (jarEntryEnumeration.hasMoreElements()) {
             String jarEntryName = jarEntryEnumeration.nextElement().getName();
             if (jarEntryName == null || !jarEntryName.endsWith(".class")) {
-                continue;
-            }
-            String packageName = ClassHelper.getPackageName(jarEntryName);
-            if (packagesToScan.size() > 0 && !packagesToScan.contains(packageName)) {
                 continue;
             }
             String className = ClassHelper.getClassName(jarEntryName);

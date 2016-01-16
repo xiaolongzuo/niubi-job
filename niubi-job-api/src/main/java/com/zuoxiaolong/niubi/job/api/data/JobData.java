@@ -45,32 +45,28 @@ public class JobData extends GenericData<JobData.Data> {
     @Getter
     public static class Data {
 
+        private String group;
+
+        private String name;
+
         private String jarFileName;
 
-        private Mode mode;
+        private String packagesToScan;
 
-        private State state;
+        private String mode;
+
+        private String state;
+
+        private String operation;
 
         private String cron;
 
-        private MisfirePolicy misfirePolicy;
+        private String misfirePolicy;
 
         public boolean isSpring() {
-            return mode == Mode.SPRING;
+            return mode != null && mode.equals("SPRING");
         }
 
-    }
-
-    public enum Mode {
-        SPRING, COMMON
-    }
-
-    public enum State {
-        STARTUP, PAUSE, SHUTDOWN
-    }
-
-    public enum MisfirePolicy {
-        DoNothing, IgnoreMisfires, FireAndProceed, None
     }
 
 }

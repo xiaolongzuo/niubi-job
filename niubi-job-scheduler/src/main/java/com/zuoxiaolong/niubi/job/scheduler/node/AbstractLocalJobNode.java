@@ -27,13 +27,21 @@ public abstract class AbstractLocalJobNode extends AbstractNode implements Local
 
     private Container container;
 
-    public AbstractLocalJobNode(ClassLoader classLoader, String[] propertiesFileNames) {
+    public AbstractLocalJobNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
         super(classLoader, propertiesFileNames);
-        this.container = new DefaultContainer(getConfiguration());
+        this.container = new DefaultContainer(getConfiguration(), packagesToScan);
     }
 
     public Container getContainer() {
         return container;
+    }
+
+    public void join() {
+        container.getScheduleManager().startup();
+    }
+
+    public void exit() {
+        container.getScheduleManager().shutdown();
     }
 
 }

@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.examples.jobs;
-
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scanner.annotation.Disabled;
-import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
+package com.zuoxiaolong.niubi.job.core.helper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 02:17
+ * @since 16/1/16 17:40
  */
-public class MyJob3 {
+public abstract class DateHelper {
 
-    @Schedule(cron = "0/10 * * * * ?")
-    public void test1() {
-        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group3][1]");
-    }
-
-    @Disabled
-    @Schedule(cron = "0/11 * * * * ?")
-    public void test2() {
-        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "  我是测试方法[group3][2]");
+    public static String format(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
     }
 
 }

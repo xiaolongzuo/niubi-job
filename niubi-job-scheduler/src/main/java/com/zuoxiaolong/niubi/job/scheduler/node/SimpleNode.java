@@ -28,23 +28,19 @@ import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 public class SimpleNode extends AbstractLocalJobNode {
 
     public SimpleNode() {
-        this(ClassHelper.getDefaultClassLoader(), StringHelper.emptyArray());
+        this(ClassHelper.getDefaultClassLoader(), StringHelper.emptyString() ,StringHelper.emptyArray());
     }
 
     public SimpleNode(ClassLoader classLoader) {
-        this(classLoader, StringHelper.emptyArray());
+        this(classLoader, StringHelper.emptyString(), StringHelper.emptyArray());
     }
 
-    public SimpleNode(ClassLoader classLoader, String[] propertiesFileNames) {
-        super(classLoader, propertiesFileNames);
+    public SimpleNode(ClassLoader classLoader, String packagesToScan) {
+        this(classLoader, packagesToScan, StringHelper.emptyArray());
     }
 
-    public void join() {
-        getContainer().getScheduleManager().startup();
-    }
-
-    public void exit() {
-        getContainer().getScheduleManager().shutdown();
+    public SimpleNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
+        super(classLoader, packagesToScan, propertiesFileNames);
     }
 
 }

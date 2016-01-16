@@ -18,8 +18,9 @@
 package com.zuoxiaolong.niubi.job.service.impl;
 
 import com.zuoxiaolong.niubi.job.api.data.NodeData;
-import com.zuoxiaolong.niubi.job.service.view.NodeView;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.service.NodeService;
+import com.zuoxiaolong.niubi.job.service.view.NodeView;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -34,8 +35,14 @@ public class NodeServiceImpl extends AbstractService implements NodeService {
 
     @Override
     public List<NodeView> getAllStandbyNodes() {
-        List<NodeData> nodeModelList = apiFactory.nodeApi().selectAllStandbyNodes();
+        List<NodeData> nodeModelList;
         List<NodeView> nodeViewList = new ArrayList<>();
+        try {
+            nodeModelList = apiFactory.nodeApi().selectAllStandbyNodes();
+        } catch (Exception e) {
+            LoggerHelper.warn("select all standby nodes failed, has been ignored [" + e.getClass().getName() + ", " + e.getMessage() + "]");
+            return nodeViewList;
+        }
         for (NodeData nodeData : nodeModelList) {
             NodeView nodeView = new NodeView();
             nodeView.setName(nodeData.getId());

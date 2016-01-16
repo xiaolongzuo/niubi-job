@@ -19,20 +19,20 @@
   User: Xiaolong Zuo
   Time: 16/1/16 04:58
 --%>
-<script src="js/jquery.min.js"></script>
-<script src="js/jquery.ui.custom.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/bootstrap-colorpicker.js"></script>
-<script src="js/bootstrap-datepicker.js"></script>
-<script src="js/jquery.toggle.buttons.html"></script>
-<script src="js/masked.js"></script>
-<script src="js/jquery.uniform.js"></script>
-<script src="js/select2.min.js"></script>
-<script src="js/matrix.js"></script>
-<script src="js/matrix.form_common.js"></script>
-<script src="js/wysihtml5-0.3.0.js"></script>
-<script src="js/jquery.peity.min.js"></script>
-<script src="js/bootstrap-wysihtml5.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.ui.custom.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/bootstrap-colorpicker.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/bootstrap-datepicker.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.toggle.buttons.html"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/masked.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.uniform.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/select2.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/matrix.form_common.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/wysihtml5-0.3.0.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/jquery.peity.min.js"></script>
+<script src="${pageContext.request.contextPath}/jsp/js/bootstrap-wysihtml5.js"></script>
 <script>
     $('.textarea_editor').wysihtml5();
 </script>

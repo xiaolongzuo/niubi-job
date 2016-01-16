@@ -34,8 +34,8 @@ import java.util.List;
  */
 public class LocalJobScanner extends AbstractJobScanner {
 
-    public LocalJobScanner(JobScanClassLoader classLoader) {
-        super(classLoader);
+    public LocalJobScanner(JobScanClassLoader classLoader, String packagesToScan) {
+        super(classLoader, packagesToScan);
     }
 
     @Override

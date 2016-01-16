@@ -16,7 +16,9 @@ package com.zuoxiaolong.niubi.job.scanner;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scanner.annotation.Disabled;
 import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
@@ -25,6 +27,7 @@ import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,12 +38,29 @@ public abstract class AbstractJobScanner implements JobScanner {
 
     protected JobScanClassLoader classLoader;
 
-    public AbstractJobScanner(JobScanClassLoader classLoader) {
+    private List<String> packagesToScan = Collections.emptyList();
+
+    public AbstractJobScanner(JobScanClassLoader classLoader, String packagesToScan) {
         this.classLoader = classLoader;
+        this.packagesToScan = StringHelper.splitToList(packagesToScan);
     }
 
     protected void scanClass(String className, List<JobDescriptor> descriptorList) {
         try {
+            if (packagesToScan.size() > 0) {
+                String packageName = ClassHelper.getPackageName(className);
+                boolean skipPackage = true;
+                for (String packageToScan: packagesToScan) {
+                    if (packageName.startsWith(packageToScan)) {
+                        skipPackage = false;
+                        break;
+                    }
+                }
+                if (skipPackage) {
+                    LoggerHelper.info("skip un-need ro scanned class [" + className + "]");
+                    return;
+                }
+            }
             Class<?> clazz = classLoader.loadClass(className);
             Disabled classDisabled = clazz.getDeclaredAnnotation(Disabled.class);
             if (classDisabled != null) {

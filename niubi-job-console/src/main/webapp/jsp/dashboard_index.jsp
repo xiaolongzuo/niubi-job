@@ -28,8 +28,10 @@
 <body>
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
-<jsp:include page="dashboard_sidebar.jsp"/>
-<jsp:include page="dashboard_index.jsp"/>
+<jsp:include page="dashboard_sidebar.jsp">
+    <jsp:param name="index" value="active"/>
+</jsp:include>
+<jsp:include page="dashboard_container.jsp"/>
 <jsp:include page="dashboard_footer.jsp"/>
 <jsp:include page="dashboard_bottom.jsp"/>
 </body>

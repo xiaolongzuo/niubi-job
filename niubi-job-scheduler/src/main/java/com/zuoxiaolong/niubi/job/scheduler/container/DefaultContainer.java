@@ -35,18 +35,18 @@ public class DefaultContainer implements Container {
 
     private ScheduleManager scheduleManager;
 
-    public DefaultContainer(Configuration configuration) {
+    public DefaultContainer(Configuration configuration, String packagesToScan) {
         this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan);
     }
 
-    public DefaultContainer(Configuration configuration, String jarUrl) {
-        this(configuration, new String[]{jarUrl});
+    public DefaultContainer(Configuration configuration, String packagesToScan, String jarUrl) {
+        this(configuration, packagesToScan, new String[]{jarUrl});
     }
 
-    public DefaultContainer(Configuration configuration, String[] jarUrls) {
+    public DefaultContainer(Configuration configuration, String packagesToScan, String[] jarUrls) {
         this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, jarUrls);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan, jarUrls);
     }
 
     public Context getContext() {

@@ -20,7 +20,6 @@ import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.context.Context;
@@ -55,15 +54,15 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> jobStatusMap;
 
-    public DefaultScheduleManager(Context context, Configuration configuration) {
+    public DefaultScheduleManager(Context context, Configuration configuration, String packagesToScan) {
         initScheduler(configuration);
-        this.jobScanner = new ScheduleLocalJobScanner(context);
+        this.jobScanner = new ScheduleLocalJobScanner(context, packagesToScan);
         initJobDetails(context);
     }
 
-    public DefaultScheduleManager(Context context, Configuration configuration, String[] jarUrls) {
+    public DefaultScheduleManager(Context context, Configuration configuration, String packagesToScan, String[] jarUrls) {
         initScheduler(configuration);
-        this.jobScanner = new ScheduleRemoteJobScanner(context, jarUrls);
+        this.jobScanner = new ScheduleRemoteJobScanner(context, packagesToScan, jarUrls);
         initJobDetails(context);
     }
 
@@ -191,11 +190,11 @@ public class DefaultScheduleManager implements ScheduleManager {
     }
 
     @Override
-    public void startup(String cron, MisfirePolicy misfirePolicy) {
+    public void startupManual(String cron, String misfirePolicy) {
         lock.lock();
         try {
             for (String group : getGroupList()) {
-                startup(group, cron, misfirePolicy);
+                startupManual(group, cron, misfirePolicy);
             }
         } finally {
             lock.unlock();
@@ -203,11 +202,11 @@ public class DefaultScheduleManager implements ScheduleManager {
     }
 
     @Override
-    public void startup(String group, String cron, MisfirePolicy misfirePolicy) {
+    public void startupManual(String group, String cron, String misfirePolicy) {
         lock.lock();
         try {
             for (String name : getNameList(group)) {
-                startup(group, name, cron, misfirePolicy);
+                startupManual(group, name, cron, misfirePolicy);
             }
         } finally {
             lock.unlock();
@@ -215,7 +214,7 @@ public class DefaultScheduleManager implements ScheduleManager {
     }
 
     @Override
-    public void startup(String group, String name, String cron, MisfirePolicy misfirePolicy) {
+    public void startupManual(String group, String name, String cron, String misfirePolicy) {
         lock.lock();
         try {
             JobKey jobKey = JobKey.jobKey(name, group);

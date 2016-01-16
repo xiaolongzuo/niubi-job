@@ -16,14 +16,12 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
+import com.zuoxiaolong.niubi.job.core.helper.DateHelper;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -38,6 +36,8 @@ public class JobJar extends BaseEntity {
 
     private String jarFileName;
 
+    private String packagesToScan;
+
     private List<Job> jobs;
 
     public JobJar() {
@@ -47,6 +47,11 @@ public class JobJar extends BaseEntity {
         this.jarFileName = jarFileName;
     }
 
+    public String getPackagesToScan() {
+        return packagesToScan;
+    }
+
+    @Column(unique = true)
     public String getJarFileName() {
         return jarFileName;
     }
@@ -54,6 +59,11 @@ public class JobJar extends BaseEntity {
     @OneToMany(mappedBy = "jobJar", fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     public List<Job> getJobs() {
         return jobs;
+    }
+
+    @Transient
+    public String getCreateDateString() {
+        return DateHelper.format(getCreateDate());
     }
 
 }

@@ -14,36 +14,19 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.schedule;
+package com.zuoxiaolong.niubi.job.spring.config;
 
-import java.util.List;
+import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/10 00:59
+ * @since 16/1/16 15:52
  */
-public interface ScheduleManager {
+public class NiubiJobNamespaceHandler extends NamespaceHandlerSupport {
 
-    void startup();
-
-    void startup(String group);
-
-    void startup(String group, String name);
-
-    void startupManual(String cron, String misfirePolicy);
-
-    void startupManual(String group, String cron, String misfirePolicy);
-
-    void startupManual(String group, String name, String cron, String misfirePolicy);
-
-    void shutdown();
-
-    void shutdown(String group);
-
-    void shutdown(String group, String name);
-
-    List<String> getGroupList();
-
-    List<String> getNameList(String group);
+    @Override
+    public void init() {
+        registerBeanDefinitionParser("job-driven", new JobDrivenBeanDefinitionParser());
+    }
 
 }

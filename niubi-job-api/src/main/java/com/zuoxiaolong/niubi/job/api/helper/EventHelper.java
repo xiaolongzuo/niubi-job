@@ -36,4 +36,8 @@ public abstract class EventHelper {
         return event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED;
     }
 
+    public static boolean isChildModifyEvent(PathChildrenCacheEvent event) {
+        return isChildAddEvent(event) || isChildRemoveEvent(event) || isChildUpdateEvent(event);
+    }
+
 }

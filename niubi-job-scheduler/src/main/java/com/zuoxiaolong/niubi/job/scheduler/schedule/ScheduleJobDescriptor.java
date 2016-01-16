@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
-import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
@@ -37,7 +36,7 @@ public interface ScheduleJobDescriptor extends JobDescriptor {
 
     Trigger trigger();
 
-    ScheduleJobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy);
+    ScheduleJobDescriptor withTrigger(String cron, String misfirePolicy);
 
     TriggerKey triggerKey();
 

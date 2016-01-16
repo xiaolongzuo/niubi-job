@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.service.JobJarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,12 @@ public class JobJarController {
     @Autowired
     private JobJarService jobJarService;
 
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String list(Model model) {
+        model.addAttribute("jobJars", jobJarService.getAllJobJars());
+        return "job_jar_list";
+    }
+
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public String upload(String packagesToScan, @RequestParam MultipartFile jobJar, HttpServletRequest request) {
         String jarFilePath = request.getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
@@ -50,7 +57,7 @@ public class JobJarController {
         } catch (IOException e) {
             throw new NiubiException(e);
         }
-        return "job_list";
+        return "redirect:/job";
     }
 
 }

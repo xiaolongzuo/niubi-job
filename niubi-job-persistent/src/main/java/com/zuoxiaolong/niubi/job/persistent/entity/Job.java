@@ -89,6 +89,13 @@ public class Job extends BaseEntity {
 
     private String modeLabel;
 
+    private String operation;
+
+    @Transient
+    public String getOperation() {
+        return operation;
+    }
+
     @Transient
     public String getJarFileName() {
         return jarFileName;

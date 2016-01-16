@@ -29,6 +29,10 @@ public interface JobService {
 
     List<Job> getAllStandbyJobs();
 
-    void save(Job job);
+    Job getJob(String id);
+
+    List<Job> getSameGroupAndNameJobs(String group, String name);
+
+    void update(Job job);
 
 }

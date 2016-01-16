@@ -29,8 +29,8 @@ public class ScheduleLocalJobScanner extends LocalJobScanner {
 
     private Context context;
 
-    public ScheduleLocalJobScanner(Context context) {
-        super(context.classLoader());
+    public ScheduleLocalJobScanner(Context context, String packagesToScan) {
+        super(context.classLoader(), packagesToScan);
         this.context = context;
     }
 

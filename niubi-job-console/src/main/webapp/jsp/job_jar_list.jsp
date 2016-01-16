@@ -17,23 +17,22 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/16 04:56
+  Time: 16/1/16 17:36
 --%>
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <jsp:include page="input_head.jsp"/>
+    <jsp:include page="list_head.jsp"/>
 </head>
 <body>
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
 <jsp:include page="dashboard_sidebar.jsp">
-    <jsp:param name="jobJarInput" value="active"/>
+    <jsp:param name="jobJar" value="active"/>
 </jsp:include>
-<jsp:include page="job_jar_input_container.jsp"/>
+<jsp:include page="job_jar_list_container.jsp"/>
 <jsp:include page="dashboard_footer.jsp"/>
-<jsp:include page="input_bottom.jsp"/>
+<jsp:include page="list_bottom.jsp"/>
 </body>
 </html>
-

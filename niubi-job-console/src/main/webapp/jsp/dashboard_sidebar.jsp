@@ -19,12 +19,16 @@
   User: Xiaolong Zuo
   Time: 16/1/15 02:03
 --%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="active"><a href="/node"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
-        <li> <a href="/job"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
-        <li> <a href="/jsp/job_jar_input.jsp"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
+        <li class="${param.index}"> <a href="/"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+        <li class="${param.node}"> <a href="/node"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li class="${param.job}"> <a href="/job"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
+        <li class="${param.jobJar}"> <a href="/jobJar"><i class="icon icon-inbox"></i> <span>Job jar manager</span></a> </li>
+        <li class="${param.jobJarInput}"> <a href="/jsp/job_jar_input.jsp"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
         <!--
         <li><a href="tables.html"><i class="icon icon-th"></i> <span>Tables</span></a></li>
         <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>

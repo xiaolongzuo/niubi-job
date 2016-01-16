@@ -29,8 +29,8 @@ public class ScheduleRemoteJobScanner extends RemoteJobScanner {
 
     private Context context;
 
-    public ScheduleRemoteJobScanner(Context context, String[] jarUrls) {
-        super(context.classLoader(), jarUrls);
+    public ScheduleRemoteJobScanner(Context context, String packagesToScan, String[] jarUrls) {
+        super(context.classLoader(), packagesToScan, jarUrls);
         this.context = context;
     }
 

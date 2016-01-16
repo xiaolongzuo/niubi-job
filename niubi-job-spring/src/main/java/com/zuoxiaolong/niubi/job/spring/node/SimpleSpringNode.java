@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.examples.jobs;
+package com.zuoxiaolong.niubi.job.spring.node;
 
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 00:17
+ * @since 16/1/16 17:01
  */
-public class EmptyJob implements Job {
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+public class SimpleSpringNode extends AbstractSpringLocalJobNode {
+
+    public SimpleSpringNode(ApplicationContext applicationContext, String packagesToScan) {
+        super(applicationContext, packagesToScan, StringHelper.emptyArray());
     }
+
+    public SimpleSpringNode(ApplicationContext applicationContext, String packagesToScan, String[] propertiesFileNames) {
+        super(applicationContext, packagesToScan, propertiesFileNames);
+    }
+
 }

@@ -17,7 +17,7 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/16 04:56
+  Time: 16/1/16 18:44
 --%>
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
 <!DOCTYPE html>
@@ -29,11 +29,10 @@
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
 <jsp:include page="dashboard_sidebar.jsp">
-    <jsp:param name="jobJarInput" value="active"/>
+    <jsp:param name="job" value="active"/>
 </jsp:include>
-<jsp:include page="job_jar_input_container.jsp"/>
+<jsp:include page="job_input_container.jsp"/>
 <jsp:include page="dashboard_footer.jsp"/>
 <jsp:include page="input_bottom.jsp"/>
 </body>
 </html>
-

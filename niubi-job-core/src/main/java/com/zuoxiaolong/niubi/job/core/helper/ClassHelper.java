@@ -22,17 +22,13 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 public abstract class ClassHelper {
 
-    public static String getPackageName(String jarEntryName) {
-        if (jarEntryName.endsWith(".class")) {
-            jarEntryName = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replace("/", ".");
-            int index = jarEntryName.lastIndexOf(".");
-            if (index < 0 ) {
-                return null;
-            } else {
-                return jarEntryName.substring(0, index);
-            }
+    public static String getPackageName(String className) {
+        AssertHelper.notEmpty(className, "className can't be null.");
+        int index = className.lastIndexOf(".");
+        if (index < 0) {
+            return "";
         }
-        return null;
+        return className.substring(0, index);
     }
 
     public static String getClassName(String jarEntryName) {

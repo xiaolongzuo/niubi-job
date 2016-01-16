@@ -18,8 +18,11 @@
 package com.zuoxiaolong.niubi.job.service.impl;
 
 import com.zuoxiaolong.niubi.job.api.data.JobData;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.Job;
+import com.zuoxiaolong.niubi.job.persistent.entity.JobJar;
+import com.zuoxiaolong.niubi.job.service.JobJarService;
 import com.zuoxiaolong.niubi.job.service.JobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,22 +39,56 @@ public class JobServiceImpl extends AbstractService implements JobService {
     @Autowired
     private BaseDao baseDao;
 
+    @Autowired
+    private JobJarService jobJarService;
+
     @Override
     public List<Job> getAllStandbyJobs() {
         return baseDao.getAll(Job.class);
     }
 
     @Override
-    public void save(Job job) {
+    public Job getJob(String id) {
+        return baseDao.get(Job.class, id);
+    }
+
+    @Override
+    public List<Job> getSameGroupAndNameJobs(String group, String name) {
+        Job job = new Job();
+        job.setGroupName(group);
+        job.setJobName(name);
+        return baseDao.getList(Job.class, job, false);
+    }
+
+    @Override
+    public void update(Job job) {
+        JobJar jobJar = jobJarService.getJobJar(job.getJarFileName());
+        //set properties
+        String path = apiFactory.pathApi().getStandbyNodeJobPath() + "/" + job.getGroupName() + "." +job.getJobName();
         JobData.Data data = new JobData.Data();
-        data.setCron(job.getCron());
+        data.setGroup(job.getGroupName());
+        data.setName(job.getJobName());
+        data.setMode(job.getMode());
         data.setJarFileName(job.getJarFileName());
-        data.setMisfirePolicy(JobData.MisfirePolicy.valueOf(job.getMisfirePolicy()));
-        data.setMode(JobData.Mode.valueOf(job.getMode()));
-        data.setState(JobData.State.valueOf(job.getState()));
-        JobData jobData = new JobData(apiFactory.pathApi().getStandbyNodeJobPath() + "/" + job.getGroupName() + "." + job.getJobName(), data);
-        baseDao.update(job);
+        data.setPackagesToScan(jobJar.getPackagesToScan());
+        data.setCron(job.getCron());
+        data.setMisfirePolicy(job.getMisfirePolicy());
+        data.setOperation(job.getOperation());
+        if ("Start".equals(job.getOperation()) || "Restart".equals(job.getOperation())) {
+            job.setState("STARTUP");
+            data.setState("STARTUP");
+        } else if ("Shutdown".equals(job.getOperation())) {
+            job.setState("SHUTDOWN");
+            data.setState("SHUTDOWN");
+        } else {
+            LoggerHelper.warn("invalid operation [" + job.getOperation() + "]");
+            return;
+        }
+
+        JobData jobData = new JobData(path, data);
         apiFactory.jobApi().addStandbyJob(jobData);
+        job.setJobJar(jobJar);
+        baseDao.update(job);
     }
 
 }

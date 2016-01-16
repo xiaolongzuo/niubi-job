@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.examples.jobs;
+package com.zuoxiaolong.niubi.job.spring.config;
 
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.zuoxiaolong.niubi.job.scheduler.node.Node;
+import com.zuoxiaolong.niubi.job.spring.node.SimpleSpringNode;
+import lombok.Setter;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/11 23:37
+ * @since 16/1/16 15:58
  */
-public class TestJob implements Job {
+public class SpringContextJobDriver implements ApplicationContextAware {
 
-    public void execute(JobExecutionContext context) throws JobExecutionException {
-        LoggerHelper.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + " 这是一个TestJob");
+    @Setter
+    private ApplicationContext applicationContext;
+
+    @Setter
+    private String packagesToScan;
+
+    public void init() {
+        Node node = new SimpleSpringNode(applicationContext, packagesToScan);
+        node.join();
     }
 
 }

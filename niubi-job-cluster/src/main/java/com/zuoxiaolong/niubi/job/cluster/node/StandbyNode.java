@@ -28,7 +28,6 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
@@ -95,7 +94,10 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         List<JobData> jobDataList = apiFactory.jobApi().selectAllStandbyJobs();
                         for (JobData jobData : jobDataList) {
                             try {
-                                getContainer(jarRepertoryUrl, jobData).getScheduleManager().startup();
+                                JobData.Data data = jobData.getData();
+                                if ("STARTUP".equals(data.getState())) {
+                                    getContainer(jarRepertoryUrl, jobData).getScheduleManager().startupManual(data.getGroup(), data.getName(), data.getCron(), data.getMisfirePolicy());
+                                }
                             } catch (Exception e) {
                                 LoggerHelper.error("start jar failed [" + jobData.getPath() + "]", e);
                             }
@@ -129,16 +131,22 @@ public class StandbyNode extends AbstractRemoteJobNode {
     public PathChildrenCacheListener createPathChildrenCacheListener() {
         return (curatorFramework, event) -> {
             boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
-            boolean isAddOrRemoveEvent = EventHelper.isChildAddEvent(event) || EventHelper.isChildRemoveEvent(event);
-            if (!hasLeadership || !isAddOrRemoveEvent) {
+            if (!hasLeadership) {
+                return;
+            }
+            if (!EventHelper.isChildModifyEvent(event)) {
                 return;
             }
             JobData jobData = new JobData(event.getData());
+            if (StringHelper.isEmpty(jobData.getData().getOperation())) {
+                return;
+            }
             Container container = getContainer(jarRepertoryUrl, jobData);
-            if (event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED) {
-                container.getScheduleManager().startup();
+            JobData.Data data = jobData.getData();
+            if (jobData.getData().getOperation().equals("Start") || jobData.getData().getOperation().equals("Restart")) {
+                container.getScheduleManager().startupManual(data.getGroup(), data.getName(), data.getCron(), data.getMisfirePolicy());
             } else {
-                container.getScheduleManager().shutdown();
+                container.getScheduleManager().shutdown(data.getGroup(), data.getName());
             }
         };
     }

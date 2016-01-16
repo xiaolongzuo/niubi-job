@@ -37,6 +37,7 @@ public class MasterSlaveLocalJobNode extends AbstractRemoteJobNode {
     public void exit() {
 
     }
+
 //
 //    private DistributedAtomicInteger distributedAtomicInteger;
 //

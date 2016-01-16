@@ -57,9 +57,9 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
             container = containerCache.get(jobData.getId());
             if (container == null) {
                 if (jobData.getData().isSpring()) {
-                    container = new DefaultSpringContainer(getConfiguration(), jarRepertoryUrl + jobData.getId());
+                    container = new DefaultSpringContainer(getConfiguration(), jobData.getData().getPackagesToScan(), jarRepertoryUrl + jobData.getId());
                 } else {
-                    container = new DefaultContainer(getConfiguration(), jarRepertoryUrl + jobData.getId());
+                    container = new DefaultContainer(getConfiguration(), jobData.getData().getPackagesToScan(), jarRepertoryUrl + jobData.getId());
                 }
                 containerCache.put(jobData.getId(), container);
             }

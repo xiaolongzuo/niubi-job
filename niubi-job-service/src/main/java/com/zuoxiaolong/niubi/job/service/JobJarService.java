@@ -16,6 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.service;
 
+import com.zuoxiaolong.niubi.job.persistent.entity.JobJar;
+
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
  * @since 16/1/16 00:49
@@ -23,5 +27,9 @@ package com.zuoxiaolong.niubi.job.service;
 public interface JobJarService {
 
     void save(String jarFilePath, String packagesToScan);
+
+    List<JobJar> getAllJobJars();
+
+    JobJar getJobJar(String jarFileName);
 
 }

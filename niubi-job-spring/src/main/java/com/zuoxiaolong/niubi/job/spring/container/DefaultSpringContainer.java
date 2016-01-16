@@ -34,24 +34,23 @@ public class DefaultSpringContainer implements SpringContainer {
 
     private ScheduleManager scheduleManager;
 
-    public DefaultSpringContainer(Configuration configuration) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(APPLICATION_CONTEXT_XML_PATH);
+    public DefaultSpringContainer(ApplicationContext applicationContext, Configuration configuration, String packagesToScan) {
         this.context = new DefaultSpringContext(applicationContext);
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan);
     }
 
-    public DefaultSpringContainer(Configuration configuration, String jarUrl) {
-        this(configuration, APPLICATION_CONTEXT_XML_PATH, new String[]{jarUrl});
+    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String jarUrl) {
+        this(configuration, packagesToScan, APPLICATION_CONTEXT_XML_PATH, new String[]{jarUrl});
     }
 
-    public DefaultSpringContainer(Configuration configuration, String[] jarUrls) {
-        this(configuration, APPLICATION_CONTEXT_XML_PATH, jarUrls);
+    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String[] jarUrls) {
+        this(configuration, packagesToScan, APPLICATION_CONTEXT_XML_PATH, jarUrls);
     }
 
-    public DefaultSpringContainer(Configuration configuration, String applicationContextXmlPath, String[] jarUrls) {
+    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String applicationContextXmlPath, String[] jarUrls) {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext(applicationContextXmlPath);
         this.context = new DefaultSpringContext(applicationContext);
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, jarUrls);
+        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan, jarUrls);
     }
 
     @Override

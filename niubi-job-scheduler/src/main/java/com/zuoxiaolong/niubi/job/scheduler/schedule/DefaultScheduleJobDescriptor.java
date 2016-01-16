@@ -69,9 +69,9 @@ public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implement
     }
 
     @Override
-    public ScheduleJobDescriptor withTrigger(String cron, MisfirePolicy misfirePolicy) {
+    public ScheduleJobDescriptor withTrigger(String cron, String misfirePolicy) {
         this.cron = cron;
-        this.misfirePolicy = misfirePolicy;
+        this.misfirePolicy = MisfirePolicy.valueOf(misfirePolicy);
         return this;
     }
 
