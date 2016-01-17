@@ -78,6 +78,10 @@ public abstract class StringHelper {
         return s == null || s.length == 0;
     }
 
+    public static String[] checkEmpty(String[] s) {
+        return ObjectHelper.isEmpty(s) ? emptyArray() : s;
+    }
+
     public static String isEmpty(String value, String defaultValue) {
         if (isEmpty(value)) {
             return defaultValue;

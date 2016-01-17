@@ -32,17 +32,17 @@ public class AbstractSpringLocalJobNode extends AbstractNode implements LocalJob
 
     public AbstractSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan, String[] propertiesFileNames) {
         super(applicationContext.getClassLoader(), propertiesFileNames);
-        this.container = new DefaultSpringContainer(applicationContext, getConfiguration(), packagesToScan);
+        this.container = new DefaultSpringContainer(getConfiguration(), packagesToScan);
     }
 
     @Override
     public void join() {
-        this.container.getScheduleManager().startup();
+        this.container.scheduleManager().startup();
     }
 
     @Override
     public void exit() {
-        this.container.getScheduleManager().shutdown();
+        this.container.scheduleManager().shutdown();
     }
 
     @Override

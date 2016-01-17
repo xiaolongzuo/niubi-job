@@ -16,13 +16,19 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
-import com.zuoxiaolong.niubi.job.spring.context.DefaultSpringContext;
-import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
+import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.ClassUtils;
 
 /**
  * @author 左潇龙
@@ -30,36 +36,56 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class DefaultSpringContainer implements SpringContainer {
 
-    private SpringContext context;
+    private JobScanClassLoader classLoader;
+
+    private JobBeanFactory jobBeanFactory;
+
+    private ApplicationContext applicationContext;
 
     private ScheduleManager scheduleManager;
 
-    public DefaultSpringContainer(ApplicationContext applicationContext, Configuration configuration, String packagesToScan) {
-        this.context = new DefaultSpringContext(applicationContext);
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan);
+    public DefaultSpringContainer(Configuration configuration, String packagesToScan) {
+        this.classLoader = new JobScanClassLoader(ClassHelper.getDefaultClassLoader());
+        ClassUtils.overrideThreadContextClassLoader(this.classLoader);
+        this.applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        this.jobBeanFactory = new SpringJobBeanFactory(applicationContext);
+        this.scheduleManager = new DefaultScheduleManager(this.classLoader, this.jobBeanFactory, configuration, packagesToScan);
     }
 
     public DefaultSpringContainer(Configuration configuration, String packagesToScan, String jarUrl) {
-        this(configuration, packagesToScan, APPLICATION_CONTEXT_XML_PATH, new String[]{jarUrl});
+        this(configuration, packagesToScan, new String[]{jarUrl});
     }
 
     public DefaultSpringContainer(Configuration configuration, String packagesToScan, String[] jarUrls) {
-        this(configuration, packagesToScan, APPLICATION_CONTEXT_XML_PATH, jarUrls);
-    }
-
-    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String applicationContextXmlPath, String[] jarUrls) {
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(applicationContextXmlPath);
-        this.context = new DefaultSpringContext(applicationContext);
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan, jarUrls);
+        this.classLoader = new JobScanClassLoader(ClassHelper.getDefaultClassLoader());
+        String[] jarFilePaths = StringHelper.emptyArray();
+        if (!ListHelper.isEmpty(jarUrls)) {
+            jarFilePaths = JarFileHelper.download(this.classLoader.getResource("").getFile(), jarUrls);
+            this.classLoader.addJarFiles(jarFilePaths);
+        }
+        ClassUtils.overrideThreadContextClassLoader(this.classLoader);
+        this.applicationContext = new ClassPathXmlApplicationContext("applicationContext.xml");
+        this.jobBeanFactory = new SpringJobBeanFactory(applicationContext);
+        this.scheduleManager = new DefaultScheduleManager(this.classLoader, this.jobBeanFactory, configuration, packagesToScan, jarFilePaths);
     }
 
     @Override
-    public SpringContext getContext() {
-        return context;
+    public ApplicationContext applicationContext() {
+        return applicationContext;
     }
 
     @Override
-    public ScheduleManager getScheduleManager() {
+    public JobScanClassLoader classLoader() {
+        return classLoader;
+    }
+
+    @Override
+    public JobBeanFactory jobBeanFactory() {
+        return jobBeanFactory;
+    }
+
+    @Override
+    public ScheduleManager scheduleManager() {
         return scheduleManager;
     }
 

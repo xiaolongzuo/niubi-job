@@ -22,6 +22,8 @@ package com.zuoxiaolong.niubi.job.scheduler.bean;
  */
 public interface JobBeanFactory {
 
+    String DATA_MAP_KEY = "_job_bean_factory";
+
     <T> T getJobBean(Class<T> clazz);
 
 }

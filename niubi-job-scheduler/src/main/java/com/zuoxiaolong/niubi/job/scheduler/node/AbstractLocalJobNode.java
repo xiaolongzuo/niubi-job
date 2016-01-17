@@ -37,11 +37,11 @@ public abstract class AbstractLocalJobNode extends AbstractNode implements Local
     }
 
     public void join() {
-        container.getScheduleManager().startup();
+        container.scheduleManager().startup();
     }
 
     public void exit() {
-        container.getScheduleManager().shutdown();
+        container.scheduleManager().shutdown();
     }
 
 }

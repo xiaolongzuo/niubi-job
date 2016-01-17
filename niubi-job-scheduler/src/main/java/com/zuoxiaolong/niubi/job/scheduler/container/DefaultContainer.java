@@ -17,9 +17,13 @@
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
-import com.zuoxiaolong.niubi.job.scheduler.context.DefaultContext;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 
@@ -31,13 +35,16 @@ import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
  */
 public class DefaultContainer implements Container {
 
-    private Context context;
+    private JobScanClassLoader classLoader;
+
+    private JobBeanFactory jobBeanFactory;
 
     private ScheduleManager scheduleManager;
 
     public DefaultContainer(Configuration configuration, String packagesToScan) {
-        this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan);
+        this.classLoader = new JobScanClassLoader(ClassHelper.getDefaultClassLoader());
+        this.jobBeanFactory = new DefaultJobBeanFactory();
+        this.scheduleManager = new DefaultScheduleManager(this.classLoader, this.jobBeanFactory, configuration, packagesToScan);
     }
 
     public DefaultContainer(Configuration configuration, String packagesToScan, String jarUrl) {
@@ -45,15 +52,26 @@ public class DefaultContainer implements Container {
     }
 
     public DefaultContainer(Configuration configuration, String packagesToScan, String[] jarUrls) {
-        this.context = new DefaultContext(ClassHelper.getDefaultClassLoader());
-        this.scheduleManager = new DefaultScheduleManager(this.context, configuration, packagesToScan, jarUrls);
+        this.classLoader = new JobScanClassLoader(ClassHelper.getDefaultClassLoader());
+        String[] jarFilePaths = StringHelper.emptyArray();
+        if (!ListHelper.isEmpty(jarUrls)) {
+            jarFilePaths = JarFileHelper.download(this.classLoader.getResource("").getFile(), jarUrls);
+            this.classLoader.addJarFiles(jarFilePaths);
+        }
+        this.jobBeanFactory = new DefaultJobBeanFactory();
+        this.scheduleManager = new DefaultScheduleManager(this.classLoader, this.jobBeanFactory, configuration, packagesToScan, jarFilePaths);
     }
 
-    public Context getContext() {
-        return context;
+    @Override
+    public JobScanClassLoader classLoader() {
+        return classLoader;
     }
 
-    public ScheduleManager getScheduleManager() {
+    public JobBeanFactory jobBeanFactory() {
+        return jobBeanFactory;
+    }
+
+    public ScheduleManager scheduleManager() {
         return scheduleManager;
     }
 

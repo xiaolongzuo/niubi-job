@@ -58,6 +58,10 @@ public class Configuration {
         }
     }
 
+    public void addProperty(String key, Object value) {
+        this.properties.put(key, value);
+    }
+
     private void load(String propertiesFileName, boolean throwException) {
         try {
             this.properties.load(new ClasspathResource(classLoader, propertiesFileName).getInputStream());

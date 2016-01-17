@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.context;
+package com.zuoxiaolong.niubi.job.core.helper;
 
-import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:23
+ * @since 16/1/17 18:49
  */
-public abstract class AbstractContext implements Context {
+public abstract class HttpHelper {
 
-    private JobScanClassLoader classLoader;
-
-    public AbstractContext(ClassLoader classLoader) {
-        AssertHelper.notNull(classLoader, "classLoader can't be null.");
-        AssertHelper.notNull(classLoader, "jobBeanFactory can't be null.");
-        this.classLoader = new JobScanClassLoader(classLoader);
-    }
-
-    @Override
-    public JobScanClassLoader classLoader() {
-        return classLoader;
+    public static String downloadRemoteResource(String jarFilePath, String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.connect();
+        byte[] bytes = IOHelper.readStreamBytesAndClose(connection.getInputStream());
+        IOHelper.writeFile(jarFilePath, bytes);
+        return jarFilePath;
     }
 
 }

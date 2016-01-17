@@ -117,7 +117,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         JobData.Data data = jobData.getData();
                         if ("Startup".equals(data.getState())) {
                             Container container = getContainer(jarRepertoryUrl + jobData.getData().getJarFileName(), jobData.getData().getPackagesToScan(), jobData.getData().isSpring());
-                            container.getScheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                            container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                             runningJobCount++;
                         }
                     } catch (Exception e) {
@@ -140,7 +140,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     synchronized (mutex) {
                         LoggerHelper.info(getIp() + "'s connection has been un-connected");
                         for (Container container : getContainerCache().values()) {
-                            container.getScheduleManager().shutdown();
+                            container.scheduleManager().shutdown();
                         }
                         NodeData.Data data = new NodeData.Data(getIp());
                         apiFactory.nodeApi().updateStandbyNode(nodePath, data);
@@ -183,16 +183,16 @@ public class StandbyNode extends AbstractRemoteJobNode {
             if (data.isStart() || data.isRestart()) {
                 if (data.isRestart()) {
                     Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                    container.getScheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                    container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                     nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
                 }
                 Container container = getContainer(jarRepertoryUrl + data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.getScheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                 nodeData.setRunningJobCount(nodeData.getRunningJobCount() + 1);
                 data.setState("Startup");
             } else {
                 Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.getScheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
                 data.setState("Pause");
             }
@@ -200,6 +200,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
             apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
             apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
         } catch (Throwable e) {
+            LoggerHelper.error("handle operation failed. " + data, e);
             data.operateFailed(e.getClass().getName() + ":" + e.getMessage());
             apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
         }

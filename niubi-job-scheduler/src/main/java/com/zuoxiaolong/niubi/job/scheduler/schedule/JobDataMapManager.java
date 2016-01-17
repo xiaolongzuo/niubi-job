@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
@@ -41,9 +41,9 @@ public abstract class JobDataMapManager {
         return (JobParameter) jobExecutionContext.getMergedJobDataMap().get(JobParameter.DATA_MAP_KEY);
     }
 
-    public static Context getContext(JobExecutionContext jobExecutionContext) {
+    public static JobBeanFactory getJobBeanFactory(JobExecutionContext jobExecutionContext) {
         try {
-            return (Context) jobExecutionContext.getScheduler().getContext().get(Context.DATA_MAP_KEY);
+            return (JobBeanFactory) jobExecutionContext.getScheduler().getContext().get(JobBeanFactory.DATA_MAP_KEY);
         } catch (SchedulerException e) {
             throw new NiubiException(e);
         }

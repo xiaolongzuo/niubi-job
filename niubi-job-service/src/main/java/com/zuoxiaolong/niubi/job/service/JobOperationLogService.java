@@ -35,4 +35,6 @@ public interface JobOperationLogService {
 
     void update(JobData.Data data);
 
+    JobOperationLog getJobOperationLog(String id);
+
 }

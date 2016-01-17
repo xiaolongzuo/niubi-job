@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.JobDetail;
 import com.zuoxiaolong.niubi.job.persistent.entity.JobRuntimeDetail;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.RemoteJobScanner;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
@@ -68,8 +69,10 @@ public class JobDetailServiceImpl extends AbstractService implements JobDetailSe
             throw new ServiceException("This jar [" + jarFileName + "] has been uploaded before.");
         }
 
-        JobScanner jobScanner = new RemoteJobScanner(applicationContext.getClassLoader(), jarFilePath, packagesToScan);
-        List<JobDescriptor> jobDescriptorList = jobScanner.scan();
+        JobScanClassLoader classLoader = new JobScanClassLoader(applicationContext.getClassLoader());
+        classLoader.addJarFiles(jarFilePath);
+        JobScanner jobScanner = new RemoteJobScanner(classLoader, packagesToScan, jarFilePath);
+        List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
         for (JobDescriptor jobDescriptor : jobDescriptorList) {
             JobDetail jobDetail = new JobDetail();
             jobDetail.setGroupName(jobDescriptor.group());

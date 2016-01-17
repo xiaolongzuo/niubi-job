@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
 import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
+import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.Collections;
 import java.util.Map;
@@ -55,6 +56,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         try {
             container = containerCache.get(jarUrl);
             if (container == null) {
+                getConfiguration().addProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarUrl);
                 if (isSpring) {
                     container = new DefaultSpringContainer(getConfiguration(), packagesToScan, jarUrl);
                 } else {

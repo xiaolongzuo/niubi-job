@@ -77,4 +77,9 @@ public class JobOperationLogServiceImpl extends AbstractService implements JobOp
         }
     }
 
+    @Override
+    public JobOperationLog getJobOperationLog(String id) {
+        return baseDao.get(JobOperationLog.class, id);
+    }
+
 }

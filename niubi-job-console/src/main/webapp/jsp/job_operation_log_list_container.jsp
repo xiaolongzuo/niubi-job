@@ -46,15 +46,28 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobOperationLogs}" var="jobOperationLog">
+                        <c:forEach items="${jobOperationLogs}" var="jobOperationLog" varStatus="status">
                             <tr class="gradeA">
                                 <td><span class="label ${jobOperationLog.operationResultLabelClass}">${jobOperationLog.operationResult}</span></td>
                                 <td>${jobOperationLog.groupName}.${jobOperationLog.jobName}</td>
                                 <td><span class="label ${jobOperationLog.operationLabelClass}">${jobOperationLog.operation}</span></td>
                                 <td>${jobOperationLog.cron}</td>
                                 <td>${jobOperationLog.createDateString}</td>
-                                <td>${jobOperationLog.modifyDateString}</td>
+                                <td><a href="#detailModal${status.index}" data-toggle="modal" class="btn btn-warning">Alert</a>${jobOperationLog.modifyDateString}</td>
                             </tr>
+                            <div id="detailModal${status.index}" class="modal hide">
+                                <div class="modal-header">
+                                    <button data-dismiss="modal" class="close" type="button">×</button>
+                                    <h3>Log detail</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <p>${jobOperationLog.errorMessage}</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
+                                    <a data-dismiss="modal" class="btn" href="#">Cancel</a>
+                                </div>
+                            </div>
                         </c:forEach>
                         </tbody>
                     </table>

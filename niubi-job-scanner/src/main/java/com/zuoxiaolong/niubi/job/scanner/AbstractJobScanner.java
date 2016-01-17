@@ -27,6 +27,7 @@ import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,16 +37,54 @@ import java.util.List;
  */
 public abstract class AbstractJobScanner implements JobScanner {
 
-    protected JobScanClassLoader classLoader;
+    private List<JobDescriptor> jobDescriptorList;
 
-    private List<String> packagesToScan = Collections.emptyList();
+    private boolean hasSpringEnvironment;
 
-    public AbstractJobScanner(JobScanClassLoader classLoader, String packagesToScan) {
+    private ClassLoader classLoader;
+
+    private String[] jarFilePaths;
+
+    private List<String> packagesToScan;
+
+    public AbstractJobScanner(JobScanClassLoader classLoader, String packagesToScan, String... jarFilePaths) {
         this.classLoader = classLoader;
         this.packagesToScan = StringHelper.splitToList(packagesToScan);
+        this.hasSpringEnvironment = false;
+        this.jarFilePaths = StringHelper.checkEmpty(jarFilePaths);
+        this.jobDescriptorList = new ArrayList<>();
+        scan();
     }
 
-    protected void scanClass(String className, List<JobDescriptor> descriptorList) {
+    @Override
+    public List<JobDescriptor> getJobDescriptorList() {
+        return jobDescriptorList;
+    }
+
+    @Override
+    public boolean hasSpringEnvironment() {
+        return hasSpringEnvironment;
+    }
+
+    public abstract void scan();
+
+    protected void setHasSpringEnvironment(boolean hasSpringEnvironment) {
+        this.hasSpringEnvironment = hasSpringEnvironment;
+    }
+
+    protected String[] getJarFilePaths() {
+        return jarFilePaths;
+    }
+
+    protected ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    protected List<String> getPackagesToScan() {
+        return Collections.unmodifiableList(packagesToScan);
+    }
+
+    protected void scanClass(String className) {
         try {
             if (packagesToScan.size() > 0) {
                 String packageName = ClassHelper.getPackageName(className);
@@ -68,7 +107,7 @@ public abstract class AbstractJobScanner implements JobScanner {
                 return;
             }
             Method[] methods = clazz.getDeclaredMethods();
-            LoggerHelper.info("scan class [" + className + "]");
+            LoggerHelper.debug("scan class [" + className + "]");
             for (Method method : methods) {
                 Schedule schedule = method.getDeclaredAnnotation(Schedule.class);
                 Disabled methodDisabled = method.getDeclaredAnnotation(Disabled.class);
@@ -79,12 +118,12 @@ public abstract class AbstractJobScanner implements JobScanner {
                 Type[] parameterTypes = method.getParameterTypes();
                 if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
                     JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule);
-                    descriptorList.add(jobDescriptor);
+                    jobDescriptorList.add(jobDescriptor);
                     postFindHasParameterJobDescriptor(jobDescriptor);
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "(JobParameter)]");
                 } else if (parameterTypes == null || parameterTypes.length == 0){
                     JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule);
-                    descriptorList.add(jobDescriptor);
+                    jobDescriptorList.add(jobDescriptor);
                     postFindNotHasParameterJobDescriptor(jobDescriptor);
                     LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "]");
                 } else {

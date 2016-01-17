@@ -19,10 +19,13 @@ package com.zuoxiaolong.niubi.job.scheduler.schedule;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.LocalJobScanner;
+import com.zuoxiaolong.niubi.job.scanner.RemoteJobScanner;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -51,16 +54,16 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> jobStatusMap;
 
-    public DefaultScheduleManager(Context context, Configuration configuration, String packagesToScan) {
+    public DefaultScheduleManager(JobScanClassLoader classLoader, JobBeanFactory jobBeanFactory, Configuration configuration, String packagesToScan) {
         initScheduler(configuration);
-        this.jobScanner = new ScheduleLocalJobScanner(context, packagesToScan);
-        initJobDetails(context);
+        this.jobScanner = new LocalJobScanner(classLoader, packagesToScan);
+        initJobDetails(jobBeanFactory);
     }
 
-    public DefaultScheduleManager(Context context, Configuration configuration, String packagesToScan, String[] jarUrls) {
+    public DefaultScheduleManager(JobScanClassLoader classLoader, JobBeanFactory jobBeanFactory, Configuration configuration, String packagesToScan, String[] jarFilePaths) {
         initScheduler(configuration);
-        this.jobScanner = new ScheduleRemoteJobScanner(context, packagesToScan, jarUrls);
-        initJobDetails(context);
+        this.jobScanner = new RemoteJobScanner(classLoader, packagesToScan, jarFilePaths);
+        initJobDetails(jobBeanFactory);
     }
 
     protected void initScheduler(Configuration configuration) {
@@ -78,13 +81,13 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    protected void initJobDetails(Context context) {
-        List<JobDescriptor> descriptorList = jobScanner.scan();
+    protected void initJobDetails(JobBeanFactory jobBeanFactory) {
+        List<JobDescriptor> descriptorList = jobScanner.getJobDescriptorList();
         for (JobDescriptor descriptor : descriptorList) {
             addJobDetail(new DefaultScheduleJobDescriptor(descriptor));
         }
         try {
-            scheduler.getContext().put(Context.DATA_MAP_KEY, context);
+            scheduler.getContext().put(JobBeanFactory.DATA_MAP_KEY, jobBeanFactory);
         } catch (SchedulerException e) {
             LoggerHelper.error("get schedule context failed.", e);
             throw new NiubiException(e);

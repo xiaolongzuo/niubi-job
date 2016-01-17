@@ -18,30 +18,38 @@ package com.zuoxiaolong.niubi.job.scheduler.bean;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Xiaolong Zuo
  * @since 16/1/9 15:41
  */
-public class DefaultJobBeanFactory implements RegisteredJobBeanFactory {
+public class DefaultJobBeanFactory implements JobBeanFactory {
 
-    private Map<Class<?>, Object> jobBeanInstanceClassMap = new ConcurrentHashMap<Class<?>, Object>();
+    private Map<Class<?>, Object> jobBeanInstanceClassMap = new HashMap<>();
 
-    public <T> void registerJobBeanInstance(Class<T> clazz) {
+    public <T> T getJobBean(Class<T> clazz) {
+        T instance = (T) jobBeanInstanceClassMap.get(clazz);
+        if (instance != null) {
+            return instance;
+        }
+        return registerJobBeanInstance(clazz);
+    }
+
+    private synchronized <T> T registerJobBeanInstance(Class<T> clazz) {
         try {
-            T instance = clazz.newInstance();
-            jobBeanInstanceClassMap.put(clazz, instance);
+            T instance = (T) jobBeanInstanceClassMap.get(clazz);
+            if (instance == null) {
+                instance = clazz.newInstance();
+                jobBeanInstanceClassMap.put(clazz, instance);
+            }
+            return instance;
         } catch (InstantiationException e) {
             throw new NiubiException(e);
         } catch (IllegalAccessException e) {
             throw new NiubiException(e);
         }
-    }
-
-    public <T> T getJobBean(Class<T> clazz) {
-        return (T) jobBeanInstanceClassMap.get(clazz);
     }
 
 }

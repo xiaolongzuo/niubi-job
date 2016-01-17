@@ -16,7 +16,7 @@ package com.zuoxiaolong.niubi.job.spring.container;
  */
 
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.spring.context.SpringContext;
+import org.springframework.context.ApplicationContext;
 
 /**
  * @author 左潇龙
@@ -26,6 +26,6 @@ public interface SpringContainer extends Container {
 
     String APPLICATION_CONTEXT_XML_PATH = "applicationContext.xml";
 
-    SpringContext getContext();
+    ApplicationContext applicationContext();
 
 }

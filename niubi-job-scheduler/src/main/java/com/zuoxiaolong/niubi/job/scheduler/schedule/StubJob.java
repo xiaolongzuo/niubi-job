@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
-import com.zuoxiaolong.niubi.job.scheduler.context.Context;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -37,14 +37,14 @@ public class StubJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
         JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
-        Context context = JobDataMapManager.getContext(jobExecutionContext);
+        JobBeanFactory jobBeanFactory = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
         String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
             if (jobDescriptor.hasParameter()) {
-                jobDescriptor.method().invoke(context.jobBeanFactory().getJobBean(jobDescriptor.clazz()), new Object[]{jobParameter});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.clazz()), new Object[]{jobParameter});
             } else {
-                jobDescriptor.method().invoke(context.jobBeanFactory().getJobBean(jobDescriptor.clazz()), new Object[]{});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.clazz()), new Object[]{});
             }
             LoggerHelper.info("begin execute job : " + jobMessageString);
         } catch (Exception e) {

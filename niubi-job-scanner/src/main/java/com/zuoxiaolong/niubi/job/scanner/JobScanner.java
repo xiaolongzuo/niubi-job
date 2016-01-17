@@ -28,6 +28,8 @@ import java.util.List;
  */
 public interface JobScanner {
 
-    List<JobDescriptor> scan();
+    List<JobDescriptor> getJobDescriptorList();
+
+    boolean hasSpringEnvironment();
 
 }

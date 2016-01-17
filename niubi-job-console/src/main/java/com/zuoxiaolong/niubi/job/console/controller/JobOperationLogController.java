@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.service.JobOperationLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -38,6 +39,12 @@ public class JobOperationLogController extends BaseController {
     public String list(Model model) {
         model.addAttribute("jobOperationLogs", jobOperationLogService.getAllJobOperationLog());
         return "job_operation_log_list";
+    }
+
+    @RequestMapping(value = "/{id}")
+    public String view(@PathVariable String id, Model model) {
+        model.addAttribute("jobOperationLog", jobOperationLogService.getJobOperationLog(id));
+        return "job_operation_log_view";
     }
 
 }

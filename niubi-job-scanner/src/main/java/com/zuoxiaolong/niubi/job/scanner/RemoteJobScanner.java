@@ -16,20 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scanner;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
-
-import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * 默认的任务扫描器
@@ -37,73 +24,18 @@ import java.util.jar.JarFile;
  * @author Xiaolong Zuo
  * @since 16/1/9 00:45
  */
-public class RemoteJobScanner extends AbstractJobScanner {
+public class RemoteJobScanner extends AbstractLocalRemoteJobScanner {
 
-    private String[] jarFilePaths;
-
-    public RemoteJobScanner(ClassLoader classLoader, String jarFilePath, String packagesToScan) {
-        super(new JobScanClassLoader(classLoader), packagesToScan);
-        this.jarFilePaths = new String[]{jarFilePath};
-
-    }
-
-    public RemoteJobScanner(JobScanClassLoader classLoader, String packagesToScan, String... jarUrls) {
-        super(classLoader, packagesToScan);
-        if (jarUrls != null) {
-            this.jarFilePaths = new String[jarUrls.length];
-            for (int i = 0;i < this.jarFilePaths.length; i++) {
-                try {
-                    this.jarFilePaths[i] = downloadJarFile(jarUrls[i]);
-                } catch (IOException e) {
-                    LoggerHelper.error("download jar file [" + jarUrls[i] + "] failed,has been ignored.");
-                }
-            }
-        }
-    }
-
-    private String downloadJarFile(String jarUrl) throws IOException {
-        String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
-        String jarFilePath = classLoader.getResource("").getFile() + jarFileName;
-        File file = new File(jarFilePath);
-        if (file.exists()) {
-            return jarFilePath;
-        }
-        HttpURLConnection connection = (HttpURLConnection) new URL(jarUrl).openConnection();
-        connection.connect();
-        byte[] bytes = IOHelper.readStreamBytesAndClose(connection.getInputStream());
-        IOHelper.writeFile(jarFilePath, bytes);
-        return jarFilePath;
+    public RemoteJobScanner(JobScanClassLoader classLoader , String packagesToScan, String... jarFilePaths) {
+        super(classLoader, packagesToScan, jarFilePaths);
     }
 
     @Override
-    public List<JobDescriptor> scan() {
-        List<JobDescriptor> descriptorList = new ArrayList<>();
+    public void scan() {
         try {
-            for (String jarFilePath : jarFilePaths) {
-                File file = new File(jarFilePath);
-                if (file.exists()) {
-                    classLoader.addURL(file.toURI().toURL());
-                    scan(descriptorList, jarFilePath);
-                } else {
-                    LoggerHelper.warn("jar file [" + jarFilePath + "] can't be found.");
-                }
-            }
+            scanJarFilePaths();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-        return descriptorList;
-    }
-
-    private void scan(List<JobDescriptor> descriptorList, String jarFilePath) throws IOException {
-        JarFile jarFile = new JarFile(jarFilePath);
-        Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
-        while (jarEntryEnumeration.hasMoreElements()) {
-            String jarEntryName = jarEntryEnumeration.nextElement().getName();
-            if (jarEntryName == null || !jarEntryName.endsWith(".class")) {
-                continue;
-            }
-            String className = ClassHelper.getClassName(jarEntryName);
-            super.scanClass(className, descriptorList);
         }
     }
 

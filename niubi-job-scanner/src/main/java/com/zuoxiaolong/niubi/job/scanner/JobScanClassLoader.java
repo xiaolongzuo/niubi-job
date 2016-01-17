@@ -16,6 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.scanner;
 
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
@@ -32,6 +36,23 @@ public class JobScanClassLoader extends URLClassLoader {
     @Override
     public void addURL(URL url) {
         super.addURL(url);
+    }
+
+    public void addJarFiles(String... jarFilePaths) {
+        if (!ListHelper.isEmpty(jarFilePaths)) {
+            for (String jarFilePath : jarFilePaths) {
+                File file = new File(jarFilePath);
+                if (file.exists()) {
+                    try {
+                        addURL(file.toURI().toURL());
+                    } catch (Throwable e) {
+                        LoggerHelper.warn("jar file [" + jarFilePath + "] can't be add.");
+                    }
+                } else {
+                    LoggerHelper.warn("jar file [" + jarFilePath + "] can't be found.");
+                }
+            }
+        }
     }
 
 }
