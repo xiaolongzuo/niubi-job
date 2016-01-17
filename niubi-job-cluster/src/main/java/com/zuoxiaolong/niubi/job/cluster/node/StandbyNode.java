@@ -60,14 +60,11 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private String zookeeperAddresses;
 
-    private String jarRepertoryUrl;
-
     private String nodePath;
 
     public StandbyNode(String zookeeperAddresses, String jarRepertoryUrl, String[] propertiesFileNames) {
-        super(propertiesFileNames);
+        super(jarRepertoryUrl, propertiesFileNames);
         this.zookeeperAddresses = zookeeperAddresses;
-        this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
         this.apiFactory = new ApiFactoryImpl(client);
@@ -116,7 +113,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     try {
                         JobData.Data data = jobData.getData();
                         if ("Startup".equals(data.getState())) {
-                            Container container = getContainer(jarRepertoryUrl + jobData.getData().getJarFileName(), jobData.getData().getPackagesToScan(), jobData.getData().isSpring());
+                            Container container = getContainer(jobData.getData().getJarFileName(), jobData.getData().getPackagesToScan(), jobData.getData().isSpring());
                             container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                             runningJobCount++;
                         }
@@ -182,16 +179,16 @@ public class StandbyNode extends AbstractRemoteJobNode {
         try {
             if (data.isStart() || data.isRestart()) {
                 if (data.isRestart()) {
-                    Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                     container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                     nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
                 }
-                Container container = getContainer(jarRepertoryUrl + data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
+                Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                 nodeData.setRunningJobCount(nodeData.getRunningJobCount() + 1);
                 data.setState("Startup");
             } else {
-                Container container = getContainer(jarRepertoryUrl + data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
                 data.setState("Pause");

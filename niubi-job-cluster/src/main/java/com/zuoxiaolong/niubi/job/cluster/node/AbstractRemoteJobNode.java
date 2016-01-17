@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
@@ -38,8 +39,11 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
 
     private Map<String, Container> containerCache;
 
-    public AbstractRemoteJobNode(String[] propertiesFileNames) {
+    private String jarRepertoryUrl;
+
+    public AbstractRemoteJobNode(String jarRepertoryUrl, String[] propertiesFileNames) {
         super(ClassHelper.getDefaultClassLoader(), propertiesFileNames);
+        this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
         this.containerCache = new ConcurrentHashMap<>();
     }
 
@@ -47,7 +51,8 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         return Collections.unmodifiableMap(containerCache);
     }
 
-    public Container getContainer(String jarUrl, String packagesToScan, boolean isSpring) {
+    public Container getContainer(String jarFileName, String packagesToScan, boolean isSpring) {
+        String jarUrl = jarRepertoryUrl + jarFileName;
         Container container = containerCache.get(jarUrl);
         if (container != null) {
             return container;
@@ -56,18 +61,24 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         try {
             container = containerCache.get(jarUrl);
             if (container == null) {
-                getConfiguration().addProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarUrl);
-                if (isSpring) {
-                    container = new DefaultSpringContainer(getConfiguration(), packagesToScan, jarUrl);
-                } else {
-                    container = new DefaultContainer(getConfiguration(), packagesToScan, jarUrl);
-                }
+                container = createContainer(jarUrl, packagesToScan, isSpring);
                 containerCache.put(jarUrl, container);
             }
             return container;
         } finally {
             lock.unlock();
         }
+    }
+
+    private Container createContainer(String jarUrl, String packagesToScan, boolean isSpring) {
+        Container container;
+        getConfiguration().addProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarUrl);
+        if (isSpring) {
+            container = new DefaultSpringContainer(getConfiguration(), packagesToScan, jarUrl);
+        } else {
+            container = new DefaultContainer(getConfiguration(), packagesToScan, jarUrl);
+        }
+        return container;
     }
 
 }

@@ -53,7 +53,8 @@
                                 <td><span class="label ${jobOperationLog.operationLabelClass}">${jobOperationLog.operation}</span></td>
                                 <td>${jobOperationLog.cron}</td>
                                 <td>${jobOperationLog.createDateString}</td>
-                                <td><a href="#detailModal${status.index}" data-toggle="modal" class="btn btn-warning">Alert</a>${jobOperationLog.modifyDateString}</td>
+                                <td>${jobOperationLog.modifyDateString}</td>
+                                <!-- <a href="#detailModal${status.index}" data-toggle="modal" class="btn btn-warning">Alert</a> -->
                             </tr>
                             <div id="detailModal${status.index}" class="modal hide">
                                 <div class="modal-header">
