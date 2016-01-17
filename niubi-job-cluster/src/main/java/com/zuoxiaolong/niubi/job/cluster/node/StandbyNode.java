@@ -200,7 +200,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
             apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
             apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
         } catch (Throwable e) {
-            data.operateFailed(e.getMessage());
+            data.operateFailed(e.getClass().getName() + ":" + e.getMessage());
             apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
         }
     }
