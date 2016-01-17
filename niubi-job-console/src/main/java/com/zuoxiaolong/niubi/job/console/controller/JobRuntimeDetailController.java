@@ -41,13 +41,13 @@ public class JobRuntimeDetailController extends BaseController {
     @Autowired
     private JobDetailService jobDetailService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "")
     public String list(Model model) {
         model.addAttribute("jobRuntimeDetails", jobRuntimeDetailService.getAllStandbyJobRuntimeDetails());
         return "job_runtime_detail_list";
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}")
     public String input(@PathVariable String id, Model model) {
         JobRuntimeDetail jobRuntimeDetail = jobRuntimeDetailService.getStandbyJobRuntimeDetail(id);
         model.addAttribute("jobRuntimeDetail", jobRuntimeDetail);
@@ -58,7 +58,8 @@ public class JobRuntimeDetailController extends BaseController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(JobRuntimeDetail jobRuntimeDetail) {
         jobRuntimeDetailService.createStandbyJob(jobRuntimeDetail);
-        return "redirect:/jobRuntimeDetails";
+        success();
+        return "forward:/jobRuntimeDetails";
     }
 
 }

@@ -29,6 +29,7 @@
     </div>
     <div class="container-fluid">
         <div class="row-fluid">
+            ${operationSuccess}
             <div class="widget-box">
                 <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
                     <h5>Job Manager</h5>

@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Xiaolong Zuo
@@ -35,7 +34,7 @@ public class JobOperationLogController extends BaseController {
     @Autowired
     private JobOperationLogService jobOperationLogService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "")
     public String list(Model model) {
         model.addAttribute("jobOperationLogs", jobOperationLogService.getAllJobOperationLog());
         return "job_operation_log_list";

@@ -34,15 +34,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Xiaolong Zuo
  * @since 16/1/10 01:09
  */
 public class DefaultScheduleManager implements ScheduleManager {
-
-    private ReentrantLock lock = new ReentrantLock();
 
     private JobScanner jobScanner;
 
@@ -130,174 +127,128 @@ public class DefaultScheduleManager implements ScheduleManager {
         return Collections.unmodifiableList(groupList);
     }
 
-    public void startup() {
-        lock.lock();
-        try {
-            getGroupList().forEach(this::startup);
-        } finally {
-            lock.unlock();
-        }
+    public synchronized void startup() {
+        getGroupList().forEach(this::startup);
     }
 
-    public void startup(String group) {
-        lock.lock();
-        try {
-            for (String name : getNameList(group)) {
-                startup(group, name);
-            }
-        } finally {
-            lock.unlock();
+    public synchronized void startup(String group) {
+        for (String name : getNameList(group)) {
+            startup(group, name);
         }
     }
 
     @Override
-    public void startup(String group, String name) {
-        lock.lock();
-        try {
-            JobKey jobKey = JobKey.jobKey(name, group);
-            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-            if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
-                LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
-                ScheduleJobDescriptor jobDescriptor;
-                try {
-                    JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-                    jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
-                    if (jobDescriptor.isManualTrigger()) {
-                        LoggerHelper.error("job need to trigger manual : " + JsonHelper.toJson(jobDescriptor));
-                        return;
-                    }
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
-                    return;
-                }
-                try {
-                    scheduler.scheduleJob(jobDescriptor.trigger());
-                    LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
-                    return;
-                }
-            } else if (scheduleStatus == ScheduleStatus.PAUSE) {
-                try {
-                    scheduler.resumeJob(jobKey);
-                    LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
-                    return;
-                }
-            } else {
-                LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
-            }
-            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void startupManual(String cron, String misfirePolicy) {
-        lock.lock();
-        try {
-            for (String group : getGroupList()) {
-                startupManual(group, cron, misfirePolicy);
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void startupManual(String group, String cron, String misfirePolicy) {
-        lock.lock();
-        try {
-            for (String name : getNameList(group)) {
-                startupManual(group, name, cron, misfirePolicy);
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public void startupManual(String group, String name, String cron, String misfirePolicy) {
-        lock.lock();
-        try {
-            JobKey jobKey = JobKey.jobKey(name, group);
-            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+    public synchronized void startup(String group, String name) {
+        JobKey jobKey = JobKey.jobKey(name, group);
+        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+        if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
+            LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             ScheduleJobDescriptor jobDescriptor;
             try {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                 jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+                if (jobDescriptor.isManualTrigger()) {
+                    LoggerHelper.error("job need to trigger manual : " + JsonHelper.toJson(jobDescriptor));
+                    return;
+                }
             } catch (SchedulerException e) {
                 LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
                 return;
             }
-            if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
-                LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
-                try {
-                    scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
-                    LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
-                    return;
-                }
-            } else {
-                try {
-                    scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
-                    LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("reschedule [" + group + "," + name + "] job failed.", e);
-                    return;
-                }
+            try {
+                scheduler.scheduleJob(jobDescriptor.trigger());
+                LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
+                return;
             }
-            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void shutdown() {
-        lock.lock();
-        try {
-            getGroupList().forEach(this::shutdown);
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    public void shutdown(String group) {
-        lock.lock();
-        try {
-            for (String name : getNameList(group)) {
-                shutdown(group, name);
+        } else if (scheduleStatus == ScheduleStatus.PAUSE) {
+            try {
+                scheduler.resumeJob(jobKey);
+                LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
+                return;
             }
-        } finally {
-            lock.unlock();
+        } else {
+            LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
         }
+        jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
     }
-
 
     @Override
-    public void shutdown(String group, String name) {
-        lock.lock();
-        try {
-            JobKey jobKey = JobKey.jobKey(name, group);
-            ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-            if (scheduleStatus != ScheduleStatus.STARTUP) {
-                LoggerHelper.warn("group [" + group + "] has been paused.");
-            } else {
-                try {
-                    scheduler.pauseJob(jobKey);
-                    LoggerHelper.info("group [" + group + "] has been paused successfully.");
-                } catch (SchedulerException e) {
-                    LoggerHelper.error("pause [" + group + "] job failed.", e);
-                    return;
-                }
-            }
-            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
-        } finally {
-            lock.unlock();
+    public synchronized void startupManual(String cron, String misfirePolicy) {
+        for (String group : getGroupList()) {
+            startupManual(group, cron, misfirePolicy);
         }
+    }
+
+    @Override
+    public synchronized void startupManual(String group, String cron, String misfirePolicy) {
+        for (String name : getNameList(group)) {
+            startupManual(group, name, cron, misfirePolicy);
+        }
+    }
+
+    @Override
+    public synchronized void startupManual(String group, String name, String cron, String misfirePolicy) {
+        JobKey jobKey = JobKey.jobKey(name, group);
+        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+        ScheduleJobDescriptor jobDescriptor;
+        try {
+            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
+            jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+        } catch (SchedulerException e) {
+            LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
+            return;
+        }
+        if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
+            LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
+            try {
+                scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
+                return;
+            }
+        } else {
+            try {
+                scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("reschedule [" + group + "," + name + "] job failed.", e);
+                return;
+            }
+        }
+        jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
+    }
+
+    public synchronized void shutdown() {
+        getGroupList().forEach(this::shutdown);
+    }
+
+    public synchronized void shutdown(String group) {
+        for (String name : getNameList(group)) {
+            shutdown(group, name);
+        }
+    }
+
+    @Override
+    public synchronized void shutdown(String group, String name) {
+        JobKey jobKey = JobKey.jobKey(name, group);
+        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+        if (scheduleStatus != ScheduleStatus.STARTUP) {
+            LoggerHelper.warn("group [" + group + "] has been paused.");
+        } else {
+            try {
+                scheduler.pauseJob(jobKey);
+                LoggerHelper.info("group [" + group + "] has been paused successfully.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("pause [" + group + "] job failed.", e);
+                return;
+            }
+        }
+        jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
     }
 
 }

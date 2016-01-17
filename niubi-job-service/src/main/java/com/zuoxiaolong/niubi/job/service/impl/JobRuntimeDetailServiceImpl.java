@@ -48,11 +48,12 @@ public class JobRuntimeDetailServiceImpl extends AbstractService implements JobR
 
     @Override
     public List<JobRuntimeDetail> getAllStandbyJobRuntimeDetails() {
+        //TODO exclude job in processing
         return baseDao.getAll(JobRuntimeDetail.class);
     }
 
     @Override
-    public void createStandbyJob(JobRuntimeDetail jobRuntimeDetail) {
+    public synchronized void createStandbyJob(JobRuntimeDetail jobRuntimeDetail) {
         JobData jobData = apiFactory.jobApi().selectStandbyJob(jobRuntimeDetail.getGroupName(), jobRuntimeDetail.getJobName());
         JobData.Data data;
         if (jobData == null) {

@@ -19,7 +19,6 @@ package com.zuoxiaolong.niubi.job.console.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * @author Xiaolong Zuo
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/dashboard")
 public class DashboardController extends BaseController {
 
-    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    @RequestMapping(value = "/index")
     public String index() {
         return "dashboard_index";
     }

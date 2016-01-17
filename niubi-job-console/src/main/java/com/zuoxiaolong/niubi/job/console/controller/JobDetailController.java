@@ -41,13 +41,13 @@ public class JobDetailController extends BaseController {
     @Autowired
     private JobDetailService jobDetailService;
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "")
     public String list(Model model) {
         model.addAttribute("jobDetails", jobDetailService.getAllStandbyJobDetails());
         return "job_detail_list";
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.GET)
+    @RequestMapping(value = "/upload")
     public String upload() {
         return "job_detail_upload";
     }
@@ -61,7 +61,7 @@ public class JobDetailController extends BaseController {
         } catch (IOException e) {
             throw new NiubiException(e);
         }
-        return "redirect:/jobDetails";
+        return "forward:/jobDetails";
     }
 
 }

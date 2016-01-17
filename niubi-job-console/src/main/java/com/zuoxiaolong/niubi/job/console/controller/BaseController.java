@@ -36,4 +36,13 @@ public abstract class BaseController {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
     }
 
+    public void success() {
+        getRequest().setAttribute("operationSuccess",
+                "<div class=\"alert alert-success alert-block\"> " +
+                        "<a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>" +
+                        "<h4 class=\"alert-heading\">Success!</h4>" +
+                        "Operation successfully!" +
+                "</div>");
+    }
+
 }

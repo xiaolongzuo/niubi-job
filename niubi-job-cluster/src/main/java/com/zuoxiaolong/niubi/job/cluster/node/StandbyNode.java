@@ -29,6 +29,7 @@ import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
@@ -38,7 +39,6 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 主备模式实现
@@ -47,8 +47,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * @since 16/1/9 14:43
  */
 public class StandbyNode extends AbstractRemoteJobNode {
-
-    private final ReentrantLock lock = new ReentrantLock();
 
     private final LeaderSelector leaderSelector;
 
@@ -156,9 +154,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
     }
 
     public PathChildrenCacheListener createPathChildrenCacheListener() {
-        return (curatorFramework, event) -> {
-            lock.lock();
-            try {
+        return new PathChildrenCacheListener() {
+            @Override
+            public synchronized void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent event) throws Exception {
                 boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
                 if (!hasLeadership) {
                     return;
@@ -175,9 +173,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     return;
                 }
                 NodeData.Data nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath).getData();
-                executeOperation(nodeData, data);
-            } finally {
-                lock.unlock();
+                StandbyNode.this.executeOperation(nodeData, data);
             }
         };
     }

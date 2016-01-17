@@ -55,8 +55,23 @@ public class JobOperationLogServiceImpl extends AbstractService implements JobOp
     public void update(JobData.Data data) {
         if (!StringHelper.isEmpty(data.getJobOperationLogId())) {
             JobOperationLog jobOperationLog = baseDao.get(JobOperationLog.class, data.getJobOperationLogId());
-            ReflectHelper.copyFieldValuesSkipNull(data, jobOperationLog);
-            baseDao.update(jobOperationLog);
+            if (jobOperationLog != null) {
+                int retryTimes = 10;
+                ReflectHelper.copyFieldValuesSkipNull(data, jobOperationLog);
+                //retry, because the update operation may occur before the save operation.
+                while (retryTimes-- > 0) {
+                    try {
+                        baseDao.update(jobOperationLog);
+                    } catch (IllegalArgumentException e) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e1) {
+                            //ignored
+                        }
+                    }
+                }
+
+            }
             data.clearOperationLog();
             apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
         }
