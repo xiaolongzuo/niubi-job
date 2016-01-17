@@ -17,37 +17,27 @@
 package com.zuoxiaolong.niubi.job.spring.node;
 
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
-import com.zuoxiaolong.niubi.job.scheduler.node.LocalJobNode;
+import com.zuoxiaolong.niubi.job.scheduler.node.AbstractLocalJobNode;
 import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
 import org.springframework.context.ApplicationContext;
 
 /**
+ * For local spring application.
+ *
  * @author Xiaolong Zuo
- * @since 16/1/16 16:49
+ * @since 16/1/16 17:01
  */
-public class AbstractSpringLocalJobNode extends AbstractNode implements LocalJobNode {
+public class SimpleSpringLocalJobNode extends AbstractLocalJobNode {
 
     private Container container;
 
-    public AbstractSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan, String[] propertiesFileNames) {
-        super(applicationContext.getClassLoader(), propertiesFileNames);
-        this.container = new DefaultSpringContainer(getConfiguration(), packagesToScan);
-    }
-
-    @Override
-    public void join() {
-        this.container.scheduleManager().startup();
-    }
-
-    @Override
-    public void exit() {
-        this.container.scheduleManager().shutdown();
+    public SimpleSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan, String... propertiesFileNames) {
+        super(applicationContext.getClassLoader(), packagesToScan, propertiesFileNames);
+        this.container = new DefaultSpringContainer(applicationContext, getConfiguration(), packagesToScan);
     }
 
     @Override
     public Container getContainer() {
         return container;
     }
-
 }

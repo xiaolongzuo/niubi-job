@@ -28,6 +28,8 @@ import java.util.List;
  */
 public interface JobScanner {
 
+    String APPLICATION_CONTEXT_XML_PATH = "applicationContext.xml";
+
     List<JobDescriptor> getJobDescriptorList();
 
     boolean hasSpringEnvironment();

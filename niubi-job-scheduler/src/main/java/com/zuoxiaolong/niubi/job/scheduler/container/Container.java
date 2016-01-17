@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 
 /**
@@ -27,10 +25,6 @@ import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
  * @since 16/1/9 01:16
  */
 public interface Container {
-
-    JobScanClassLoader classLoader();
-
-    JobBeanFactory jobBeanFactory();
 
     ScheduleManager scheduleManager();
 

@@ -16,9 +16,12 @@ package com.zuoxiaolong.niubi.job.spring.bean;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.ClassUtils;
 
 /**
  * @author 左潇龙
@@ -28,7 +31,21 @@ public class SpringJobBeanFactory implements JobBeanFactory {
 
     private ApplicationContext applicationContext;
 
-    public SpringJobBeanFactory(ApplicationContext applicationContext) throws BeansException {
+    /**
+     * for remote
+     * @param classLoader
+     * @throws BeansException
+     */
+    public SpringJobBeanFactory(ClassLoader classLoader) throws BeansException {
+        ClassUtils.overrideThreadContextClassLoader(classLoader);
+        this.applicationContext = new ClassPathXmlApplicationContext(JobScanner.APPLICATION_CONTEXT_XML_PATH);
+    }
+
+    /**
+     * for local
+     * @param applicationContext
+     */
+    public SpringJobBeanFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 

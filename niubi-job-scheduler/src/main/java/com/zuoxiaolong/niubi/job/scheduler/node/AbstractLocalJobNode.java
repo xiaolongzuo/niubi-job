@@ -16,32 +16,29 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
-import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/12 01:19
  */
 public abstract class AbstractLocalJobNode extends AbstractNode implements LocalJobNode {
 
-    private Container container;
+    private String packagesToScan;
 
     public AbstractLocalJobNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
         super(classLoader, propertiesFileNames);
-        this.container = new DefaultContainer(getConfiguration(), packagesToScan);
+        this.packagesToScan = packagesToScan;
     }
 
-    public Container getContainer() {
-        return container;
+    protected String getPackagesToScan() {
+        return packagesToScan;
     }
 
     public void join() {
-        container.scheduleManager().startup();
+        getContainer().scheduleManager().startup();
     }
 
     public void exit() {
-        container.scheduleManager().shutdown();
+        getContainer().scheduleManager().shutdown();
     }
 
 }

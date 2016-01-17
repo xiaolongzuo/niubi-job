@@ -1,6 +1,5 @@
-package com.zuoxiaolong.niubi.job.spring.container;
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +14,20 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import org.springframework.context.ApplicationContext;
+package com.zuoxiaolong.niubi.job.scanner;
 
 /**
- * @author 左潇龙
- * @since 1/13/2016 17:01
+ * @author Xiaolong Zuo
+ * @since 16/1/18 00:37
  */
-public interface SpringContainer extends Container {
+public class JobScanClassLoaderFactory {
 
-    String APPLICATION_CONTEXT_XML_PATH = "applicationContext.xml";
+    private JobScanClassLoaderFactory() {}
 
-    ApplicationContext applicationContext();
+    public static JobScanClassLoader createClassLoader(ClassLoader parent, String... jarFilePaths) {
+        JobScanClassLoader classLoader = new JobScanClassLoader(parent);
+        classLoader.addJarFiles(jarFilePaths);
+        return classLoader;
+    }
 
 }

@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 13:09
  */
 public abstract class AbstractJobScanner implements JobScanner {
@@ -47,13 +47,12 @@ public abstract class AbstractJobScanner implements JobScanner {
 
     private List<String> packagesToScan;
 
-    public AbstractJobScanner(JobScanClassLoader classLoader, String packagesToScan, String... jarFilePaths) {
+    public AbstractJobScanner(ClassLoader classLoader, String packagesToScan, String... jarFilePaths) {
         this.classLoader = classLoader;
         this.packagesToScan = StringHelper.splitToList(packagesToScan);
         this.hasSpringEnvironment = false;
         this.jarFilePaths = StringHelper.checkEmpty(jarFilePaths);
         this.jobDescriptorList = new ArrayList<>();
-        scan();
     }
 
     @Override
@@ -65,8 +64,6 @@ public abstract class AbstractJobScanner implements JobScanner {
     public boolean hasSpringEnvironment() {
         return hasSpringEnvironment;
     }
-
-    public abstract void scan();
 
     protected void setHasSpringEnvironment(boolean hasSpringEnvironment) {
         this.hasSpringEnvironment = hasSpringEnvironment;
@@ -109,29 +106,33 @@ public abstract class AbstractJobScanner implements JobScanner {
             Method[] methods = clazz.getDeclaredMethods();
             LoggerHelper.debug("scan class [" + className + "]");
             for (Method method : methods) {
-                Schedule schedule = method.getDeclaredAnnotation(Schedule.class);
-                Disabled methodDisabled = method.getDeclaredAnnotation(Disabled.class);
-                if (methodDisabled != null || schedule == null) {
-                    LoggerHelper.debug("skip disabled or un-scheduled method [" + className + "." + method.getName() + "]");
-                    continue;
-                }
-                Type[] parameterTypes = method.getParameterTypes();
-                if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
-                    JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule);
-                    jobDescriptorList.add(jobDescriptor);
-                    postFindHasParameterJobDescriptor(jobDescriptor);
-                    LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "(JobParameter)]");
-                } else if (parameterTypes == null || parameterTypes.length == 0){
-                    JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule);
-                    jobDescriptorList.add(jobDescriptor);
-                    postFindNotHasParameterJobDescriptor(jobDescriptor);
-                    LoggerHelper.info("find schedule method [" + className + "." + method.getName() + "]");
-                } else {
-                    LoggerHelper.error("schedule method must not have parameter or have a JobParameter parameter [" + className + "." + method.getName() + "]");
-                }
+                scanMethod(clazz, method);
             }
         } catch (Throwable e) {
-            LoggerHelper.warn("scan class [" + className + " : " + e.getClass().getName() + "] failed, has been ignored.");
+            LoggerHelper.debug("scan class [" + className + " : " + e.getClass().getName() + "] failed, has been ignored.", e);
+        }
+    }
+
+    private void scanMethod(Class<?> clazz, Method method) {
+        Schedule schedule = method.getDeclaredAnnotation(Schedule.class);
+        Disabled methodDisabled = method.getDeclaredAnnotation(Disabled.class);
+        if (methodDisabled != null || schedule == null) {
+            LoggerHelper.debug("skip disabled or un-scheduled method [" + clazz.getName() + "." + method.getName() + "]");
+            return;
+        }
+        Type[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes != null && parameterTypes.length == 1 && parameterTypes[0] == JobParameter.class) {
+            JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, true, schedule);
+            jobDescriptorList.add(jobDescriptor);
+            postFindHasParameterJobDescriptor(jobDescriptor);
+            LoggerHelper.info("find schedule method [" + clazz.getName() + "." + method.getName() + "(JobParameter)]");
+        } else if (parameterTypes == null || parameterTypes.length == 0){
+            JobDescriptor jobDescriptor = JobDescriptorFactory.jobDescriptor(clazz, method, false, schedule);
+            jobDescriptorList.add(jobDescriptor);
+            postFindNotHasParameterJobDescriptor(jobDescriptor);
+            LoggerHelper.info("find schedule method [" + clazz.getName() + "." + method.getName() + "]");
+        } else {
+            LoggerHelper.error("schedule method must not have parameter or have a JobParameter parameter [" + clazz.getName() + "." + method.getName() + "]");
         }
     }
 

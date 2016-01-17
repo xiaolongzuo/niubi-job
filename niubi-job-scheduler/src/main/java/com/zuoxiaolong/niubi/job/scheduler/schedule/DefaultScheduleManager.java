@@ -17,12 +17,9 @@
 package com.zuoxiaolong.niubi.job.scheduler.schedule;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
-import com.zuoxiaolong.niubi.job.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scanner.LocalJobScanner;
-import com.zuoxiaolong.niubi.job.scanner.RemoteJobScanner;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
@@ -44,8 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultScheduleManager implements ScheduleManager {
 
-    private JobScanner jobScanner;
-
     private Scheduler scheduler;
 
     private Map<String, List<String>> groupNameListMap;
@@ -54,16 +49,12 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> jobStatusMap;
 
-    public DefaultScheduleManager(JobScanClassLoader classLoader, JobBeanFactory jobBeanFactory, Configuration configuration, String packagesToScan) {
+    public DefaultScheduleManager(Configuration configuration, JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+        AssertHelper.notNull(configuration, "configuration can't be null.");
+        AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
+        AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
         initScheduler(configuration);
-        this.jobScanner = new LocalJobScanner(classLoader, packagesToScan);
-        initJobDetails(jobBeanFactory);
-    }
-
-    public DefaultScheduleManager(JobScanClassLoader classLoader, JobBeanFactory jobBeanFactory, Configuration configuration, String packagesToScan, String[] jarFilePaths) {
-        initScheduler(configuration);
-        this.jobScanner = new RemoteJobScanner(classLoader, packagesToScan, jarFilePaths);
-        initJobDetails(jobBeanFactory);
+        initJobDetails(jobBeanFactory, jobDescriptorList);
     }
 
     protected void initScheduler(Configuration configuration) {
@@ -81,9 +72,8 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    protected void initJobDetails(JobBeanFactory jobBeanFactory) {
-        List<JobDescriptor> descriptorList = jobScanner.getJobDescriptorList();
-        for (JobDescriptor descriptor : descriptorList) {
+    protected void initJobDetails(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+        for (JobDescriptor descriptor : jobDescriptorList) {
             addJobDetail(new DefaultScheduleJobDescriptor(descriptor));
         }
         try {

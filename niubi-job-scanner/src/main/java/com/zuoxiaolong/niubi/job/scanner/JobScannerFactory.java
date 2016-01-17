@@ -16,27 +16,22 @@
 
 package com.zuoxiaolong.niubi.job.scanner;
 
-import java.io.IOException;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 /**
- * 默认的任务扫描器
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:45
+ * @since 16/1/18 00:28
  */
-public class RemoteJobScanner extends AbstractLocalRemoteJobScanner {
+public class JobScannerFactory {
 
-    public RemoteJobScanner(JobScanClassLoader classLoader , String packagesToScan, String... jarFilePaths) {
-        super(classLoader, packagesToScan, jarFilePaths);
+    private JobScannerFactory() {}
+
+    public static JobScanner createJarFileJobScanner(ClassLoader classLoader, String packagesToScan, String... jarFilePaths) {
+        return new LocalAndRemoteJobScanner(classLoader, packagesToScan, false, jarFilePaths);
     }
 
-    @Override
-    public void scan() {
-        try {
-            scanJarFilePaths();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public static JobScanner createClasspathJobScanner(ClassLoader classLoader, String packagesToScan) {
+        return new LocalAndRemoteJobScanner(classLoader, packagesToScan, true, StringHelper.emptyArray());
     }
 
 }

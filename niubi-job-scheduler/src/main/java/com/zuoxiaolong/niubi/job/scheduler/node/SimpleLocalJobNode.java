@@ -18,6 +18,8 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.scheduler.container.Container;
+import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 
 /**
  * 单机版实现
@@ -25,22 +27,26 @@ import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
  * @author Xiaolong Zuo
  * @since 16/1/12 01:17
  */
-public class SimpleNode extends AbstractLocalJobNode {
+public class SimpleLocalJobNode extends AbstractLocalJobNode {
 
-    public SimpleNode() {
-        this(ClassHelper.getDefaultClassLoader(), StringHelper.emptyString() ,StringHelper.emptyArray());
+    private Container container;
+
+    public SimpleLocalJobNode(String packagesToScan) {
+        this(packagesToScan, StringHelper.emptyArray());
     }
 
-    public SimpleNode(ClassLoader classLoader) {
-        this(classLoader, StringHelper.emptyString(), StringHelper.emptyArray());
+    public SimpleLocalJobNode(String packagesToScan, String[] propertiesFileNames) {
+        this(ClassHelper.getDefaultClassLoader(), packagesToScan, propertiesFileNames);
     }
 
-    public SimpleNode(ClassLoader classLoader, String packagesToScan) {
-        this(classLoader, packagesToScan, StringHelper.emptyArray());
-    }
-
-    public SimpleNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
+    SimpleLocalJobNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
         super(classLoader, packagesToScan, propertiesFileNames);
+        this.container = new DefaultContainer(classLoader, packagesToScan);
+    }
+
+    @Override
+    public Container getContainer() {
+        return container;
     }
 
 }

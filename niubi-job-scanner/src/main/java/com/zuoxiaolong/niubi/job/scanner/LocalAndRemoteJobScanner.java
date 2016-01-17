@@ -22,7 +22,6 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -32,15 +31,17 @@ import java.util.jar.JarFile;
  * @author Xiaolong Zuo
  * @since 16/1/17 18:47
  */
-public abstract class AbstractLocalRemoteJobScanner extends AbstractJobScanner {
+public class LocalAndRemoteJobScanner extends AbstractJobScanner {
 
-    private static final String APPLICATION_CONTEXT_XML_PATH = "applicationContext.xml";
-
-    public AbstractLocalRemoteJobScanner(JobScanClassLoader classLoader, String packagesToScan, String... jarFilePaths) {
+    LocalAndRemoteJobScanner(ClassLoader classLoader, String packagesToScan, boolean containsClasspath, String... jarFilePaths) {
         super(classLoader, packagesToScan, jarFilePaths);
+        if (containsClasspath) {
+            scanClasspath();
+        }
+        scanJarFiles();
     }
 
-    protected void scanLocalClasspath() {
+    protected void scanClasspath() {
         URL url = getClassLoader().getResource("");
         if (url == null) {
             LoggerHelper.error("classpath can't be find.");
@@ -56,6 +57,17 @@ public abstract class AbstractLocalRemoteJobScanner extends AbstractJobScanner {
             }
         } else {
             LoggerHelper.warn("url [" + url + "] is not a file but a " + url.getProtocol() + ".");
+        }
+    }
+
+    protected void scanJarFiles() {
+        for (String jarFilePath : getJarFilePaths()) {
+            File file = new File(jarFilePath);
+            if (file.exists()) {
+                scanJarFile(jarFilePath);
+            } else {
+                LoggerHelper.warn("jar file [" + jarFilePath + "] can't be found.");
+            }
         }
     }
 
@@ -78,19 +90,14 @@ public abstract class AbstractLocalRemoteJobScanner extends AbstractJobScanner {
         }
     }
 
-    protected void scanJarFilePaths() throws IOException {
-        for (String jarFilePath : getJarFilePaths()) {
-            File file = new File(jarFilePath);
-            if (file.exists()) {
-                scanJarFile(jarFilePath);
-            } else {
-                LoggerHelper.warn("jar file [" + jarFilePath + "] can't be found.");
-            }
+    private void scanJarFile(String jarFilePath) {
+        JarFile jarFile;
+        try {
+            jarFile = new JarFile(jarFilePath);
+        } catch (Throwable e) {
+            LoggerHelper.warn("get jar file failed. [" + jarFilePath +"]");
+            return;
         }
-    }
-
-    private void scanJarFile(String jarFilePath) throws IOException {
-        JarFile jarFile = new JarFile(jarFilePath);
         Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
         while (jarEntryEnumeration.hasMoreElements()) {
             String jarEntryName = jarEntryEnumeration.nextElement().getName();

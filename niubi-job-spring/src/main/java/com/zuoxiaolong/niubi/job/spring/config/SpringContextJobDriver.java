@@ -17,8 +17,7 @@
 package com.zuoxiaolong.niubi.job.spring.config;
 
 import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
-import com.zuoxiaolong.niubi.job.scheduler.node.Node;
-import com.zuoxiaolong.niubi.job.spring.node.SimpleSpringNode;
+import com.zuoxiaolong.niubi.job.spring.node.SimpleSpringLocalJobNode;
 import lombok.Setter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -36,9 +35,10 @@ public class SpringContextJobDriver implements ApplicationContextAware {
     private String packagesToScan;
 
     public void init() {
-        if (!(applicationContext.getClassLoader() instanceof JobScanClassLoader)) {
-            Node node = new SimpleSpringNode(applicationContext, packagesToScan);
-            node.join();
+        boolean isSimpleMode = !(applicationContext.getClassLoader() instanceof JobScanClassLoader);
+        //avoid dead cycle
+        if (isSimpleMode) {
+            new SimpleSpringLocalJobNode(applicationContext, packagesToScan).join();
         }
     }
 
