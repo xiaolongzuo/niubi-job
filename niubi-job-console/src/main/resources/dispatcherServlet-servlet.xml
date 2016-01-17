@@ -32,6 +32,10 @@
 
     <mvc:default-servlet-handler></mvc:default-servlet-handler>
 
+    <bean class="com.zuoxiaolong.niubi.job.console.exception.DefaultHandlerExceptionResolver">
+        <property name="defaultView" value="/jsp/error_500.jsp"/>
+    </bean>
+
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>

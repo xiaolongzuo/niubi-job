@@ -36,6 +36,7 @@
     </div>
     <div class="container-fluid">
         <div class="row-fluid">
+            ${message}
             <div class="span12">
                 <div class="widget-box">
                     <div class="widget-title"> <span class="icon"> <i class="icon-info-sign"></i> </span>
@@ -44,8 +45,8 @@
                     <div class="widget-content">
                         <div class="error_ex">
                             <h1>500</h1>
-                            <h3>Something is wrong here. Method not allowed!</h3>
-                            <p>Access to this page is forbidden</p>
+                            <h3>Something is wrong here!</h3>
+                            <p>Please contract 150349407@qq.com.</p>
                             <a class="btn btn-warning btn-big"  href="/">Back to Home</a> </div>
                     </div>
                 </div>

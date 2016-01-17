@@ -44,7 +44,7 @@
                     <div class="widget-content">
                         <div class="error_ex">
                             <h1>404</h1>
-                            <h3>Opps, You're lost.</h3>
+                            <h3>Something is wrong here.</h3>
                             <p>We can not find the page you're looking for.</p>
                             <a class="btn btn-warning btn-big"  href="/">Back to Home</a> </div>
                     </div>

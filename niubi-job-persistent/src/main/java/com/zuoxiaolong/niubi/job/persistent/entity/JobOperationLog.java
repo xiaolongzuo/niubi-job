@@ -101,6 +101,20 @@ public class JobOperationLog extends BaseEntity {
     }
 
     @Transient
+    public String getOperationLabelClass() {
+        if ("Start".equals(operation)) {
+            return "label-warning";
+        }
+        if ("Restart".equals(operation)) {
+            return "label-success";
+        }
+        if ("Pause".equals(operation)) {
+            return "label-important";
+        }
+        return "";
+    }
+
+    @Transient
     public String getOperationResultLabelClass() {
         if ("Waiting".equals(operationResult)) {
             return "label-warning";

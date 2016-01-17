@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
+import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.service.JobDetailService;
@@ -53,6 +54,7 @@ public class JobDetailController extends BaseController {
     }
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @ExceptionForward("/jobRuntimeDetails")
     public String upload(String packagesToScan, @RequestParam MultipartFile jobJar) {
         String jarFilePath = getRequest().getServletContext().getRealPath("job/" + jobJar.getOriginalFilename());
         try {
@@ -61,7 +63,7 @@ public class JobDetailController extends BaseController {
         } catch (IOException e) {
             throw new NiubiException(e);
         }
-        return "forward:/jobDetails";
+        return "forward:/jobRuntimeDetails";
     }
 
 }

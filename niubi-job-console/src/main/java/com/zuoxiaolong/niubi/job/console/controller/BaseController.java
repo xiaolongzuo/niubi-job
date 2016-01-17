@@ -28,21 +28,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class BaseController {
 
-    public HttpServletRequest getRequest() {
+    protected HttpServletRequest getRequest() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
     }
 
-    public HttpServletResponse getResponse() {
+    protected HttpServletResponse getResponse() {
         return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
     }
 
-    public void success() {
-        getRequest().setAttribute("operationSuccess",
+    protected void success() {
+        success("Operation successfully!");
+    }
+
+    protected void success(String info) {
+        getRequest().setAttribute("message",
                 "<div class=\"alert alert-success alert-block\"> " +
                         "<a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>" +
-                        "<h4 class=\"alert-heading\">Success!</h4>" +
-                        "Operation successfully!" +
-                "</div>");
+                        "<h4 class=\"alert-heading\">Success!</h4>" + info + "</div>");
     }
 
 }

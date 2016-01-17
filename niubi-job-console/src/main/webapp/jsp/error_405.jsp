@@ -44,8 +44,8 @@
                     <div class="widget-content">
                         <div class="error_ex">
                             <h1>405</h1>
-                            <h3>Something is wrong here. Method not allowed!</h3>
-                            <p>Access to this page is forbidden</p>
+                            <h3>Something is wrong here. </h3>
+                            <p>Method not allowed!</p>
                             <a class="btn btn-warning btn-big"  href="/">Back to Home</a> </div>
                     </div>
                 </div>

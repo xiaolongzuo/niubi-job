@@ -50,7 +50,7 @@
                             <tr class="gradeA">
                                 <td><span class="label ${jobOperationLog.operationResultLabelClass}">${jobOperationLog.operationResult}</span></td>
                                 <td>${jobOperationLog.groupName}.${jobOperationLog.jobName}</td>
-                                <td>${jobOperationLog.operation}</td>
+                                <td><span class="label ${jobOperationLog.operationLabelClass}">${jobOperationLog.operation}</span></td>
                                 <td>${jobOperationLog.cron}</td>
                                 <td>${jobOperationLog.createDateString}</td>
                                 <td>${jobOperationLog.modifyDateString}</td>
