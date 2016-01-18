@@ -17,7 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.api.curator;
 
-import com.zuoxiaolong.niubi.job.api.PathApi;
+import com.zuoxiaolong.niubi.job.api.StandbyPathApi;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -38,7 +38,7 @@ public abstract class AbstractCurdApiImpl {
 
     private CuratorFramework client;
 
-    private PathApi pathApi = PathApiImpl.INSTANCE;
+    private StandbyPathApi standbyPathApi = StandbyPathApiImpl.INSTANCE;
 
     public AbstractCurdApiImpl(CuratorFramework client) {
         this.client = client;
@@ -48,8 +48,8 @@ public abstract class AbstractCurdApiImpl {
         return client;
     }
 
-    protected PathApi getPathApi() {
-        return pathApi;
+    protected StandbyPathApi getStandbyPathApi() {
+        return standbyPathApi;
     }
 
     protected List<ChildData> selectChildDataList(String path) {

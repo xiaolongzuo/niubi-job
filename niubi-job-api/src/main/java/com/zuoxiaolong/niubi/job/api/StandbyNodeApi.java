@@ -1,3 +1,5 @@
+package com.zuoxiaolong.niubi.job.api;
+
 /*
  * Copyright 2002-2015 the original author or authors.
  *
@@ -14,23 +16,22 @@
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 
-package com.zuoxiaolong.niubi.job.console.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
 
 /**
- * @author Xiaolong Zuo
- * @since 1/15/2016 12:23
+ * @author 左潇龙
+ * @since 1/12/2016 12:56
  */
-@Controller
-@RequestMapping("/dashboard")
-public class DashboardController extends AbstractController {
+public interface StandbyNodeApi {
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "dashboard_index";
-    }
+    List<StandbyNodeData> getAllNodes();
+
+    String saveNode(StandbyNodeData.Data data);
+
+    void updateNode(String path, StandbyNodeData.Data data);
+
+    StandbyNodeData getNode(String path);
 
 }

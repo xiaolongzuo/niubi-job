@@ -32,11 +32,11 @@
     <div class="container-fluid">
         <div class="quick-actions_homepage">
             <ul class="quick-actions">
-                <li class="bg_lb span4"> <a href="/jobDetails"> <i class="icon-dashboard"></i> Job manager </a> </li>
-                <li class="bg_lg span4"> <a href="/nodes"> <i class="icon-signal"></i> Node manager</a> </li>
-                <li class="bg_ly span4"> <a href="/jobRuntimeDetails"> <i class="icon-inbox"></i> <!-- <span class="label label-success">101</span>--> Job runtime manager </a> </li>
-                <li class="bg_lo span4"> <a href="/jobDetails/upload"> <i class="icon-th"></i> Upload jar</a> </li>
-                <li class="bg_ls span4"> <a href="/jobOperationLogs"> <i class="icon-fullscreen"></i> Operation log</a> </li>
+                <li class="bg_lb span4"> <a href="/standbyJobs"> <i class="icon-dashboard"></i> Job manager </a> </li>
+                <li class="bg_lg span4"> <a href="/standbyNodes"> <i class="icon-signal"></i> Node manager</a> </li>
+                <li class="bg_ly span4"> <a href="/standbyJobSummaries"> <i class="icon-inbox"></i> <!-- <span class="label label-success">101</span>--> Job runtime manager </a> </li>
+                <li class="bg_lo span4"> <a href="/standbyJobs/upload"> <i class="icon-th"></i> Upload jar</a> </li>
+                <li class="bg_ls span4"> <a href="/standbyJobLogs"> <i class="icon-fullscreen"></i> Operation log</a> </li>
                 <!--
                 <li class="bg_lo span3"> <a href="form-common.html"> <i class="icon-th-list"></i> Forms</a> </li>
                 <li class="bg_ls"> <a href="buttons.html"> <i class="icon-tint"></i> Buttons</a> </li>

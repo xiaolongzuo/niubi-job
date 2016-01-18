@@ -16,10 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.curator.ApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.data.JobData;
-import com.zuoxiaolong.niubi.job.api.data.NodeData;
+import com.zuoxiaolong.niubi.job.api.StandbyApiFactory;
+import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
+import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -56,7 +56,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private PathChildrenCache pathChildrenCache;
 
-    private ApiFactory apiFactory;
+    private StandbyApiFactory standbyApiFactory;
 
     private String zookeeperAddresses;
 
@@ -67,9 +67,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.zookeeperAddresses = zookeeperAddresses;
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
-        this.apiFactory = new ApiFactoryImpl(client);
-        this.nodePath = this.apiFactory.nodeApi().createStandbyNode(new NodeData.Data(getIp()));
-        this.pathChildrenCache = new PathChildrenCache(client, apiFactory.pathApi().getStandbyJobPath(), true);
+        this.standbyApiFactory = new StandbyApiFactoryImpl(client);
+        this.nodePath = this.standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
+        this.pathChildrenCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
         this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
         try {
             this.pathChildrenCache.start();
@@ -77,7 +77,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
             LoggerHelper.error("path children path start failed.", e);
             throw new NiubiException(e);
         }
-        this.leaderSelector = new LeaderSelector(client, apiFactory.pathApi().getStandbyMasterPath(), createLeaderSelectorListener());
+        this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
     }
 
@@ -93,7 +93,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        NodeData.Data nodeData = new NodeData.Data(getIp());
+                        StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
                         int runningJobCount = startupJobs();
                         updateNodeData(nodeData, runningJobCount);
                         mutex.wait();
@@ -106,27 +106,27 @@ public class StandbyNode extends AbstractRemoteJobNode {
             }
 
             private Integer startupJobs() {
-                List<JobData> jobDataList = apiFactory.jobApi().selectAllStandbyJobs();
+                List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
                 int runningJobCount = 0;
-                for (JobData jobData : jobDataList) {
+                for (StandbyJobData standbyJobData : standbyJobDataList) {
                     try {
-                        JobData.Data data = jobData.getData();
+                        StandbyJobData.Data data = standbyJobData.getData();
                         if ("Startup".equals(data.getState())) {
-                            Container container = getContainer(jobData.getData().getJarFileName(), jobData.getData().getPackagesToScan(), jobData.getData().isSpring());
+                            Container container = getContainer(standbyJobData.getData().getJarFileName(), standbyJobData.getData().getPackagesToScan(), standbyJobData.getData().isSpring());
                             container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                             runningJobCount++;
                         }
                     } catch (Exception e) {
-                        LoggerHelper.error("start jar failed [" + jobData.getPath() + "]", e);
+                        LoggerHelper.error("start jar failed [" + standbyJobData.getPath() + "]", e);
                     }
                 }
                 return runningJobCount;
             }
 
-            private void updateNodeData(NodeData.Data data, Integer runningJobCount) {
+            private void updateNodeData(StandbyNodeData.Data data, Integer runningJobCount) {
                 data.setRunningJobCount(runningJobCount);
                 data.setState("Master");
-                apiFactory.nodeApi().updateStandbyNode(nodePath, data);
+                standbyApiFactory.nodeApi().updateNode(nodePath, data);
                 LoggerHelper.info(getIp() + " has been updated. [" + data + "]");
             }
 
@@ -138,8 +138,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         for (Container container : getContainerCache().values()) {
                             container.scheduleManager().shutdown();
                         }
-                        NodeData.Data data = new NodeData.Data(getIp());
-                        apiFactory.nodeApi().updateStandbyNode(nodePath, data);
+                        StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
+                        standbyApiFactory.nodeApi().updateNode(nodePath, data);
                         LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
                         mutex.notify();
                     }
@@ -160,21 +160,21 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 if (!EventHelper.isChildModifyEvent(event)) {
                     return;
                 }
-                JobData jobData = new JobData(event.getData());
-                if (StringHelper.isEmpty(jobData.getData().getOperation())) {
+                StandbyJobData standbyJobData = new StandbyJobData(event.getData());
+                if (StringHelper.isEmpty(standbyJobData.getData().getOperation())) {
                     return;
                 }
-                JobData.Data data = jobData.getData();
+                StandbyJobData.Data data = standbyJobData.getData();
                 if (data.isUnknownOperation()) {
                     return;
                 }
-                NodeData.Data nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath).getData();
+                StandbyNodeData.Data nodeData = standbyApiFactory.nodeApi().getNode(nodePath).getData();
                 executeOperation(nodeData, data);
             }
         };
     }
 
-    private void executeOperation(NodeData.Data nodeData, JobData.Data data) {
+    private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
         try {
             if (data.isStart() || data.isRestart()) {
                 if (data.isRestart()) {
@@ -193,12 +193,12 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 data.setState("Pause");
             }
             data.operateSuccess();
-            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
-            apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
+            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+            standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
         } catch (Throwable e) {
             LoggerHelper.error("handle operation failed. " + data, e);
             data.operateFailed(e.getClass().getName() + ":" + e.getMessage());
-            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
 

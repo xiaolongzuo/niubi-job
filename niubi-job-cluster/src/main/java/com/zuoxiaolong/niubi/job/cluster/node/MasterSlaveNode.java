@@ -16,10 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.api.ApiFactory;
-import com.zuoxiaolong.niubi.job.api.curator.ApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.data.JobData;
-import com.zuoxiaolong.niubi.job.api.data.NodeData;
+import com.zuoxiaolong.niubi.job.api.MasterSlaveApiFactory;
+import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
+import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -54,7 +54,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
     private RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
 
-    private ApiFactory apiFactory;
+    private MasterSlaveApiFactory masterSlaveApiFactory;
 
     private String nodePath;
 
@@ -67,10 +67,10 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.client = CuratorFrameworkFactory.newClient(zookeeperAddresses, retryPolicy);
         this.client.start();
 
-        this.apiFactory = new ApiFactoryImpl(client);
+        this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
 
-        this.nodePath = this.apiFactory.nodeApi().createStandbyNode(new NodeData.Data(getIp()));
-        this.nodeCache = new PathChildrenCache(client, apiFactory.pathApi().getStandbyNodePath(), true);
+        this.nodePath = this.masterSlaveApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
+        this.nodeCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getMasterSlaveNodePath(), true);
         this.nodeCache.getListenable().addListener(createNodeCacheListener());
         try {
             this.nodeCache.start();
@@ -79,7 +79,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             throw new NiubiException(e);
         }
 
-        this.jobCache = new PathChildrenCache(client, apiFactory.pathApi().getStandbyJobPath(), true);
+        this.jobCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getMasterSlaveJobPath(), true);
         this.jobCache.getListenable().addListener(createJobCacheListener());
         try {
             this.jobCache.start();
@@ -88,7 +88,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             throw new NiubiException(e);
         }
 
-        this.leaderSelector = new LeaderSelector(client, apiFactory.pathApi().getStandbyMasterPath(), createLeaderSelectorListener());
+        this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getMasterSlaveSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
     }
 
@@ -107,11 +107,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     private void releaseJobs(String nodePath) {
-        NodeData nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath);
-        for (String path : nodeData.getData().getJobPaths()) {
-            JobData.Data data = apiFactory.jobApi().selectStandbyJob(path).getData();
+        StandbyNodeData standbyNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+        for (String path : standbyNodeData.getData().getJobPaths()) {
+            StandbyJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
             data.setNodePath(null);
-            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
 
@@ -126,9 +126,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
-                        NodeData.Data nodeData = new NodeData.Data(getIp());
+                        StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
                         nodeData.setState("Master");
-                        apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
+                        masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
                     }
@@ -159,21 +159,21 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 if (EventHelper.isChildModifyEvent(event)) {
                     return;
                 }
-                JobData jobData = new JobData(event.getData());
-                if (StringHelper.isEmpty(jobData.getData().getOperation())) {
+                StandbyJobData standbyJobData = new StandbyJobData(event.getData());
+                if (StringHelper.isEmpty(standbyJobData.getData().getOperation())) {
                     return;
                 }
-                JobData.Data data = jobData.getData();
+                StandbyJobData.Data data = standbyJobData.getData();
                 if (data.isUnknownOperation()) {
                     return;
                 }
-                NodeData.Data nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath).getData();
+                StandbyNodeData.Data nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath).getData();
                 boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
                 if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
-                    List<NodeData> nodeDataList = apiFactory.nodeApi().selectAllStandbyNodes();
-                    Collections.sort(nodeDataList);
-                    data.setNodePath(nodeDataList.get(0).getPath());
-                    apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+                    List<StandbyNodeData> standbyNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                    Collections.sort(standbyNodeDataList);
+                    data.setNodePath(standbyNodeDataList.get(0).getPath());
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                 }
                 if ((EventHelper.isChildUpdateEvent(event) || EventHelper.isChildAddEvent(event))
                         && nodePath.equals(data.getNodePath())) {
@@ -183,7 +183,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         };
     }
 
-    private void executeOperation(NodeData.Data nodeData, JobData.Data data) {
+    private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
         try {
             if (data.isStart() || data.isRestart()) {
                 if (data.isRestart()) {
@@ -202,12 +202,12 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 data.setState("Pause");
             }
             data.operateSuccess();
-            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
-            apiFactory.nodeApi().updateStandbyNode(nodePath, nodeData);
+            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+            masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
         } catch (Throwable e) {
             LoggerHelper.error("handle operation failed. " + data, e);
             data.operateFailed(e.getClass().getName() + ":" + e.getMessage());
-            apiFactory.jobApi().updateStandbyJob(data.getGroupName(), data.getJobName(), data);
+            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
 

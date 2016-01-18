@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.service;
 
-package com.zuoxiaolong.niubi.job.console.controller;
+import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobSummary;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:23
+ * @since 16/1/16 23:51
  */
-@Controller
-@RequestMapping("/dashboard")
-public class DashboardController extends AbstractController {
+public interface StandbyJobSummaryService {
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "dashboard_index";
-    }
+    List<StandbyJobSummary> getAllJobSummaries();
+
+    void saveJobSummary(StandbyJobSummary standbyJobSummary);
+
+    StandbyJobSummary getJobSummary(String id);
+
+    void updateJobSummary(StandbyJobData.Data data);
 
 }

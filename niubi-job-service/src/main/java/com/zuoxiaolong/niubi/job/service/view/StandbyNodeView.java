@@ -15,29 +15,35 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.service.impl;
+package com.zuoxiaolong.niubi.job.service.view;
 
-import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
-import org.apache.curator.framework.CuratorFramework;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:04
+ * @since 1/15/2016 12:02
  */
-@Service
-public class AbstractService implements InitializingBean {
+@Setter
+@Getter
+public class StandbyNodeView {
 
-    @Autowired
-    private CuratorFramework client;
+    private String id;
 
-    protected StandbyApiFactoryImpl apiFactory;
+    private String ip;
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.apiFactory = new StandbyApiFactoryImpl(client);
+    private String state;
+
+    private Integer runningJobCount;
+
+    public String getStateLabelClass() {
+        if ("Master".equals(state)) {
+            return "label-important";
+        }
+        if ("Backup".equals(state)) {
+            return "label-info";
+        }
+        return "";
     }
 
 }

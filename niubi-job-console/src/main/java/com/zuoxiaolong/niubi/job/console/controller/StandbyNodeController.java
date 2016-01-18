@@ -15,29 +15,29 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.service.impl;
+package com.zuoxiaolong.niubi.job.console.controller;
 
-import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
-import org.apache.curator.framework.CuratorFramework;
-import org.springframework.beans.factory.InitializingBean;
+import com.zuoxiaolong.niubi.job.service.StandbyNodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:04
+ * @since 1/15/2016 12:23
  */
-@Service
-public class AbstractService implements InitializingBean {
+@Controller
+@RequestMapping("/standbyNodes")
+public class StandbyNodeController extends AbstractController {
 
     @Autowired
-    private CuratorFramework client;
+    private StandbyNodeService standbyNodeService;
 
-    protected StandbyApiFactoryImpl apiFactory;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.apiFactory = new StandbyApiFactoryImpl(client);
+    @RequestMapping(value = "")
+    public String list(Model model) {
+        model.addAttribute("nodes", standbyNodeService.getAllNodes());
+        return "standby_node_list";
     }
 
 }

@@ -15,22 +15,22 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.console.controller;
+package com.zuoxiaolong.niubi.job.service;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJob;
+
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:23
+ * @since 1/15/2016 14:44
  */
-@Controller
-@RequestMapping("/dashboard")
-public class DashboardController extends AbstractController {
+public interface StandbyJobService {
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "dashboard_index";
-    }
+    void saveJob(String jarFilePath, String packagesToScan);
+
+    List<StandbyJob> getAllJobs();
+
+    List<String> getJarFileNameList(String group, String name);
 
 }

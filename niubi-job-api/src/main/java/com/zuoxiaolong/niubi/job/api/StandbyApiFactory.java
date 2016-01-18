@@ -15,22 +15,18 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.console.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:23
+ * @since 1/15/2016 12:57
  */
-@Controller
-@RequestMapping("/dashboard")
-public class DashboardController extends AbstractController {
+public interface StandbyApiFactory {
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "dashboard_index";
-    }
+    StandbyPathApi pathApi();
+
+    StandbyNodeApi nodeApi();
+
+    StandbyJobApi jobApi();
 
 }
