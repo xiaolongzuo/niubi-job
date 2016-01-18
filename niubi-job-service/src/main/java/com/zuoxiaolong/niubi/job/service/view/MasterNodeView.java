@@ -26,6 +26,6 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class StandbyNodeView extends AbstractNodeView {
+public class MasterNodeView extends AbstractNodeView {
 
 }

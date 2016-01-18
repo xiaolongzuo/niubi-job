@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.service.impl;
 
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.service.StandbyNodeService;
 import com.zuoxiaolong.niubi.job.service.view.StandbyNodeView;
 import org.springframework.stereotype.Service;
@@ -35,21 +36,19 @@ public class StandbyNodeServiceImpl extends AbstractService implements StandbyNo
 
     @Override
     public List<StandbyNodeView> getAllNodes() {
-        List<StandbyNodeData> nodeModelList;
+        List<StandbyNodeData> standbyNodeDataList;
         List<StandbyNodeView> standbyNodeViewList = new ArrayList<>();
         try {
-            nodeModelList = apiFactory.nodeApi().getAllNodes();
+            standbyNodeDataList = apiFactory.nodeApi().getAllNodes();
         } catch (Exception e) {
             LoggerHelper.warn("select all standby nodes failed, has been ignored [" + e.getClass().getName() + ", " + e.getMessage() + "]");
             return standbyNodeViewList;
         }
-        for (StandbyNodeData standbyNodeData : nodeModelList) {
+        for (StandbyNodeData standbyNodeData : standbyNodeDataList) {
             StandbyNodeView standbyNodeView = new StandbyNodeView();
             standbyNodeView.setId(standbyNodeData.getId());
             if (standbyNodeData.getData() != null) {
-                standbyNodeView.setIp(standbyNodeData.getData().getIp());
-                standbyNodeView.setState(standbyNodeData.getData().getState());
-                standbyNodeView.setRunningJobCount(standbyNodeData.getData().getRunningJobCount());
+                ReflectHelper.copyFieldValues(standbyNodeData.getData(), standbyNodeView);
             }
             standbyNodeViewList.add(standbyNodeView);
         }

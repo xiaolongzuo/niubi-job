@@ -3,7 +3,7 @@ package com.zuoxiaolong.niubi.job.persistent;
 import com.zuoxiaolong.niubi.job.core.helper.ObjectHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.persistent.entity.BaseEntity;
+import com.zuoxiaolong.niubi.job.persistent.entity.AbstractEntity;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -127,17 +127,17 @@ public class BaseDaoImpl implements BaseDao {
 	}
 
 	@Override
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager) {
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager) {
 		return getByPager(clazz, pager, null);
 	}
 
 	@Override
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity) {
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity) {
 		return getByPager(clazz, pager, entity, true);
 	}
 
 	@Override
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike) {
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike) {
 		if (pager == null) {
 			pager = new Pager<T>();
 		}
@@ -154,7 +154,7 @@ public class BaseDaoImpl implements BaseDao {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T extends BaseEntity> List<T> getDataList(List<Object> valueList, StringBuffer sqlBuffer, Pager<T> pager) {
+	private <T extends AbstractEntity> List<T> getDataList(List<Object> valueList, StringBuffer sqlBuffer, Pager<T> pager) {
 		String querySql = sqlBuffer.toString() + " order by createDate desc";
 		Query query = getHibernateSession().createQuery(querySql);
 		setParameters(query, valueList);
@@ -163,7 +163,7 @@ public class BaseDaoImpl implements BaseDao {
 		return query.list();
 	}
 
-	private <T extends BaseEntity> int getTotalCount(StringBuffer sqlBuffer, List<Object> valueList) {
+	private <T extends AbstractEntity> int getTotalCount(StringBuffer sqlBuffer, List<Object> valueList) {
 		sqlBuffer.insert(0, "select count(id) ");
 		Query query = getHibernateSession().createQuery(sqlBuffer.toString());
 		setParameters(query, valueList);

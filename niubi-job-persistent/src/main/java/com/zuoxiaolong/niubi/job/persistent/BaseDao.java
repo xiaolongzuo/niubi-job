@@ -1,6 +1,6 @@
 package com.zuoxiaolong.niubi.job.persistent;
 
-import com.zuoxiaolong.niubi.job.persistent.entity.BaseEntity;
+import com.zuoxiaolong.niubi.job.persistent.entity.AbstractEntity;
 
 import java.util.List;
 
@@ -36,10 +36,10 @@ public interface BaseDao {
 
 	public <T> T getUnique(Class<T> clazz, T entity, boolean useLike);
 
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager);
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager);
 
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity);
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity);
 
-	public <T extends BaseEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike);
+	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike);
 
 }

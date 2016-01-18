@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package com.zuoxiaolong.niubi.job.service.view;
 
 import lombok.Getter;
@@ -22,10 +21,28 @@ import lombok.Setter;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:02
+ * @since 16/1/19 01:31
  */
 @Setter
 @Getter
-public class StandbyNodeView extends AbstractNodeView {
+public class AbstractNodeView {
+
+    private String id;
+
+    private String ip;
+
+    private String state;
+
+    private Integer runningJobCount;
+
+    public String getStateLabelClass() {
+        if ("Master".equals(state)) {
+            return "label-important";
+        }
+        if ("Backup".equals(state)) {
+            return "label-info";
+        }
+        return "";
+    }
 
 }

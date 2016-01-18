@@ -16,12 +16,13 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import com.zuoxiaolong.niubi.job.core.helper.DateHelper;
 import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
@@ -32,33 +33,6 @@ import javax.persistence.*;
 @DynamicInsert
 @DynamicUpdate
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"jar_file_name","group_name","job_name"})})
-public class StandbyJob extends BaseEntity {
-
-    private String groupName;
-
-    private String jobName;
-
-    private String jarFileName;
-
-    private String packagesToScan;
-
-    @Column(name = "jar_file_name")
-    public String getJarFileName() {
-        return jarFileName;
-    }
-
-    @Column(name = "group_name")
-    public String getGroupName() {
-        return groupName;
-    }
-
-    @Column(name = "job_name")
-    public String getJobName() {
-        return jobName;
-    }
-
-    public String getPackagesToScan() {
-        return packagesToScan;
-    }
+public class StandbyJob extends AbstractJob {
 
 }

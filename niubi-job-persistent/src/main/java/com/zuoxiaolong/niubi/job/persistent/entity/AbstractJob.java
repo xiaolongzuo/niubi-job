@@ -17,19 +17,43 @@
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 04:47
+ * @since 16/1/19 01:22
  */
 @Setter
-@Entity
-@DynamicInsert
-@DynamicUpdate
-public class StandbyJobLog extends AbstractJobLog {
+@MappedSuperclass
+public class AbstractJob extends AbstractEntity {
+
+    private String groupName;
+
+    private String jobName;
+
+    private String jarFileName;
+
+    private String packagesToScan;
+
+    @Column(name = "jar_file_name")
+    public String getJarFileName() {
+        return jarFileName;
+    }
+
+    @Column(name = "group_name")
+    public String getGroupName() {
+        return groupName;
+    }
+
+    @Column(name = "job_name")
+    public String getJobName() {
+        return jobName;
+    }
+
+    public String getPackagesToScan() {
+        return packagesToScan;
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.persistent.entity;
 
-package com.zuoxiaolong.niubi.job.service.view;
-
-import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:02
+ * @since 16/1/16 23:30
  */
 @Setter
-@Getter
-public class StandbyNodeView extends AbstractNodeView {
+@Entity
+@DynamicInsert
+@DynamicUpdate
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"jar_file_name","group_name","job_name"})})
+public class MasterSlaveJob extends AbstractJob {
 
 }

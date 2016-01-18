@@ -8,12 +8,14 @@ import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
 	private static final long serialVersionUID = -3038921622628919854L;
 
 	private String id;
+
 	private Date createDate;
+
 	private Date modifyDate;
 
 	@Id
@@ -71,7 +73,7 @@ public abstract class BaseEntity implements Serializable {
 		if (getClass().getPackage() != obj.getClass().getPackage()) {
 			return false;
 		}
-		final BaseEntity other = (BaseEntity) obj;
+		final AbstractEntity other = (AbstractEntity) obj;
 		if (id == null) {
 			if (other.getId() != null) {
 				return false;
