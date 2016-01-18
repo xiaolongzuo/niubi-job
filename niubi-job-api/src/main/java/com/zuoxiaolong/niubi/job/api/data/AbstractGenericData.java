@@ -55,7 +55,7 @@ public abstract class AbstractGenericData<E extends AbstractGenericData, T exten
         Type type = getClass().getGenericSuperclass();
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
-            return (Class<T>) parameterizedType.getActualTypeArguments()[0];
+            return (Class<T>) parameterizedType.getActualTypeArguments()[1];
         }
         throw new UnknownGenericTypeException();
     }
