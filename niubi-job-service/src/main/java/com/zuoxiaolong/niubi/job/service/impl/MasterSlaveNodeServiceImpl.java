@@ -32,7 +32,7 @@ import java.util.List;
  * @since 1/15/2016 12:04
  */
 @Service
-public class StandbyNodeServiceImpl extends AbstractService implements StandbyNodeService {
+public class MasterSlaveNodeServiceImpl extends AbstractService implements StandbyNodeService {
 
     @Override
     public List<StandbyNodeView> getAllNodes() {

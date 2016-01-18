@@ -17,15 +17,10 @@
 
 package com.zuoxiaolong.niubi.job.service.view;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Xiaolong Zuo
  * @since 1/15/2016 12:02
  */
-@Setter
-@Getter
 public class MasterNodeView extends AbstractNodeView {
 
 }

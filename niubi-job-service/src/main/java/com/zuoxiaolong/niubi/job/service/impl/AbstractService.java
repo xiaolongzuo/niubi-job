@@ -17,6 +17,9 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
+import com.zuoxiaolong.niubi.job.api.MasterSlaveApiFactory;
+import com.zuoxiaolong.niubi.job.api.StandbyApiFactory;
+import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
 import org.apache.curator.framework.CuratorFramework;
 import org.springframework.beans.factory.InitializingBean;
@@ -33,11 +36,14 @@ public class AbstractService implements InitializingBean {
     @Autowired
     private CuratorFramework client;
 
-    protected StandbyApiFactoryImpl apiFactory;
+    protected StandbyApiFactory standbyApiFactory;
+
+    protected MasterSlaveApiFactory masterSlaveApiFactory;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.apiFactory = new StandbyApiFactoryImpl(client);
+        this.standbyApiFactory = new StandbyApiFactoryImpl(client);
+        this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
     }
 
 }

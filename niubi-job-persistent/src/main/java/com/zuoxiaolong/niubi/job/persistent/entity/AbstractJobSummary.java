@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
@@ -26,7 +24,6 @@ import javax.persistence.Transient;
  * @author Xiaolong Zuo
  * @since 16/1/19 01:28
  */
-@Setter
 @MappedSuperclass
 public class AbstractJobSummary extends AbstractEntity {
 
@@ -49,6 +46,46 @@ public class AbstractJobSummary extends AbstractEntity {
     private String originalJarFileName;
 
     private String operation;
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public void setJarFileName(String jarFileName) {
+        this.jarFileName = jarFileName;
+    }
+
+    public void setPackagesToScan(String packagesToScan) {
+        this.packagesToScan = packagesToScan;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setCron(String cron) {
+        this.cron = cron;
+    }
+
+    public void setMisfirePolicy(String misfirePolicy) {
+        this.misfirePolicy = misfirePolicy;
+    }
+
+    public void setOriginalJarFileName(String originalJarFileName) {
+        this.originalJarFileName = originalJarFileName;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
 
     @Column(name = "group_name")
     public String getGroupName() {

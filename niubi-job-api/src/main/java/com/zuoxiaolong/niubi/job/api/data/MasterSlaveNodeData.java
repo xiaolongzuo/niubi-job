@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,6 +56,22 @@ public class MasterSlaveNodeData extends AbstractGenericData<MasterSlaveNodeData
         public Data(String ip) {
             super(ip);
             setState("Slave");
+        }
+
+        public void addJobPath(String jobPath) {
+            if (jobPaths == null) {
+                jobPaths = new ArrayList<>();
+            }
+            jobPaths.add(jobPath);
+            increment();
+        }
+
+        public void removeJobPath(String jobPath) {
+            if (jobPaths == null) {
+                return;
+            }
+            jobPaths.remove(jobPath);
+            decrement();
         }
 
     }

@@ -17,13 +17,13 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
-import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
-import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobLog;
-import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobSummary;
-import com.zuoxiaolong.niubi.job.service.StandbyJobLogService;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobLog;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
+import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,34 +34,34 @@ import java.util.List;
  * @since 1/15/2016 12:04
  */
 @Service
-public class StandbyJobLogServiceImpl extends AbstractService implements StandbyJobLogService {
+public class MasterSlaveJobLogServiceImpl extends AbstractService implements MasterSlaveJobLogService {
 
     @Autowired
     private BaseDao baseDao;
 
     @Override
-    public List<StandbyJobLog> getAllJobLogs() {
-        return baseDao.getAll(StandbyJobLog.class);
+    public List<MasterSlaveJobLog> getAllJobLogs() {
+        return baseDao.getAll(MasterSlaveJobLog.class);
     }
 
     @Override
-    public String saveJobLog(StandbyJobSummary standbyJobSummary) {
-        StandbyJobLog standbyJobLog = new StandbyJobLog();
-        ReflectHelper.copyFieldValues(standbyJobSummary, standbyJobLog);
-        return baseDao.save(standbyJobLog);
+    public String saveJobLog(MasterSlaveJobSummary masterSlaveJobSummary) {
+        MasterSlaveJobLog masterSlaveJobLog = new MasterSlaveJobLog();
+        ReflectHelper.copyFieldValues(masterSlaveJobSummary, masterSlaveJobLog);
+        return baseDao.save(masterSlaveJobLog);
     }
 
     @Override
-    public void updateJobLog(StandbyJobData.Data data) {
+    public void updateJobLog(MasterSlaveJobData.Data data) {
         if (!StringHelper.isEmpty(data.getJobOperationLogId())) {
-            StandbyJobLog standbyJobLog = baseDao.get(StandbyJobLog.class, data.getJobOperationLogId());
-            if (standbyJobLog != null) {
+            MasterSlaveJobLog masterSlaveJobLog = baseDao.get(MasterSlaveJobLog.class, data.getJobOperationLogId());
+            if (masterSlaveJobLog != null) {
                 int retryTimes = 10;
-                ReflectHelper.copyFieldValuesSkipNull(data, standbyJobLog);
+                ReflectHelper.copyFieldValuesSkipNull(data, masterSlaveJobLog);
                 //retry, because the update operation may occur before the save operation.
                 while (retryTimes-- > 0) {
                     try {
-                        baseDao.update(standbyJobLog);
+                        baseDao.update(masterSlaveJobLog);
                     } catch (IllegalArgumentException e) {
                         try {
                             Thread.sleep(1000);
@@ -73,13 +73,13 @@ public class StandbyJobLogServiceImpl extends AbstractService implements Standby
 
             }
             data.clearOperationLog();
-            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
 
     @Override
-    public StandbyJobLog getJobLog(String id) {
-        return baseDao.get(StandbyJobLog.class, id);
+    public MasterSlaveJobLog getJobLog(String id) {
+        return baseDao.get(MasterSlaveJobLog.class, id);
     }
 
 }

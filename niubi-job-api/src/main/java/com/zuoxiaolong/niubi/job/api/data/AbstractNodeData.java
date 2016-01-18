@@ -27,31 +27,39 @@ import lombok.Setter;
 @Setter
 public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<T> {
 
-        private String ip;
+    private String ip;
 
-        private String state;
+    private String state;
 
-        private Integer runningJobCount = 0;
+    private Integer runningJobCount = 0;
 
-        public AbstractNodeData() {
-        }
+    public AbstractNodeData() {
+    }
 
-        public AbstractNodeData(String ip) {
-            this.ip = ip;
-        }
+    public AbstractNodeData(String ip) {
+        this.ip = ip;
+    }
 
-        @Override
-        public int compareTo(AbstractNodeData data) {
-            return data.getRunningJobCount() - this.runningJobCount;
-        }
+    public void increment() {
+        runningJobCount++;
+    }
 
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "ip='" + ip + '\'' +
-                    ", state='" + state + '\'' +
-                    ", runningJobCount=" + runningJobCount +
-                    '}';
-        }
+    public void decrement() {
+        runningJobCount--;
+    }
+
+    @Override
+    public int compareTo(AbstractNodeData data) {
+        return data.getRunningJobCount() - this.runningJobCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Data{" +
+                "ip='" + ip + '\'' +
+                ", state='" + state + '\'' +
+                ", runningJobCount=" + runningJobCount +
+                '}';
+    }
 
 }

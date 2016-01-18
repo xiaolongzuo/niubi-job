@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.persistent.entity;
+package com.zuoxiaolong.niubi.job.service;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 23:33
+ * @since 16/1/16 23:51
  */
-@Entity
-@DynamicInsert
-@DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"group_name","job_name"})})
-public class MasterSlaveJobSummary extends AbstractJobSummary {
+public interface MasterSlaveJobSummaryService {
+
+    List<MasterSlaveJobSummary> getAllJobSummaries();
+
+    void saveJobSummary(MasterSlaveJobSummary standbyJobSummary);
+
+    MasterSlaveJobSummary getJobSummary(String id);
+
+    void updateJobSummary(MasterSlaveJobData.Data data);
 
 }

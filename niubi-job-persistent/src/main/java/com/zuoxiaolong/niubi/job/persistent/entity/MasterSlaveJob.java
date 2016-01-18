@@ -16,7 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -28,7 +27,6 @@ import javax.persistence.UniqueConstraint;
  * @author Xiaolong Zuo
  * @since 16/1/16 23:30
  */
-@Setter
 @Entity
 @DynamicInsert
 @DynamicUpdate

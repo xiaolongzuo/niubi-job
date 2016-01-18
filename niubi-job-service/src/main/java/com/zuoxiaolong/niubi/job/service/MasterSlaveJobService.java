@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
+package com.zuoxiaolong.niubi.job.service;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJob;
+
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 23:33
+ * @since 1/15/2016 14:44
  */
-@Entity
-@DynamicInsert
-@DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"group_name","job_name"})})
-public class MasterSlaveJobSummary extends AbstractJobSummary {
+public interface MasterSlaveJobService {
+
+    void saveJob(String jarFilePath, String packagesToScan);
+
+    List<MasterSlaveJob> getAllJobs();
+
+    List<String> getJarFileNameList(String group, String name);
 
 }

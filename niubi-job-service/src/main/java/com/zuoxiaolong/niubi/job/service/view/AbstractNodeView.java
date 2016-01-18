@@ -16,15 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.service.view;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/19 01:31
  */
-@Setter
-@Getter
 public class AbstractNodeView {
 
     private String id;
@@ -34,6 +29,38 @@ public class AbstractNodeView {
     private String state;
 
     private Integer runningJobCount;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Integer getRunningJobCount() {
+        return runningJobCount;
+    }
+
+    public void setRunningJobCount(Integer runningJobCount) {
+        this.runningJobCount = runningJobCount;
+    }
 
     public String getStateLabelClass() {
         if ("Master".equals(state)) {

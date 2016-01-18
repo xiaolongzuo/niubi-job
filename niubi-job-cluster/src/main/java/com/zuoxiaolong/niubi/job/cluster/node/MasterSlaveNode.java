@@ -127,7 +127,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 try {
                     synchronized (mutex) {
                         MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
-                        nodeData.setState("Master");
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
@@ -144,6 +143,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 if (!newState.isConnected()) {
                     synchronized (mutex) {
                         releaseJobs(nodePath);
+                        MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                        nodeData.setState("Slave");
+                        masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         mutex.notify();
                     }
                 }
@@ -159,11 +161,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 if (EventHelper.isChildModifyEvent(event)) {
                     return;
                 }
-                MasterSlaveJobData masterSlaveJobData = new MasterSlaveJobData(event.getData());
-                if (StringHelper.isEmpty(masterSlaveJobData.getData().getOperation())) {
+                MasterSlaveJobData jobData = new MasterSlaveJobData(event.getData());
+                if (StringHelper.isEmpty(jobData.getData().getOperation())) {
                     return;
                 }
-                MasterSlaveJobData.Data data = masterSlaveJobData.getData();
+                MasterSlaveJobData.Data data = jobData.getData();
                 if (data.isUnknownOperation()) {
                     return;
                 }
@@ -177,28 +179,30 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 }
                 if ((EventHelper.isChildUpdateEvent(event) || EventHelper.isChildAddEvent(event))
                         && nodePath.equals(data.getNodePath())) {
-                    executeOperation(nodeData, data);
+                    executeOperation(nodeData, jobData);
                 }
             }
         };
     }
 
-    private void executeOperation(MasterSlaveNodeData.Data nodeData, MasterSlaveJobData.Data data) {
+    private void executeOperation(MasterSlaveNodeData.Data nodeData, MasterSlaveJobData jobData) {
+        MasterSlaveJobData.Data data = jobData.getData();
         try {
             if (data.isStart() || data.isRestart()) {
                 if (data.isRestart()) {
                     Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                     container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                    nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                    nodeData.removeJobPath(jobData.getPath());
                 }
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                nodeData.setRunningJobCount(nodeData.getRunningJobCount() + 1);
+                nodeData.addJobPath(jobData.getPath());
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                nodeData.removeJobPath(jobData.getPath());
                 data.setState("Pause");
             }
             data.operateSuccess();

@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
-import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
@@ -25,7 +23,6 @@ import javax.persistence.MappedSuperclass;
  * @author Xiaolong Zuo
  * @since 16/1/19 01:22
  */
-@Setter
 @MappedSuperclass
 public class AbstractJob extends AbstractEntity {
 
@@ -36,6 +33,22 @@ public class AbstractJob extends AbstractEntity {
     private String jarFileName;
 
     private String packagesToScan;
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public void setJarFileName(String jarFileName) {
+        this.jarFileName = jarFileName;
+    }
+
+    public void setPackagesToScan(String packagesToScan) {
+        this.packagesToScan = packagesToScan;
+    }
 
     @Column(name = "jar_file_name")
     public String getJarFileName() {

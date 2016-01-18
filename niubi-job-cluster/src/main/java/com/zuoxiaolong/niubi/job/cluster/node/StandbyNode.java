@@ -54,7 +54,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private CuratorFramework client;
 
-    private PathChildrenCache pathChildrenCache;
+    private PathChildrenCache jobCache;
 
     private StandbyApiFactory standbyApiFactory;
 
@@ -69,10 +69,10 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.client.start();
         this.standbyApiFactory = new StandbyApiFactoryImpl(client);
         this.nodePath = this.standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
-        this.pathChildrenCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
-        this.pathChildrenCache.getListenable().addListener(createPathChildrenCacheListener());
+        this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
+        this.jobCache.getListenable().addListener(createPathChildrenCacheListener());
         try {
-            this.pathChildrenCache.start();
+            this.jobCache.start();
         } catch (Exception e) {
             LoggerHelper.error("path children path start failed.", e);
             throw new NiubiException(e);
@@ -180,16 +180,16 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 if (data.isRestart()) {
                     Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                     container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                    nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                    nodeData.decrement();
                 }
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                nodeData.setRunningJobCount(nodeData.getRunningJobCount() + 1);
+                nodeData.increment();
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
+                nodeData.decrement();
                 data.setState("Pause");
             }
             data.operateSuccess();

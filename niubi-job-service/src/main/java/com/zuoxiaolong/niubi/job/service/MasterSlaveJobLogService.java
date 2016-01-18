@@ -15,12 +15,26 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.service.view;
+package com.zuoxiaolong.niubi.job.service;
+
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobLog;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
+
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:02
+ * @since 1/15/2016 14:44
  */
-public class StandbyNodeView extends AbstractNodeView {
+public interface MasterSlaveJobLogService {
+
+    List<MasterSlaveJobLog> getAllJobLogs();
+
+    String saveJobLog(MasterSlaveJobSummary masterSlaveJobSummary);
+
+    void updateJobLog(MasterSlaveJobData.Data data);
+
+    MasterSlaveJobLog getJobLog(String id);
 
 }

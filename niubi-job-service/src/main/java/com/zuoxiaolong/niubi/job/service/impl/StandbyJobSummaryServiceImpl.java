@@ -53,7 +53,7 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
 
     @Override
     public synchronized void saveJobSummary(StandbyJobSummary standbyJobSummary) {
-        StandbyJobData standbyJobData = apiFactory.jobApi().getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName());
+        StandbyJobData standbyJobData = standbyApiFactory.jobApi().getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName());
         StandbyJobData.Data data;
         if (standbyJobData == null) {
             data = new StandbyJobData.Data();
@@ -62,7 +62,7 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
         }
         ReflectHelper.copyFieldValuesSkipNull(standbyJobSummary, data);
         data.setJobOperationLogId(standbyJobLogService.saveJobLog(standbyJobSummary));
-        apiFactory.jobApi().saveJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), data);
+        standbyApiFactory.jobApi().saveJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), data);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
     @Override
     public StandbyJobSummary getJobSummary(String id) {
         StandbyJobSummary standbyJobSummary = baseDao.get(StandbyJobSummary.class, id);
-        StandbyJobData standbyJobData = apiFactory.jobApi().getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName());
+        StandbyJobData standbyJobData = standbyApiFactory.jobApi().getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName());
         if (standbyJobData != null) {
             ReflectHelper.copyFieldValues(standbyJobData.getData(), standbyJobSummary);
             standbyJobSummary.setOriginalJarFileName(standbyJobData.getData().getJarFileName());
