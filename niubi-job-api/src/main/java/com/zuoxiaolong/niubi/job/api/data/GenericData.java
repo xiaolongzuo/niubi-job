@@ -31,7 +31,7 @@ import java.lang.reflect.Type;
  */
 @Setter
 @Getter
-public class GenericData<T> extends BaseData {
+public abstract class GenericData<E extends GenericData, T extends Comparable<T>> extends BaseData implements Comparable<E> {
 
     private T data;
 
@@ -65,9 +65,15 @@ public class GenericData<T> extends BaseData {
     }
 
     @Override
+    public int compareTo(E e) {
+        return data.compareTo((T) e.getData());
+    }
+
+    @Override
     public String toString() {
         return "GenericData{" +
                 "data=" + JsonHelper.toJson(data) +
                 '}';
     }
+
 }

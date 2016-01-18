@@ -28,7 +28,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
  */
 @Setter
 @Getter
-public class JobData extends GenericData<JobData.Data> {
+public class JobData extends GenericData<JobData, JobData.Data> {
 
     public JobData(ChildData childData) {
         super(childData);
@@ -44,7 +44,7 @@ public class JobData extends GenericData<JobData.Data> {
 
     @Setter
     @Getter
-    public static class Data {
+    public static class Data implements Comparable<Data>{
 
         private String groupName;
 
@@ -62,6 +62,8 @@ public class JobData extends GenericData<JobData.Data> {
 
         private String misfirePolicy = "None";
 
+        private String nodePath;
+
         private String jobOperationLogId;
 
         private String operationResult;
@@ -71,6 +73,11 @@ public class JobData extends GenericData<JobData.Data> {
         private String originalJarFileName;
 
         private String operation;
+
+        @Override
+        public int compareTo(Data data) {
+            return (groupName + "." + jobName).compareTo(data.getGroupName() + "." + data.getJobName());
+        }
 
         public void prepareOperation() {
             this.operationResult = "Waiting";

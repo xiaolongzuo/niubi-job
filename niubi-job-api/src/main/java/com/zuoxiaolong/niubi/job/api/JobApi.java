@@ -35,4 +35,6 @@ public interface JobApi {
 
     JobData selectStandbyJob(String group, String name);
 
+    JobData selectStandbyJob(String path);
+
 }

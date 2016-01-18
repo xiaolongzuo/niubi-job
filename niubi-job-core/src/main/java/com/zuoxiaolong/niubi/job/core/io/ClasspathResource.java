@@ -32,7 +32,7 @@ public class ClasspathResource implements Resource {
 
     public ClasspathResource(ClassLoader classLoader, String resource) {
         AssertHelper.notNull(classLoader, "classLoader can't be null.");
-        AssertHelper.notNull(classLoader, "resource can't be null.");
+        AssertHelper.notNull(resource, "resource can't be null.");
         this.name = resource;
         this.inputStream = classLoader.getResourceAsStream(resource);
     }

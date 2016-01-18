@@ -78,7 +78,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
             throw new NiubiException(e);
         }
         this.leaderSelector = new LeaderSelector(client, apiFactory.pathApi().getStandbyMasterPath(), createLeaderSelectorListener());
-        System.out.println(this.leaderSelector.getId());
         leaderSelector.autoRequeue();
     }
 
@@ -170,7 +169,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     return;
                 }
                 NodeData.Data nodeData = apiFactory.nodeApi().selectStandbyNode(nodePath).getData();
-                StandbyNode.this.executeOperation(nodeData, data);
+                executeOperation(nodeData, data);
             }
         };
     }

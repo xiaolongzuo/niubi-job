@@ -20,13 +20,15 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
  * @since 16/1/13 22:11
  */
 @Getter
 @Setter
-public class NodeData extends GenericData<NodeData.Data> {
+public class NodeData extends GenericData<NodeData, NodeData.Data> {
 
     public NodeData(ChildData childData) {
         super(childData);
@@ -42,7 +44,7 @@ public class NodeData extends GenericData<NodeData.Data> {
 
     @Setter
     @Getter
-    public static class Data {
+    public static class Data implements Comparable<Data>{
 
         private String ip;
 
@@ -50,11 +52,18 @@ public class NodeData extends GenericData<NodeData.Data> {
 
         private Integer runningJobCount = 0;
 
+        private List<String> jobPaths;
+
         public Data() {
         }
 
         public Data(String ip) {
             this.ip = ip;
+        }
+
+        @Override
+        public int compareTo(Data data) {
+            return data.getRunningJobCount() - this.runningJobCount;
         }
 
         @Override

@@ -61,7 +61,11 @@ public class JobApiImpl extends AbstractCurdApiImpl implements JobApi {
 
     @Override
     public JobData selectStandbyJob(String group, String name) {
-        String path = getStandbyJobPath(group, name);
+        return selectStandbyJob(getStandbyJobPath(group, name));
+    }
+
+    @Override
+    public JobData selectStandbyJob(String path) {
         if (!exists(path)) {
             return null;
         }
