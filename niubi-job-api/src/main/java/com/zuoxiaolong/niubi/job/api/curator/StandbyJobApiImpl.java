@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.api.curator;
 
 import com.zuoxiaolong.niubi.job.api.StandbyJobApi;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
@@ -37,7 +38,7 @@ public class StandbyJobApiImpl extends AbstractCurdApiImpl implements StandbyJob
 
     @Override
     public List<StandbyJobData> getAllJobs() {
-        List<ChildData> childDataList = selectChildDataList(getStandbyPathApi().getJobPath());
+        List<ChildData> childDataList = getChildren(getStandbyPathApi().getJobPath());
         List<StandbyJobData> nodeModelList = childDataList.stream().map(StandbyJobData::new).collect(Collectors.toList());
         return nodeModelList;
     }
@@ -45,35 +46,31 @@ public class StandbyJobApiImpl extends AbstractCurdApiImpl implements StandbyJob
     @Override
     public void saveJob(String group, String name, StandbyJobData.Data data) {
         data.prepareOperation();
-        StandbyJobData standbyJobData = new StandbyJobData(getStandbyJobPath(group, name), data);
-        if (exists(standbyJobData.getPath())) {
-            update(standbyJobData.getPath(), standbyJobData.getDataBytes());
+        StandbyJobData standbyJobData = new StandbyJobData(PathHelper.getJobPath(getStandbyPathApi().getJobPath(), group, name), data);
+        if (checkExists(standbyJobData.getPath())) {
+            setData(standbyJobData.getPath(), standbyJobData.getDataBytes());
         } else {
-            insert(standbyJobData.getPath(), JsonHelper.toBytes(standbyJobData.getData()));
+            create(standbyJobData.getPath(), JsonHelper.toBytes(standbyJobData.getData()));
         }
     }
 
     @Override
     public void updateJob(String group, String name, StandbyJobData.Data data) {
-        StandbyJobData standbyJobData = new StandbyJobData(getStandbyJobPath(group, name), data);
-        update(standbyJobData.getPath(), standbyJobData.getDataBytes());
+        StandbyJobData standbyJobData = new StandbyJobData(PathHelper.getJobPath(getStandbyPathApi().getJobPath(), group, name), data);
+        setData(standbyJobData.getPath(), standbyJobData.getDataBytes());
     }
 
     @Override
     public StandbyJobData getJob(String group, String name) {
-        return getJob(getStandbyJobPath(group, name));
+        return getJob(PathHelper.getJobPath(getStandbyPathApi().getJobPath(), group, name));
     }
 
     @Override
     public StandbyJobData getJob(String path) {
-        if (!exists(path)) {
+        if (!checkExists(path)) {
             return null;
         }
-        return new StandbyJobData(selectChildData(path));
-    }
-
-    private String getStandbyJobPath(String group , String name) {
-        return getStandbyPathApi().getJobPath() + "/" + group + "." + name;
+        return new StandbyJobData(getData(path));
     }
 
 }

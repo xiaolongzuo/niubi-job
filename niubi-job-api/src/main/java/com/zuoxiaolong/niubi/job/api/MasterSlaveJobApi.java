@@ -17,7 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.api;
 
-import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 
 import java.util.List;
 
@@ -27,14 +27,14 @@ import java.util.List;
  */
 public interface MasterSlaveJobApi {
 
-    List<StandbyJobData> getAllJobs();
+    List<MasterSlaveJobData> getAllJobs();
 
-    void saveJob(String group, String name, StandbyJobData.Data data);
+    void saveJob(String group, String name, MasterSlaveJobData.Data data);
 
-    void updateJob(String group, String name, StandbyJobData.Data data);
+    void updateJob(String group, String name, MasterSlaveJobData.Data data);
 
-    StandbyJobData getJob(String group, String name);
+    MasterSlaveJobData getJob(String group, String name);
 
-    StandbyJobData getJob(String path);
+    MasterSlaveJobData getJob(String path);
 
 }

@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.api.curator;
 
+import com.zuoxiaolong.niubi.job.api.MasterSlavePathApi;
 import com.zuoxiaolong.niubi.job.api.StandbyPathApi;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import org.apache.curator.framework.CuratorFramework;
@@ -40,6 +41,8 @@ public abstract class AbstractCurdApiImpl {
 
     private StandbyPathApi standbyPathApi = StandbyPathApiImpl.INSTANCE;
 
+    private MasterSlavePathApi masterSlavePathApi = MasterSlavePathApiImpl.INSTANCE;
+
     public AbstractCurdApiImpl(CuratorFramework client) {
         this.client = client;
     }
@@ -52,18 +55,22 @@ public abstract class AbstractCurdApiImpl {
         return standbyPathApi;
     }
 
-    protected List<ChildData> selectChildDataList(String path) {
+    protected MasterSlavePathApi getMasterSlavePathApi() {
+        return masterSlavePathApi;
+    }
+
+    protected List<ChildData> getChildren(String path) {
         try {
             List<ChildData> childDataList = new ArrayList<>();
             List<String> children = client.getChildren().forPath(path);
-            childDataList.addAll(children.stream().map(child -> selectChildData(path + "/" + child)).collect(Collectors.toList()));
+            childDataList.addAll(children.stream().map(child -> getData(path + "/" + child)).collect(Collectors.toList()));
             return childDataList;
         } catch (Exception e) {
             throw new NiubiException(e);
         }
     }
 
-    protected ChildData selectChildData(String path) {
+    protected ChildData getData(String path) {
         try {
             ChildData childData = new ChildData(path, EMPTY_STAT, client.getData().forPath(path));
             return childData;
@@ -72,7 +79,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected boolean exists(String path) {
+    protected boolean checkExists(String path) {
         try {
             return client.checkExists().forPath(path) != null;
         } catch (Exception e) {
@@ -80,7 +87,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insert(String path, byte[] data) {
+    protected String create(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().forPath(path, data);
         } catch (Exception e) {
@@ -88,7 +95,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insertWithProtection(String path, byte[] data) {
+    protected String createWithProtection(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().withProtection().forPath(path, data);
         } catch (Exception e) {
@@ -96,7 +103,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insertPersistentWithProtection(String path, byte[] data) {
+    protected String createPersistentWithProtection(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, data);
         } catch (Exception e) {
@@ -104,7 +111,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insertPersistentSequentialWithProtection(String path, byte[] data) {
+    protected String createPersistentSequentialWithProtection(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().withProtection().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(path, data);
         } catch (Exception e) {
@@ -112,7 +119,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insertPersistentSequential(String path, byte[] data) {
+    protected String createPersistentSequential(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(path, data);
         } catch (Exception e) {
@@ -120,7 +127,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected String insertEphemeralSequential(String path, byte[] data) {
+    protected String createEphemeralSequential(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL_SEQUENTIAL).forPath(path, data);
         } catch (Exception e) {
@@ -136,7 +143,7 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
-    protected Stat update(String path, byte[] data) {
+    protected Stat setData(String path, byte[] data) {
         try {
             return getClient().setData().forPath(path, data);
         } catch (Exception e) {

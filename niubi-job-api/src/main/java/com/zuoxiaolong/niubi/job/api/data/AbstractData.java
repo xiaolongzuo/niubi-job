@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api;
+package com.zuoxiaolong.niubi.job.api.data;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/18 23:26
+ * @since 16/1/13 22:46
  */
-public interface MasterSlavePathApi extends PathApi {
+@Getter
+@Setter
+public abstract class AbstractData {
+
+    protected String id;
+
+    protected String path;
 
 }

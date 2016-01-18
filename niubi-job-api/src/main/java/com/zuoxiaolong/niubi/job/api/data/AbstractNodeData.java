@@ -18,7 +18,6 @@ package com.zuoxiaolong.niubi.job.api.data;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.curator.framework.recipes.cache.ChildData;
 
 /**
  * @author Xiaolong Zuo
@@ -26,33 +25,33 @@ import org.apache.curator.framework.recipes.cache.ChildData;
  */
 @Getter
 @Setter
-public class StandbyNodeData extends AbstractGenericData<StandbyNodeData, StandbyNodeData.Data> {
+public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<T> {
 
-    public StandbyNodeData(ChildData childData) {
-        super(childData);
-    }
+        private String ip;
 
-    public StandbyNodeData(String path, byte[] bytes) {
-        super(path, bytes);
-    }
+        private String state;
 
-    public StandbyNodeData(String path, Data data) {
-        super(path, data);
-    }
+        private Integer runningJobCount = 0;
 
-    @Setter
-    @Getter
-    public static class Data extends AbstractNodeData<Data> {
-
-        public Data() {
-            this(null);
+        public AbstractNodeData() {
         }
 
-        public Data(String ip) {
-            super(ip);
-            setState("Backup");
+        public AbstractNodeData(String ip) {
+            this.ip = ip;
         }
 
-    }
+        @Override
+        public int compareTo(AbstractNodeData data) {
+            return data.getRunningJobCount() - this.runningJobCount;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "ip='" + ip + '\'' +
+                    ", state='" + state + '\'' +
+                    ", runningJobCount=" + runningJobCount +
+                    '}';
+        }
 
 }

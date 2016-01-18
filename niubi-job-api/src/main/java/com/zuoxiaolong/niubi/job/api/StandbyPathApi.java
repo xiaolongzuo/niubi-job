@@ -20,13 +20,7 @@ package com.zuoxiaolong.niubi.job.api;
  * @author Xiaolong Zuo
  * @since 16/1/13 01:02
  */
-public interface StandbyPathApi {
-
-    String getNodePath();
-
-    String getSelectorPath();
-
-    String getJobPath();
+public interface StandbyPathApi extends PathApi {
 
 }
 

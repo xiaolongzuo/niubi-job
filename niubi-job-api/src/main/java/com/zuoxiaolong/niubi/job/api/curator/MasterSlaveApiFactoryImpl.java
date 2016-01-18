@@ -41,14 +41,12 @@ public class MasterSlaveApiFactoryImpl implements MasterSlaveApiFactory {
 
     @Override
     public MasterSlaveNodeApi nodeApi() {
-        //todo
-        return null;
+        return new MasterSlaveNodeApiImpl(client);
     }
 
     @Override
     public MasterSlaveJobApi jobApi() {
-        //todo
-        return null;
+        return new MasterSlaveJobApiImpl(client);
     }
 
 }

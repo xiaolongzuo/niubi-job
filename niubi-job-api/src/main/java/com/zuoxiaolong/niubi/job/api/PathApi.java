@@ -18,8 +18,14 @@ package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/18 23:26
+ * @since 16/1/19 00:56
  */
-public interface MasterSlavePathApi extends PathApi {
+public interface PathApi {
+
+    String getNodePath();
+
+    String getSelectorPath();
+
+    String getJobPath();
 
 }

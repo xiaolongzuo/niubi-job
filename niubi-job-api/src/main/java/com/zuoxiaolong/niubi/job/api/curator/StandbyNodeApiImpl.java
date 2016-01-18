@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.api.curator;
 
 import com.zuoxiaolong.niubi.job.api.StandbyNodeApi;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
+import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
@@ -34,32 +35,28 @@ public class StandbyNodeApiImpl extends AbstractCurdApiImpl implements StandbyNo
         super(client);
     }
 
-    private String getNodeParentPath() {
-        return getStandbyPathApi().getNodePath().substring(0, getStandbyPathApi().getNodePath().lastIndexOf("/"));
-    }
-
     @Override
     public List<StandbyNodeData> getAllNodes() {
-        List<ChildData> childDataList = selectChildDataList(getNodeParentPath());
-        List<StandbyNodeData> nodeModelList = childDataList.stream().map(StandbyNodeData::new).collect(Collectors.toList());
-        return nodeModelList;
+        List<ChildData> childDataList = getChildren(PathHelper.getParentPath(getStandbyPathApi().getNodePath()));
+        List<StandbyNodeData> standbyNodeDataList = childDataList.stream().map(StandbyNodeData::new).collect(Collectors.toList());
+        return standbyNodeDataList;
     }
 
     @Override
     public String saveNode(StandbyNodeData.Data data) {
         StandbyNodeData standbyNodeData = new StandbyNodeData(getStandbyPathApi().getNodePath(), data);
-        return insertEphemeralSequential(standbyNodeData.getPath(), standbyNodeData.getDataBytes());
+        return createEphemeralSequential(standbyNodeData.getPath(), standbyNodeData.getDataBytes());
     }
 
     @Override
     public void updateNode(String path, StandbyNodeData.Data data) {
         StandbyNodeData standbyNodeData = new StandbyNodeData(path, data);
-        update(standbyNodeData.getPath(), standbyNodeData.getDataBytes());
+        setData(standbyNodeData.getPath(), standbyNodeData.getDataBytes());
     }
 
     @Override
     public StandbyNodeData getNode(String path) {
-        return new StandbyNodeData(selectChildData(path));
+        return new StandbyNodeData(getData(path));
     }
 
 

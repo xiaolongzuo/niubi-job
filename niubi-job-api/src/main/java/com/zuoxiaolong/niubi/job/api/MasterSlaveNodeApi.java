@@ -16,7 +16,7 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 
 import java.util.List;
 
@@ -26,12 +26,12 @@ import java.util.List;
  */
 public interface MasterSlaveNodeApi {
 
-    List<StandbyNodeData> getAllNodes();
+    List<MasterSlaveNodeData> getAllNodes();
 
-    String saveNode(StandbyNodeData.Data data);
+    String saveNode(MasterSlaveNodeData.Data data);
 
-    void updateNode(String path, StandbyNodeData.Data data);
+    void updateNode(String path, MasterSlaveNodeData.Data data);
 
-    StandbyNodeData getNode(String path);
+    MasterSlaveNodeData getNode(String path);
 
 }

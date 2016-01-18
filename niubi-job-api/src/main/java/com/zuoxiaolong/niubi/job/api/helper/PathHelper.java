@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.api.data;
-
-import lombok.Getter;
-import lombok.Setter;
+package com.zuoxiaolong.niubi.job.api.helper;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:46
+ * @since 16/1/19 00:43
  */
-@Getter
-@Setter
-public abstract class BaseData {
+public abstract class PathHelper {
 
-    protected String id;
+    public static String getParentPath(String path) {
+        return path.substring(0, path.lastIndexOf("/"));
+    }
 
-    protected String path;
+    public static String getJobPath(String jobParentPath, String group , String name) {
+        return jobParentPath + "/" + group + "." + name;
+    }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,36 +14,48 @@
  * limitations under the License.
  */
 
-
 package com.zuoxiaolong.niubi.job.api.data;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:46
+ * @since 16/1/13 22:11
  */
-@Setter
 @Getter
-public class StandbyJobData extends AbstractGenericData<StandbyJobData, StandbyJobData.Data> {
+@Setter
+public class MasterSlaveNodeData extends AbstractGenericData<MasterSlaveNodeData, MasterSlaveNodeData.Data> {
 
-    public StandbyJobData(ChildData childData) {
+    public MasterSlaveNodeData(ChildData childData) {
         super(childData);
     }
 
-    public StandbyJobData(String path, byte[] bytes) {
+    public MasterSlaveNodeData(String path, byte[] bytes) {
         super(path, bytes);
     }
 
-    public StandbyJobData(String path, Data data) {
+    public MasterSlaveNodeData(String path, Data data) {
         super(path, data);
     }
 
     @Setter
     @Getter
-    public static class Data extends AbstractJobData<Data>{
+    public static class Data extends AbstractNodeData<Data> {
+
+        private List<String> jobPaths;
+
+        public Data() {
+            this(null);
+        }
+
+        public Data(String ip) {
+            super(ip);
+            setState("Slave");
+        }
 
     }
 

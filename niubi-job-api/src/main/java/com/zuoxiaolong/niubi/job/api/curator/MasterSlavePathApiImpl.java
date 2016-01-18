@@ -33,17 +33,17 @@ public class MasterSlavePathApiImpl implements MasterSlavePathApi {
     private MasterSlavePathApiImpl() {}
 
     @Override
-    public String getMasterSlaveSelectorPath() {
+    public String getSelectorPath() {
         return MASTER_SLAVE_NODE_PATH + "/selector";
     }
 
     @Override
-    public String getMasterSlaveNodePath() {
+    public String getNodePath() {
         return MASTER_SLAVE_NODE_PATH + "/nodes/child";
     }
 
     @Override
-    public String getMasterSlaveJobPath() {
+    public String getJobPath() {
         return MASTER_SLAVE_NODE_PATH + "/jobs";
     }
 

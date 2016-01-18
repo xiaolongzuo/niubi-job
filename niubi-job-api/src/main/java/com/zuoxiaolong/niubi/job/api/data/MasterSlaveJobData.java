@@ -27,23 +27,25 @@ import org.apache.curator.framework.recipes.cache.ChildData;
  */
 @Setter
 @Getter
-public class StandbyJobData extends AbstractGenericData<StandbyJobData, StandbyJobData.Data> {
+public class MasterSlaveJobData extends AbstractGenericData<MasterSlaveJobData, MasterSlaveJobData.Data> {
 
-    public StandbyJobData(ChildData childData) {
+    public MasterSlaveJobData(ChildData childData) {
         super(childData);
     }
 
-    public StandbyJobData(String path, byte[] bytes) {
+    public MasterSlaveJobData(String path, byte[] bytes) {
         super(path, bytes);
     }
 
-    public StandbyJobData(String path, Data data) {
+    public MasterSlaveJobData(String path, Data data) {
         super(path, data);
     }
 
     @Setter
     @Getter
-    public static class Data extends AbstractJobData<Data>{
+    public static class Data extends AbstractJobData<Data> {
+
+        private String nodePath;
 
     }
 

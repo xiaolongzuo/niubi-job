@@ -31,21 +31,21 @@ import java.lang.reflect.Type;
  */
 @Setter
 @Getter
-public abstract class GenericData<E extends GenericData, T extends Comparable<T>> extends BaseData implements Comparable<E> {
+public abstract class AbstractGenericData<E extends AbstractGenericData, T extends Comparable<T>> extends AbstractData implements Comparable<E> {
 
     private T data;
 
-    public GenericData(ChildData childData) {
+    public AbstractGenericData(ChildData childData) {
         this(childData.getPath(), childData.getData());
     }
 
-    public GenericData(String path, byte[] bytes) {
+    public AbstractGenericData(String path, byte[] bytes) {
         this.path = path;
         this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
         this.data = JsonHelper.fromJson(bytes, getGenericType());
     }
 
-    public GenericData(String path, T data) {
+    public AbstractGenericData(String path, T data) {
         this.path = path;
         this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
         this.data = data;
