@@ -17,11 +17,11 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
-import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
-import com.zuoxiaolong.niubi.job.service.StandbyNodeService;
-import com.zuoxiaolong.niubi.job.service.view.StandbyNodeView;
+import com.zuoxiaolong.niubi.job.service.MasterSlaveNodeService;
+import com.zuoxiaolong.niubi.job.service.view.MasterNodeView;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,27 +32,27 @@ import java.util.List;
  * @since 1/15/2016 12:04
  */
 @Service
-public class MasterSlaveNodeServiceImpl extends AbstractService implements StandbyNodeService {
+public class MasterSlaveNodeServiceImpl extends AbstractService implements MasterSlaveNodeService {
 
     @Override
-    public List<StandbyNodeView> getAllNodes() {
-        List<StandbyNodeData> standbyNodeDataList;
-        List<StandbyNodeView> standbyNodeViewList = new ArrayList<>();
+    public List<MasterNodeView> getAllNodes() {
+        List<MasterSlaveNodeData> masterSlaveNodeDataList;
+        List<MasterNodeView> masterNodeViewList = new ArrayList<>();
         try {
-            standbyNodeDataList = standbyApiFactory.nodeApi().getAllNodes();
+            masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
         } catch (Exception e) {
             LoggerHelper.warn("select all standby nodes failed, has been ignored [" + e.getClass().getName() + ", " + e.getMessage() + "]");
-            return standbyNodeViewList;
+            return masterNodeViewList;
         }
-        for (StandbyNodeData standbyNodeData : standbyNodeDataList) {
-            StandbyNodeView standbyNodeView = new StandbyNodeView();
-            standbyNodeView.setId(standbyNodeData.getId());
-            if (standbyNodeData.getData() != null) {
-                ReflectHelper.copyFieldValues(standbyNodeData.getData(), standbyNodeView);
+        for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
+            MasterNodeView masterNodeView = new MasterNodeView();
+            masterNodeView.setId(masterSlaveNodeData.getId());
+            if (masterSlaveNodeData.getData() != null) {
+                ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
             }
-            standbyNodeViewList.add(standbyNodeView);
+            masterNodeViewList.add(masterNodeView);
         }
-        return standbyNodeViewList;
+        return masterNodeViewList;
     }
 
 }
