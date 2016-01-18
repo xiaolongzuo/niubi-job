@@ -21,7 +21,7 @@
 --%>
 <div id="content">
     <div id="content-header">
-        <div id="breadcrumb"><a href="/standbyDashboard/index" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+        <div id="breadcrumb"><a href="/masterSlaveDashboard/index" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
     </div>
     <div class="container-fluid">
         <hr>
@@ -33,7 +33,7 @@
                         <h5>Upload jar</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="/standbyJobs/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form action="/masterSlaveJobs/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <div class="control-group">
                                 <label class="control-label">File upload input</label>
                                 <div class="controls">

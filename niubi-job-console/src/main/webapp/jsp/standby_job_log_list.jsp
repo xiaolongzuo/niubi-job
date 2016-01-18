@@ -28,7 +28,7 @@
 <body>
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
-<jsp:include page="dashboard_sidebar.jsp">
+<jsp:include page="standby_dashboard_sidebar.jsp">
     <jsp:param name="standbyJobLogs" value="active"/>
 </jsp:include>
 <jsp:include page="standby_job_log_list_container.jsp"/>

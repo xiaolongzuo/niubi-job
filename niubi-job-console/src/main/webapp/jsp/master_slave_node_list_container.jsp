@@ -17,14 +17,14 @@
 --%>
 <%--
   User: Xiaolong Zuo
-  Time: 16/1/17 00:52
+  Time: 16/1/15 02:08
 --%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div id="content">
     <!--breadcrumbs-->
     <div id="content-header">
-        <div id="breadcrumb"><a href="/standbyDashboard/index" title="Go to Home" class="tip-bottom"><i
+        <div id="breadcrumb"><a href="/masterSlaveDashboard/index" title="Go to Home" class="tip-bottom"><i
                 class="icon-home"></i> Home</a></div>
     </div>
     <div class="container-fluid">
@@ -32,29 +32,25 @@
             ${message}
             <div class="widget-box">
                 <div class="widget-title"><span class="icon"><i class="icon-th"></i></span>
-                    <h5>Job Manager</h5>
+                    <h5>Node Manager</h5>
                 </div>
                 <div class="widget-content nopadding">
                     <table class="table table-bordered data-table">
                         <thead>
-                        <tr>
-                            <th>State</th>
-                            <th>Method</th>
-                            <th>Mode</th>
-                            <th>Cron</th>
-                            <th>Jar file name</th>
-                            <th>Modify time</th>
-                        </tr>
+                            <tr>
+                                <th>Role</th>
+                                <th>Ip address</th>
+                                <th>Running job count</th>
+                                <th>Id</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobSummaries}" var="jobSummary">
+                        <c:forEach items="${nodes}" var="node">
                             <tr class="gradeA">
-                                <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.state}</span></td>
-                                <td><a href="/jobRuntimeDetails/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
-                                <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.mode}</span></td>
-                                <td>${jobSummary.cron}</td>
-                                <td>${jobSummary.jarFileName}</td>
-                                <td>${jobSummary.modifyDateString}</td>
+                                <td><span class="label ${node.stateLabelClass}">${node.state}</span></td>
+                                <td>${node.ip}</td>
+                                <td><span class="badge badge-info">${node.runningJobCount}</span></td>
+                                <td>${node.id}</td>
                             </tr>
                         </c:forEach>
                         </tbody>

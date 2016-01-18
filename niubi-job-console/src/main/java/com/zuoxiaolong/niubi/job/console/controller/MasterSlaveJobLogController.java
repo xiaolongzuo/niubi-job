@@ -17,7 +17,10 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
+import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -25,12 +28,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 1/15/2016 12:23
  */
 @Controller
-@RequestMapping("/dashboard")
-public class DashboardController extends AbstractController {
+@RequestMapping("/masterSlaveJobLogs")
+public class MasterSlaveJobLogController extends AbstractController {
 
-    @RequestMapping(value = "/index")
-    public String index() {
-        return "dashboard_index";
+    @Autowired
+    private MasterSlaveJobLogService masterSlaveJobLogService;
+
+    @RequestMapping(value = "")
+    public String list(Model model) {
+        model.addAttribute("jobLogs", masterSlaveJobLogService.getAllJobLogs());
+        return "master_slave_job_log_list";
     }
 
 }
