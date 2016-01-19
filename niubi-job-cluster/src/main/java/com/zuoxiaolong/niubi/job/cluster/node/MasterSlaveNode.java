@@ -80,7 +80,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.jobCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getJobPath(), true);
         this.jobCache.getListenable().addListener(createJobCacheListener());
 
-
         this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
     }
