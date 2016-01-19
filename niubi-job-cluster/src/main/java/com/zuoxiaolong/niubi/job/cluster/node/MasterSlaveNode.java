@@ -87,10 +87,12 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
 
-        initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getJobPath());
+        initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getInitLockPath());
         try {
             initLock.acquire();
+            LoggerHelper.info("get init lock... begin init jobs.");
             initJobs();
+            LoggerHelper.info("init jobs successfully.");
         } catch (Exception e) {
             throw new NiubiException(e);
         } finally {

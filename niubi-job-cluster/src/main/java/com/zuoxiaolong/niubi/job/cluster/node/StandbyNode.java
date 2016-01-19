@@ -84,7 +84,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
 
-        initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getJobPath());
+        initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getInitLockPath());
         try {
             initLock.acquire();
             initJobs();
