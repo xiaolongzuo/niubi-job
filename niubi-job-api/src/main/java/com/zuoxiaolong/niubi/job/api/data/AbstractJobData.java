@@ -18,15 +18,11 @@
 package com.zuoxiaolong.niubi.job.api.data;
 
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * @author Xiaolong Zuo
  * @since 1/15/2016 14:46
  */
-@Setter
-@Getter
 public abstract class AbstractJobData<T extends AbstractJobData> implements Comparable<T> {
 
     private String groupName;
@@ -54,6 +50,110 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
     private String originalJarFileName;
 
     private String operation;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getJarFileName() {
+        return jarFileName;
+    }
+
+    public void setJarFileName(String jarFileName) {
+        this.jarFileName = jarFileName;
+    }
+
+    public String getPackagesToScan() {
+        return packagesToScan;
+    }
+
+    public void setPackagesToScan(String packagesToScan) {
+        this.packagesToScan = packagesToScan;
+    }
+
+    public String getCron() {
+        return cron;
+    }
+
+    public void setCron(String cron) {
+        this.cron = cron;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getMisfirePolicy() {
+        return misfirePolicy;
+    }
+
+    public void setMisfirePolicy(String misfirePolicy) {
+        this.misfirePolicy = misfirePolicy;
+    }
+
+    public String getJobOperationLogId() {
+        return jobOperationLogId;
+    }
+
+    public void setJobOperationLogId(String jobOperationLogId) {
+        this.jobOperationLogId = jobOperationLogId;
+    }
+
+    public String getOperationResult() {
+        return operationResult;
+    }
+
+    public void setOperationResult(String operationResult) {
+        this.operationResult = operationResult;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public String getOriginalJarFileName() {
+        return originalJarFileName;
+    }
+
+    public void setOriginalJarFileName(String originalJarFileName) {
+        this.originalJarFileName = originalJarFileName;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
+    }
 
     @Override
     public int compareTo(AbstractJobData data) {

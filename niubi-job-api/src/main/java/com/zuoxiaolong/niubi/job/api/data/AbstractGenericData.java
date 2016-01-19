@@ -18,8 +18,6 @@ package com.zuoxiaolong.niubi.job.api.data;
 
 import com.zuoxiaolong.niubi.job.core.exception.UnknownGenericTypeException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
 import java.lang.reflect.ParameterizedType;
@@ -29,8 +27,6 @@ import java.lang.reflect.Type;
  * @author Xiaolong Zuo
  * @since 16/1/13 23:23
  */
-@Setter
-@Getter
 public abstract class AbstractGenericData<E extends AbstractGenericData, T extends Comparable<T>> extends AbstractData implements Comparable<E> {
 
     private T data;
@@ -48,6 +44,14 @@ public abstract class AbstractGenericData<E extends AbstractGenericData, T exten
     public AbstractGenericData(String path, T data) {
         this.path = path;
         this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
+        this.data = data;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
         this.data = data;
     }
 

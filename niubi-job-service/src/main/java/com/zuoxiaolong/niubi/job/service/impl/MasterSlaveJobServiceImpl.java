@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJob;
@@ -61,8 +62,17 @@ public class MasterSlaveJobServiceImpl extends AbstractService implements Master
     }
 
     @Override
+    public MasterSlaveJob getJob(String group, String name, String jarFileName) {
+        MasterSlaveJob param = new MasterSlaveJob();
+        param.setGroupName(group);
+        param.setJobName(name);
+        param.setJarFileName(jarFileName);
+        return baseDao.getUnique(MasterSlaveJob.class, param);
+    }
+
+    @Override
     public void saveJob(String jarFilePath, String packagesToScan) {
-        String jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1);
+        String jarFileName = JarFileHelper.getJarFileName(jarFilePath);
         MasterSlaveJob param = new MasterSlaveJob();
         param.setJarFileName(jarFileName);
         List<MasterSlaveJob> masterSlaveJobList = baseDao.getList(MasterSlaveJob.class, param);

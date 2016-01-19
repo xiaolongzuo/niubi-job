@@ -27,6 +27,11 @@ import java.util.List;
  */
 public abstract class JarFileHelper {
 
+    public static String getJarFileName(String jarFilePath) {
+        String jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1);
+        return jarFileName.substring(jarFileName.lastIndexOf("\\") + 1);
+    }
+
     public static String[] download(String jarFileParentPath, String... jarUrls) {
         if (jarUrls != null) {
             List<String> jarFilePathList = new ArrayList<>();

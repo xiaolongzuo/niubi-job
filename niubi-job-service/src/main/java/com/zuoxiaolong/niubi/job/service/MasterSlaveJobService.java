@@ -31,6 +31,8 @@ public interface MasterSlaveJobService {
 
     List<MasterSlaveJob> getAllJobs();
 
+    MasterSlaveJob getJob(String group, String name, String jarFileName);
+
     List<String> getJarFileNameList(String group, String name);
 
 }

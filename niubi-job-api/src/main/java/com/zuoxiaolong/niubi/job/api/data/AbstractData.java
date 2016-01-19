@@ -16,19 +16,30 @@
 
 package com.zuoxiaolong.niubi.job.api.data;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/13 22:46
  */
-@Getter
-@Setter
 public abstract class AbstractData {
 
     protected String id;
 
     protected String path;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
 }

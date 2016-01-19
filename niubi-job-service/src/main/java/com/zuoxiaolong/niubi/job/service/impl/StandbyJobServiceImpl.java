@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJob;
@@ -61,8 +62,17 @@ public class StandbyJobServiceImpl extends AbstractService implements StandbyJob
     }
 
     @Override
+    public StandbyJob getJob(String group, String name, String jarFileName) {
+        StandbyJob param = new StandbyJob();
+        param.setGroupName(group);
+        param.setJobName(name);
+        param.setJarFileName(jarFileName);
+        return baseDao.getUnique(StandbyJob.class, param);
+    }
+
+    @Override
     public void saveJob(String jarFilePath, String packagesToScan) {
-        String jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1);
+        String jarFileName = JarFileHelper.getJarFileName(jarFilePath);
         StandbyJob param = new StandbyJob();
         param.setJarFileName(jarFileName);
         List<StandbyJob> standbyJobList = baseDao.getList(StandbyJob.class, param);

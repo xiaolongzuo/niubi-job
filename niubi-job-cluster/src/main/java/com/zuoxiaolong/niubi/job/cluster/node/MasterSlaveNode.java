@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
+import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
@@ -70,7 +71,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
 
         this.nodePath = this.masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
-        this.nodeCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getNodePath(), true);
+        this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
         this.nodeCache.getListenable().addListener(createNodeCacheListener());
         try {
             this.nodeCache.start();
@@ -110,7 +111,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
         for (String path : masterSlaveNodeData.getData().getJobPaths()) {
             MasterSlaveJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
-            data.setNodePath(null);
+            data.clearNodePath();
+            getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
@@ -127,6 +129,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 try {
                     synchronized (mutex) {
                         MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                        nodeData.setState("Master");
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
@@ -158,7 +161,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         return new PathChildrenCacheListener() {
             @Override
             public synchronized void childEvent(CuratorFramework clientInner, PathChildrenCacheEvent event) throws Exception {
-                if (EventHelper.isChildModifyEvent(event)) {
+                if (!EventHelper.isChildModifyEvent(event)) {
                     return;
                 }
                 MasterSlaveJobData jobData = new MasterSlaveJobData(event.getData());
@@ -169,17 +172,32 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 if (data.isUnknownOperation()) {
                     return;
                 }
-                MasterSlaveNodeData.Data nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath).getData();
                 boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
                 if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
                     List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
                     Collections.sort(masterSlaveNodeDataList);
                     data.setNodePath(masterSlaveNodeDataList.get(0).getPath());
                     masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    return;
                 }
-                if ((EventHelper.isChildUpdateEvent(event) || EventHelper.isChildAddEvent(event))
-                        && nodePath.equals(data.getNodePath())) {
+                //if get the job, then execute.
+                if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
+                    MasterSlaveNodeData.Data nodeData;
+                    try {
+                        nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath).getData();
+                    } catch (Throwable e) {
+                        LoggerHelper.error("node [" + nodePath + "] not exists.");
+                        data.clearNodePath();
+                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                        return;
+                    }
                     executeOperation(nodeData, jobData);
+                    return;
+                }
+                if (!EventHelper.isChildRemoveEvent(event)) {
+                    //clear node path ,ready for next allocation
+                    data.clearNodePath();
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                 }
             }
         };

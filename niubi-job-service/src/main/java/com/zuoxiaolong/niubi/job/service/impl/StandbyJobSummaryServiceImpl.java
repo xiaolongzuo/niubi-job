@@ -20,6 +20,7 @@ import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJob;
 import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobSummary;
 import com.zuoxiaolong.niubi.job.service.ServiceException;
 import com.zuoxiaolong.niubi.job.service.StandbyJobLogService;
@@ -61,7 +62,9 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
             data = standbyJobData.getData();
         }
         ReflectHelper.copyFieldValuesSkipNull(standbyJobSummary, data);
+        StandbyJob standbyJob = standbyJobService.getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), standbyJobSummary.getJarFileName());
         data.setJobOperationLogId(standbyJobLogService.saveJobLog(standbyJobSummary));
+        data.setPackagesToScan(standbyJob.getPackagesToScan());
         standbyApiFactory.jobApi().saveJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), data);
     }
 

@@ -31,6 +31,8 @@ public interface StandbyJobService {
 
     List<StandbyJob> getAllJobs();
 
+    StandbyJob getJob(String group, String name, String jarFileName);
+
     List<String> getJarFileNameList(String group, String name);
 
 }

@@ -47,6 +47,10 @@ public class MasterSlaveJobData extends AbstractGenericData<MasterSlaveJobData, 
 
         private String nodePath;
 
+        public void clearNodePath() {
+            this.nodePath = null;
+        }
+
     }
 
 }

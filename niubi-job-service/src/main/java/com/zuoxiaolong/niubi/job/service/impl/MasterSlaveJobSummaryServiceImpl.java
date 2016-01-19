@@ -20,6 +20,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJob;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobService;
@@ -61,7 +62,9 @@ public class MasterSlaveJobSummaryServiceImpl extends AbstractService implements
             data = masterSlaveJobData.getData();
         }
         ReflectHelper.copyFieldValuesSkipNull(masterSlaveJobSummary, data);
+        MasterSlaveJob masterSlaveJob = masterSlaveJobService.getJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), masterSlaveJobSummary.getJarFileName());
         data.setJobOperationLogId(masterSlaveJobLogService.saveJobLog(masterSlaveJobSummary));
+        data.setPackagesToScan(masterSlaveJob.getPackagesToScan());
         masterSlaveApiFactory.jobApi().saveJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), data);
     }
 

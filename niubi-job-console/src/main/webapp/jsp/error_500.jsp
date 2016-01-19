@@ -28,7 +28,7 @@
 <body>
 <jsp:include page="dashboard_header.jsp"/>
 <jsp:include page="dashboard_top.jsp"/>
-<jsp:include page="standby_dashboard_sidebar.jsp"/>
+<jsp:include page="dashboard_sidebar.jsp"/>
 <div id="content">
     <div id="content-header">
         <div id="breadcrumb"> <a href="#" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#">Sample pages</a> <a href="#" class="current">Error</a> </div>

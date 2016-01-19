@@ -79,7 +79,7 @@ public abstract class ReflectHelper {
     public static Method getGetterMethod(Class<?> clazz, String fieldName) {
         String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
         try {
-            return clazz.getDeclaredMethod(methodName, new Class<?>[]{});
+            return getInheritMethod(clazz, methodName, new Class<?>[]{});
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

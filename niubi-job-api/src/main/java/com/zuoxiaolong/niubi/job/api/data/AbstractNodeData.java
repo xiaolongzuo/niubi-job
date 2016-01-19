@@ -16,15 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.api.data;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Xiaolong Zuo
  * @since 16/1/13 22:11
  */
-@Getter
-@Setter
 public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<T> {
 
     private String ip;
@@ -38,6 +33,30 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
 
     public AbstractNodeData(String ip) {
         this.ip = ip;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public Integer getRunningJobCount() {
+        return runningJobCount;
+    }
+
+    public void setRunningJobCount(Integer runningJobCount) {
+        this.runningJobCount = runningJobCount;
     }
 
     public void increment() {
