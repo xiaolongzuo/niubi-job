@@ -204,6 +204,10 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
         return operation != null && operation.equals("Start");
     }
 
+    public boolean isStartup() {
+        return state != null && state.equals("Startup");
+    }
+
     public boolean isRestart() {
         return operation != null && operation.equals("Restart");
     }

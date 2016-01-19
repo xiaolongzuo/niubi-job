@@ -145,7 +145,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             if (this.nodePath.equals(nodePath)) {
                 getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
             }
-            data.clearNodePath();
+            data.release();
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
@@ -253,6 +253,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.removeJobPath(jobData.getPath());
+                data.clearNodePath();
                 data.setState("Pause");
             }
             data.operateSuccess();
