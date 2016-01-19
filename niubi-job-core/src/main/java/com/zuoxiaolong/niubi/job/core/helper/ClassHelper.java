@@ -38,6 +38,18 @@ public abstract class ClassHelper {
         return null;
     }
 
+    public static ClassLoader overrideThreadContextClassLoader(ClassLoader classLoaderToUse) {
+        Thread currentThread = Thread.currentThread();
+        ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
+        if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
+            currentThread.setContextClassLoader(classLoaderToUse);
+            return threadContextClassLoader;
+        }
+        else {
+            return null;
+        }
+    }
+
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader classLoader = null;
         try {

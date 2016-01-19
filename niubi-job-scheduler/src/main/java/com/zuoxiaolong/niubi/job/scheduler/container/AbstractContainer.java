@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoaderFactory;
+import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 
@@ -48,12 +48,12 @@ public abstract class AbstractContainer implements Container {
      * @param jarUrls
      */
     public AbstractContainer(String packagesToScan, String... jarUrls) {
-        ClassLoader parent = ClassHelper.getDefaultClassLoader();
+        this.classLoader = ClassHelper.getDefaultClassLoader();
         String[] jarFilePaths = StringHelper.emptyArray();
         if (!ListHelper.isEmpty(jarUrls)) {
-            jarFilePaths = JarFileHelper.download(parent.getResource("").getFile(), jarUrls);
+            jarFilePaths = JarFileHelper.download(this.classLoader.getResource("").getFile(), jarUrls);
         }
-        this.classLoader = JobScanClassLoaderFactory.createClassLoader(parent, jarFilePaths);
+        ((JobScanClassLoader)this.classLoader).addJarFiles(jarFilePaths);
         this.jobScanner = JobScannerFactory.createJarFileJobScanner(this.classLoader, packagesToScan, jarFilePaths);
     }
 

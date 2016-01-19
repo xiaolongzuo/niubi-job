@@ -55,7 +55,7 @@ public class DefaultSpringContainer extends AbstractContainer {
      */
     public DefaultSpringContainer(Configuration configuration, String packagesToScan, String... jarUrls) {
         super(packagesToScan, jarUrls);
-        this.jobBeanFactory = new SpringJobBeanFactory(classLoader());
+        this.jobBeanFactory = new SpringJobBeanFactory();
         this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }
 
