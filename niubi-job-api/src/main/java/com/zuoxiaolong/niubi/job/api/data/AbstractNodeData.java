@@ -69,7 +69,7 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
 
     @Override
     public int compareTo(AbstractNodeData data) {
-        return data.getRunningJobCount() - this.runningJobCount;
+        return this.runningJobCount - data.getRunningJobCount();
     }
 
     @Override
