@@ -46,7 +46,7 @@ public class StubJob implements Job {
             } else {
                 jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.clazz()), new Object[]{});
             }
-            LoggerHelper.info("begin execute job : " + jobMessageString);
+            LoggerHelper.info("execute job success: " + jobMessageString);
         } catch (Exception e) {
             LoggerHelper.error("execute job failed: " + jobMessageString, e);
             throw new NiubiException(e);
