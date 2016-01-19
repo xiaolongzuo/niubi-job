@@ -50,7 +50,12 @@
                         <c:forEach items="${jobSummaries}" var="jobSummary">
                             <tr class="gradeA">
                                 <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.state}</span></td>
-                                <td><a href="/masterSlaveJobSummaries/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
+                                <c:if test="${jobSummary.state != 'Executing'}">
+                                    <td><a href="/masterSlaveJobSummaries/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
+                                </c:if>
+                                <c:if test="${jobSummary.state == 'Executing'}">
+                                    <td>${jobSummary.groupName}.${jobSummary.jobName}</td>
+                                </c:if>
                                 <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.mode}</span></td>
                                 <td>${jobSummary.cron}</td>
                                 <td>${jobSummary.jarFileName}</td>

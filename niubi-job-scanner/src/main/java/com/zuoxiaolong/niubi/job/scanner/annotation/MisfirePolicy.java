@@ -24,6 +24,28 @@ package com.zuoxiaolong.niubi.job.scanner.annotation;
  */
 public enum MisfirePolicy {
 
-    DoNothing, IgnoreMisfires, FireAndProceed, None
+    DoNothing {
+        @Override
+        public int getIntValue() {
+            return 2;
+        }
+    }, IgnoreMisfires {
+        @Override
+        public int getIntValue() {
+            return -1;
+        }
+    }, FireAndProceed {
+        @Override
+        public int getIntValue() {
+            return 1;
+        }
+    }, None {
+        @Override
+        public int getIntValue() {
+            return 0;
+        }
+    };
+
+    public abstract int getIntValue();
 
 }

@@ -208,14 +208,11 @@ public class StandbyNode extends AbstractRemoteJobNode {
     private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
         try {
             if (data.isStart() || data.isRestart()) {
-                if (data.isRestart()) {
-                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                    container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                    nodeData.decrement();
-                }
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                nodeData.increment();
+                if (data.isStart()) {
+                    nodeData.increment();
+                }
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());

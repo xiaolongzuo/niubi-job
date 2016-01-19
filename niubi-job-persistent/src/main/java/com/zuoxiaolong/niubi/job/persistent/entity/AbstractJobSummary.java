@@ -150,6 +150,9 @@ public class AbstractJobSummary extends AbstractEntity {
         if ("Pause".equals(state)) {
             return "label-inverse";
         }
+        if ("Executing".equals(state)) {
+            return "label-info";
+        }
         return "";
     }
 

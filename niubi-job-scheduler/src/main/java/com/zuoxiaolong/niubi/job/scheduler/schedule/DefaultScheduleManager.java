@@ -20,13 +20,11 @@ import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.util.ArrayList;
@@ -204,20 +202,17 @@ public class DefaultScheduleManager implements ScheduleManager {
                 LoggerHelper.error("startup [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
                 return;
             }
-        } else if (scheduleStatus == ScheduleStatus.STARTUP ){
+        } else {
             try {
-                scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                CronTrigger trigger = (CronTrigger) scheduler.getTrigger(jobDescriptor.triggerKey());
+                if (!trigger.getCronExpression().equals(cron) || trigger.getMisfireInstruction() != MisfirePolicy.valueOf(misfirePolicy).getIntValue()) {
+                    scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                } else {
+                    scheduler.resumeJob(jobKey);
+                }
                 LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("reschedule [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
-                return;
-            }
-        } else {
-            try {
-                scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
-                LoggerHelper.info("job [" + group + "," + name + "," + scheduleStatus + "] has been resumed with new trigger.");
-            } catch (SchedulerException e) {
-                LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
                 return;
             }
         }
