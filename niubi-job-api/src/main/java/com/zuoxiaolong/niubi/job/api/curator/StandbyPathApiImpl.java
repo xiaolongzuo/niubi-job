@@ -33,6 +33,11 @@ public class StandbyPathApiImpl implements StandbyPathApi {
     private StandbyPathApiImpl() {}
 
     @Override
+    public String getInitLockPath() {
+        return STANDBY_NODE_PATH + "/initLock";
+    }
+
+    @Override
     public String getNodePath() {
         return STANDBY_NODE_PATH + "/nodes/child";
     }

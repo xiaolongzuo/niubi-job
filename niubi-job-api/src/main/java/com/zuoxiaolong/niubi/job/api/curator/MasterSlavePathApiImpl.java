@@ -38,6 +38,11 @@ public class MasterSlavePathApiImpl implements MasterSlavePathApi {
     }
 
     @Override
+    public String getInitLockPath() {
+        return MASTER_SLAVE_NODE_PATH + "/initLock";
+    }
+
+    @Override
     public String getNodePath() {
         return MASTER_SLAVE_NODE_PATH + "/nodes/child";
     }

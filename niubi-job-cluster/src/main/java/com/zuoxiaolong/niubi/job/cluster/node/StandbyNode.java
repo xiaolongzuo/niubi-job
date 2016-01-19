@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
@@ -34,9 +35,12 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
+import org.apache.curator.framework.recipes.locks.InterProcessLock;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,6 +53,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class StandbyNode extends AbstractRemoteJobNode {
 
     private final LeaderSelector leaderSelector;
+
+    private InterProcessLock initLock;
 
     private RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, Integer.MAX_VALUE);
 
@@ -67,18 +73,47 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.zookeeperAddresses = zookeeperAddresses;
         this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
         this.client.start();
+
         this.standbyApiFactory = new StandbyApiFactoryImpl(client);
+
         this.nodePath = this.standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
+
         this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
         this.jobCache.getListenable().addListener(createPathChildrenCacheListener());
-        try {
-            this.jobCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
+
         this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
+
+        initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getJobPath());
+        try {
+            initLock.acquire();
+            initJobs();
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        } finally {
+            try {
+                initLock.release();
+            } catch (Exception e) {
+                throw new NiubiException(e);
+            }
+        }
+    }
+
+    private void initJobs() {
+        List<StandbyNodeData> standbyNodeDataList = standbyApiFactory.nodeApi().getAllNodes();
+        if (ListHelper.isEmpty(standbyNodeDataList) || standbyNodeDataList.size() > 1) {
+            return;
+        }
+        StandbyNodeData standbyNodeData = standbyNodeDataList.get(0);
+        if (!nodePath.equals(standbyNodeData.getPath())) {
+            return;
+        }
+        List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
+        for (StandbyJobData standbyJobData : standbyJobDataList) {
+            StandbyJobData.Data data = standbyJobData.getData();
+            data.init();
+            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+        }
     }
 
     private LeaderSelectorListener createLeaderSelectorListener() {
@@ -200,11 +235,22 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     public synchronized void join() {
         leaderSelector.start();
+        try {
+            this.jobCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
+        }
     }
 
     public synchronized void exit() {
         leaderSelector.close();
-        this.client.close();
+        try {
+            jobCache.close();
+        } catch (IOException e) {
+            throw new NiubiException(e);
+        }
+        client.close();
     }
 
 }

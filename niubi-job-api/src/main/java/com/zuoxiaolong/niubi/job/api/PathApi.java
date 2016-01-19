@@ -22,6 +22,8 @@ package com.zuoxiaolong.niubi.job.api;
  */
 public interface PathApi {
 
+    String getInitLockPath();
+
     String getNodePath();
 
     String getSelectorPath();
