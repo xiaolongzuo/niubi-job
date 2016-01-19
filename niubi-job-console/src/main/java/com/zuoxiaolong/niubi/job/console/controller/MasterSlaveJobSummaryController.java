@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
+import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobService;
@@ -58,6 +59,7 @@ public class MasterSlaveJobSummaryController extends AbstractController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ExceptionForward("/masterSlaveJobSummaries")
     public String update(MasterSlaveJobSummary masterSlaveJobSummary) {
         AssertHelper.notEmpty(masterSlaveJobSummary.getCron(), "cron can't be empty.");
         masterSlaveJobSummaryService.saveJobSummary(masterSlaveJobSummary);

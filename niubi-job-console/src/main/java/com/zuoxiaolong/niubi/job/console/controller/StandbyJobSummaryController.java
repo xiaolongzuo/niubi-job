@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
+import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobSummary;
 import com.zuoxiaolong.niubi.job.service.StandbyJobService;
@@ -57,6 +58,7 @@ public class StandbyJobSummaryController extends AbstractController {
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ExceptionForward("/standbyJobSummaries")
     public String update(StandbyJobSummary standbyJobSummary) {
         AssertHelper.notEmpty(standbyJobSummary.getCron(), "cron can't be empty.");
         standbyJobSummaryService.saveJobSummary(standbyJobSummary);

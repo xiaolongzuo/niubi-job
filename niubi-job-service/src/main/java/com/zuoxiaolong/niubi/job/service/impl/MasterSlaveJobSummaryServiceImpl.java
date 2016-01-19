@@ -61,11 +61,20 @@ public class MasterSlaveJobSummaryServiceImpl extends AbstractService implements
         } else {
             data = masterSlaveJobData.getData();
         }
+        //set data
         ReflectHelper.copyFieldValuesSkipNull(masterSlaveJobSummary, data);
         MasterSlaveJob masterSlaveJob = masterSlaveJobService.getJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), masterSlaveJobSummary.getJarFileName());
         data.setJobOperationLogId(masterSlaveJobLogService.saveJobLog(masterSlaveJobSummary));
         data.setPackagesToScan(masterSlaveJob.getPackagesToScan());
         data.setMode(masterSlaveJob.getMode());
+        //set state to Executing
+        MasterSlaveJobSummary param = new MasterSlaveJobSummary();
+        param.setGroupName(data.getGroupName());
+        param.setJobName(data.getJobName());
+        MasterSlaveJobSummary masterSlaveJobSummaryInDb = baseDao.getUnique(MasterSlaveJobSummary.class, param);
+        masterSlaveJobSummaryInDb.setState("Executing");
+        baseDao.update(masterSlaveJobSummaryInDb);
+        //send job
         masterSlaveApiFactory.jobApi().saveJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), data);
     }
 

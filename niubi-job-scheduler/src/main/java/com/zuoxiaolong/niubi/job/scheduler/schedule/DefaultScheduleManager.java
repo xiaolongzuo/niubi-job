@@ -112,7 +112,7 @@ public class DefaultScheduleManager implements ScheduleManager {
     }
 
     @Override
-    public ScheduleStatus getScheduleStatus(String group, String name) {
+    public synchronized ScheduleStatus getScheduleStatus(String group, String name) {
         return jobStatusMap.get(getUniqueId(JobKey.jobKey(name, group)));
     }
 
@@ -201,7 +201,7 @@ public class DefaultScheduleManager implements ScheduleManager {
                 scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
                 LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
             } catch (SchedulerException e) {
-                LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
+                LoggerHelper.error("startup [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
                 return;
             }
         } else if (scheduleStatus == ScheduleStatus.STARTUP ){
@@ -209,13 +209,13 @@ public class DefaultScheduleManager implements ScheduleManager {
                 scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
                 LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
             } catch (SchedulerException e) {
-                LoggerHelper.error("reschedule [" + group + "," + name + "] job failed.", e);
+                LoggerHelper.error("reschedule [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
                 return;
             }
         } else {
             try {
-                scheduler.resumeJob(jobKey);
-                LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
+                scheduler.scheduleJob(jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
+                LoggerHelper.info("job [" + group + "," + name + "," + scheduleStatus + "] has been resumed with new trigger.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
                 return;
@@ -239,13 +239,13 @@ public class DefaultScheduleManager implements ScheduleManager {
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus != ScheduleStatus.STARTUP) {
-            LoggerHelper.warn("group [" + group + "] has been paused.");
+            LoggerHelper.warn("group [" + group + "," + name + "] has been paused.");
         } else {
             try {
                 scheduler.pauseJob(jobKey);
-                LoggerHelper.info("group [" + group + "] has been paused successfully.");
+                LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
             } catch (SchedulerException e) {
-                LoggerHelper.error("pause [" + group + "] job failed.", e);
+                LoggerHelper.error("pause [" + group + "," + name + "] job failed.", e);
                 return;
             }
             jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);

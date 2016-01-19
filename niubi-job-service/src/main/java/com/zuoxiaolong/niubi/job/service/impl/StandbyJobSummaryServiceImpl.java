@@ -61,11 +61,20 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
         } else {
             data = standbyJobData.getData();
         }
+        //set data
         ReflectHelper.copyFieldValuesSkipNull(standbyJobSummary, data);
         StandbyJob standbyJob = standbyJobService.getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), standbyJobSummary.getJarFileName());
         data.setJobOperationLogId(standbyJobLogService.saveJobLog(standbyJobSummary));
         data.setPackagesToScan(standbyJob.getPackagesToScan());
         data.setMode(standbyJob.getMode());
+        //set state to Executing
+        StandbyJobSummary param = new StandbyJobSummary();
+        param.setGroupName(data.getGroupName());
+        param.setJobName(data.getJobName());
+        StandbyJobSummary standbyJobSummaryInDb = baseDao.getUnique(StandbyJobSummary.class, param);
+        standbyJobSummaryInDb.setState("Executing");
+        baseDao.update(standbyJobSummaryInDb);
+        //send job
         standbyApiFactory.jobApi().saveJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), data);
     }
 
