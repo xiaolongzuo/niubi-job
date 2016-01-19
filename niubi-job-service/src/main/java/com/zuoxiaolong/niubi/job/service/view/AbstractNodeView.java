@@ -62,14 +62,4 @@ public class AbstractNodeView {
         this.runningJobCount = runningJobCount;
     }
 
-    public String getStateLabelClass() {
-        if ("Master".equals(state)) {
-            return "label-important";
-        }
-        if ("Backup".equals(state)) {
-            return "label-info";
-        }
-        return "";
-    }
-
 }

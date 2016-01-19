@@ -23,4 +23,14 @@ package com.zuoxiaolong.niubi.job.service.view;
  */
 public class MasterNodeView extends AbstractNodeView {
 
+    public String getStateLabelClass() {
+        if ("Master".equals(getState())) {
+            return "label-important";
+        }
+        if ("Slave".equals(getState())) {
+            return "label-info";
+        }
+        return "";
+    }
+
 }
