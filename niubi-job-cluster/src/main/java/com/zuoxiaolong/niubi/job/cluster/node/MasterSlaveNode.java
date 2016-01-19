@@ -41,9 +41,11 @@ import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 主从模式实现
@@ -161,6 +163,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
+                        checkUnavailableNode();
                         MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
                         masterSlaveNodeData.getData().setState("Master");
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
@@ -171,6 +174,24 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
                 } finally {
                     LoggerHelper.info(getIp() + " relinquishing leadership.");
+                }
+            }
+
+            private void checkUnavailableNode() {
+                List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                List<String> availableNodes = new ArrayList<>();
+                if (!ListHelper.isEmpty(masterSlaveNodeDataList)) {
+                    availableNodes.addAll(masterSlaveNodeDataList.stream().map(MasterSlaveNodeData::getPath).collect(Collectors.toList()));
+                }
+                List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+                if (!ListHelper.isEmpty(masterSlaveJobDataList)) {
+                    for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
+                        MasterSlaveJobData.Data data = masterSlaveJobData.getData();
+                        if (!availableNodes.contains(data.getNodePath())) {
+                            data.release();
+                            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                        }
+                    }
                 }
             }
 
@@ -286,11 +307,13 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         try {
             jobCache.close();
         } catch (IOException e) {
+            LoggerHelper.error("path children path close failed.", e);
             throw new NiubiException(e);
         }
         try {
             nodeCache.close();
         } catch (IOException e) {
+            LoggerHelper.error("path children path close failed.", e);
             throw new NiubiException(e);
         }
         client.close();
