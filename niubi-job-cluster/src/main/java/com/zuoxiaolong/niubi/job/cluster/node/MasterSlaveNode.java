@@ -111,8 +111,10 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
         for (String path : masterSlaveNodeData.getData().getJobPaths()) {
             MasterSlaveJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
+            if (this.nodePath.equals(nodePath)) {
+                getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
+            }
             data.clearNodePath();
-            getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }
@@ -180,7 +182,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                     return;
                 }
-                //if get the job, then execute.
+                //if the job has been assigned to this node, then execute.
                 if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
                     MasterSlaveNodeData.Data nodeData;
                     try {

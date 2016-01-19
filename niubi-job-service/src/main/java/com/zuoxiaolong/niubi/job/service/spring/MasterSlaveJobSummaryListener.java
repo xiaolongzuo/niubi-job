@@ -16,12 +16,12 @@
 
 package com.zuoxiaolong.niubi.job.service.spring;
 
-import com.zuoxiaolong.niubi.job.api.StandbyApiFactory;
-import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
+import com.zuoxiaolong.niubi.job.api.MasterSlaveApiFactory;
+import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
+import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.service.StandbyJobSummaryService;
+import com.zuoxiaolong.niubi.job.service.MasterSlaveJobSummaryService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,27 +32,27 @@ import org.springframework.stereotype.Component;
  * @since 16/1/17 03:55
  */
 @Component
-public class StandbyJobSummaryListener {
+public class MasterSlaveJobSummaryListener {
 
     @Autowired
-    private StandbyJobSummaryService standbyJobSummaryService;
+    private MasterSlaveJobSummaryService standbyJobSummaryService;
 
     @Autowired
     private CuratorFramework client;
 
     public void listen() throws Exception {
-        StandbyApiFactory standbyApiFactory = new StandbyApiFactoryImpl(client);
-        PathChildrenCache pathChildrenCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
+        MasterSlaveApiFactory masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
+        PathChildrenCache pathChildrenCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getJobPath(), true);
         pathChildrenCache.getListenable().addListener((clientInner, event) -> {
             if (!EventHelper.isChildUpdateEvent(event) && !EventHelper.isChildAddEvent(event)) {
                 return;
             }
-            StandbyJobData standbyJobData = new StandbyJobData(event.getData());
-            if (!standbyJobData.getData().isOperated()) {
+            MasterSlaveJobData masterSlaveJobData = new MasterSlaveJobData(event.getData());
+            if (!masterSlaveJobData.getData().isOperated()) {
                 return;
             }
-            LoggerHelper.info("begin update standby job summary" + standbyJobData.getData());
-            standbyJobSummaryService.updateJobSummary(standbyJobData.getData());
+            LoggerHelper.info("begin update master-slave job summary" + masterSlaveJobData.getData());
+            standbyJobSummaryService.updateJobSummary(masterSlaveJobData.getData());
         });
         pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
     }

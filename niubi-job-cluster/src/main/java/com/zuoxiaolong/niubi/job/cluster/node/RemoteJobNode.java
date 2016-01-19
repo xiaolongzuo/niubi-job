@@ -25,6 +25,6 @@ import com.zuoxiaolong.niubi.job.scheduler.node.Node;
  */
 public interface RemoteJobNode extends Node {
 
-    Container getContainer(String jarUrl, String packagesToScan, boolean isSpring);
+    Container getContainer(String jarFileName, String packagesToScan, boolean isSpring);
 
 }
