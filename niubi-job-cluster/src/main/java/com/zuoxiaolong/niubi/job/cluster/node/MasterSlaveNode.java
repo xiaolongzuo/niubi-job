@@ -38,6 +38,7 @@ import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -72,23 +73,13 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
 
         this.nodePath = this.masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
+
         this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
         this.nodeCache.getListenable().addListener(createNodeCacheListener());
-        try {
-            this.nodeCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
 
         this.jobCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getJobPath(), true);
         this.jobCache.getListenable().addListener(createJobCacheListener());
-        try {
-            this.jobCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
+
 
         this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
         leaderSelector.autoRequeue();
@@ -134,8 +125,17 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
                 try {
                     synchronized (mutex) {
+                        List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
                         MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                        Integer runningJobCount = 0;
+                        if (!ListHelper.isEmpty(masterSlaveNodeDataList) && masterSlaveNodeDataList.size() == 1) {
+                            MasterSlaveNodeData masterSlaveNodeData = masterSlaveNodeDataList.get(0);
+                            if (nodePath.equals(masterSlaveNodeData.getPath())) {
+                                runningJobCount = startupJobs();
+                            }
+                        }
                         nodeData.setState("Master");
+                        nodeData.setRunningJobCount(runningJobCount);
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
@@ -145,6 +145,24 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 } finally {
                     LoggerHelper.info(getIp() + " relinquishing leadership.");
                 }
+            }
+
+            private Integer startupJobs() {
+                List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+                int runningJobCount = 0;
+                for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
+                    try {
+                        MasterSlaveJobData.Data data = masterSlaveJobData.getData();
+                        if ("Startup".equals(data.getState())) {
+                            Container container = getContainer(masterSlaveJobData.getData().getJarFileName(), masterSlaveJobData.getData().getPackagesToScan(), masterSlaveJobData.getData().isSpring());
+                            container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                            runningJobCount++;
+                        }
+                    } catch (Exception e) {
+                        LoggerHelper.error("start jar failed [" + masterSlaveJobData.getPath() + "]", e);
+                    }
+                }
+                return runningJobCount;
             }
 
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
@@ -247,11 +265,33 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     @Override
     public void join() {
         leaderSelector.start();
+        try {
+            this.jobCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
+        }
+        try {
+            this.nodeCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
+        }
     }
 
     @Override
     public void exit() {
         leaderSelector.close();
+        try {
+            jobCache.close();
+        } catch (IOException e) {
+            throw new NiubiException(e);
+        }
+        try {
+            nodeCache.close();
+        } catch (IOException e) {
+            throw new NiubiException(e);
+        }
         client.close();
     }
 

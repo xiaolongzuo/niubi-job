@@ -95,7 +95,10 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     synchronized (mutex) {
                         StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
                         int runningJobCount = startupJobs();
-                        updateNodeData(nodeData, runningJobCount);
+                        nodeData.setRunningJobCount(runningJobCount);
+                        nodeData.setState("Master");
+                        standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
+                        LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
                     }
                 } catch (Exception e) {
@@ -121,13 +124,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     }
                 }
                 return runningJobCount;
-            }
-
-            private void updateNodeData(StandbyNodeData.Data data, Integer runningJobCount) {
-                data.setRunningJobCount(runningJobCount);
-                data.setState("Master");
-                standbyApiFactory.nodeApi().updateNode(nodePath, data);
-                LoggerHelper.info(getIp() + " has been updated. [" + data + "]");
             }
 
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
