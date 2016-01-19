@@ -59,7 +59,7 @@ public class MasterSlaveJobController extends AbstractController {
     public String upload(String packagesToScan, @RequestParam MultipartFile jobJar) {
         AssertHelper.notNull(jobJar, "jobJar can't be null.");
         AssertHelper.notEmpty(packagesToScan, "packagesToScan can't be empty.");
-        String jarFilePath = getRequest().getServletContext().getRealPath("job/masterSlave/" + jobJar.getOriginalFilename());
+        String jarFilePath = getDirectoryRealPath("job/masterSlave") + "/" + jobJar.getOriginalFilename();
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());
             masterSlaveJobService.saveJob(jarFilePath, packagesToScan);

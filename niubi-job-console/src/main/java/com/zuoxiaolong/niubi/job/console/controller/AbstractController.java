@@ -21,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 
 /**
  * @author Xiaolong Zuo
@@ -42,6 +43,18 @@ public abstract class AbstractController {
                         "<a class=\"close\" data-dismiss=\"alert\" href=\"#\">×</a>" +
                         "<h4 class=\"alert-heading\">Success!</h4>Operation successfully!</div>");
         return "forward:" + url;
+    }
+
+    protected String getDirectoryRealPath(String path) {
+        String dirPath = getRequest().getServletContext().getRealPath(path);
+        if (dirPath.endsWith("/")) {
+            dirPath = dirPath.substring(0, dirPath.length() - 1);
+        }
+        File file = new File(dirPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return dirPath;
     }
 
 }

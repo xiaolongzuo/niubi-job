@@ -59,7 +59,7 @@ public class StandbyJobController extends AbstractController {
     public String upload(String packagesToScan, @RequestParam MultipartFile jobJar) {
         AssertHelper.notNull(jobJar, "jobJar can't be null.");
         AssertHelper.notEmpty(packagesToScan, "packagesToScan can't be empty.");
-        String jarFilePath = getRequest().getServletContext().getRealPath("job/standby/" + jobJar.getOriginalFilename());
+        String jarFilePath = getDirectoryRealPath("job/standby") + "/" + jobJar.getOriginalFilename();
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());
             standbyJobService.saveJob(jarFilePath, packagesToScan);
