@@ -213,7 +213,13 @@ public class DefaultScheduleManager implements ScheduleManager {
                 return;
             }
         } else {
-            LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
+            try {
+                scheduler.resumeJob(jobKey);
+                LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
+            } catch (SchedulerException e) {
+                LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
+                return;
+            }
         }
         jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
     }
@@ -242,8 +248,8 @@ public class DefaultScheduleManager implements ScheduleManager {
                 LoggerHelper.error("pause [" + group + "] job failed.", e);
                 return;
             }
+            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
         }
-        jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
     }
 
 }

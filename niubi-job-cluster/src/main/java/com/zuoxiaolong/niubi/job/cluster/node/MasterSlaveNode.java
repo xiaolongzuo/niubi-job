@@ -23,6 +23,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
@@ -109,6 +110,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     private void releaseJobs(String nodePath, MasterSlaveNodeData.Data nodeData) {
+        if (ListHelper.isEmpty(nodeData.getJobPaths())) {
+            return;
+        }
         for (String path : nodeData.getJobPaths()) {
             MasterSlaveJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
             if (this.nodePath.equals(nodePath)) {
@@ -177,6 +181,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
                 if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
                     List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                    if (ListHelper.isEmpty(masterSlaveNodeDataList)) {
+                        data.operateFailed("there is not any one node live.");
+                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                        return;
+                    }
                     Collections.sort(masterSlaveNodeDataList);
                     data.setNodePath(masterSlaveNodeDataList.get(0).getPath());
                     masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
