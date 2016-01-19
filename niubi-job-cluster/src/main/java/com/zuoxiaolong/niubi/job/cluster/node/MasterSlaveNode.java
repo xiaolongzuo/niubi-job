@@ -101,15 +101,15 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     return;
                 }
                 if (EventHelper.isChildRemoveEvent(event)) {
-                    releaseJobs(event.getData().getPath());
+                    MasterSlaveNodeData masterSlaveNodeData = new MasterSlaveNodeData(event.getData().getPath(), event.getData().getData());
+                    releaseJobs(masterSlaveNodeData.getPath(), masterSlaveNodeData.getData());
                 }
             }
         };
     }
 
-    private void releaseJobs(String nodePath) {
-        MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-        for (String path : masterSlaveNodeData.getData().getJobPaths()) {
+    private void releaseJobs(String nodePath, MasterSlaveNodeData.Data nodeData) {
+        for (String path : nodeData.getJobPaths()) {
             MasterSlaveJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
             if (this.nodePath.equals(nodePath)) {
                 getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
@@ -147,8 +147,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 LoggerHelper.info(getIp() + " state change [" + newState + "]");
                 if (!newState.isConnected()) {
                     synchronized (mutex) {
-                        releaseJobs(nodePath);
                         MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                        releaseJobs(nodePath, nodeData);
                         nodeData.setState("Slave");
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         mutex.notify();

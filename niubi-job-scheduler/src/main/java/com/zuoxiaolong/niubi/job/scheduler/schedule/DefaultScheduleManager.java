@@ -204,7 +204,7 @@ public class DefaultScheduleManager implements ScheduleManager {
                 LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
                 return;
             }
-        } else {
+        } else if (scheduleStatus == ScheduleStatus.STARTUP ){
             try {
                 scheduler.rescheduleJob(jobDescriptor.triggerKey(), jobDescriptor.withTrigger(cron, misfirePolicy).trigger());
                 LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
@@ -212,6 +212,8 @@ public class DefaultScheduleManager implements ScheduleManager {
                 LoggerHelper.error("reschedule [" + group + "," + name + "] job failed.", e);
                 return;
             }
+        } else {
+            LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
         }
         jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
     }

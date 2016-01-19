@@ -39,8 +39,8 @@ public class MasterSlaveJobApiImpl extends AbstractCurdApiImpl implements Master
     @Override
     public List<MasterSlaveJobData> getAllJobs() {
         List<ChildData> childDataList = getChildren(getStandbyPathApi().getJobPath());
-        List<MasterSlaveJobData> nodeModelList = childDataList.stream().map(MasterSlaveJobData::new).collect(Collectors.toList());
-        return nodeModelList;
+        List<MasterSlaveJobData> masterSlaveJobDataList = childDataList.stream().map(MasterSlaveJobData::new).collect(Collectors.toList());
+        return masterSlaveJobDataList;
     }
 
     @Override
