@@ -34,6 +34,8 @@ public class AbstractJob extends AbstractEntity {
 
     private String packagesToScan;
 
+    private String mode;
+
     public void setGroupName(String groupName) {
         this.groupName = groupName;
     }
@@ -67,6 +69,14 @@ public class AbstractJob extends AbstractEntity {
 
     public String getPackagesToScan() {
         return packagesToScan;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
     }
 
 }

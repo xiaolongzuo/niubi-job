@@ -58,15 +58,6 @@
                                 </div>
                             </div>
                             <div class="control-group">
-                                <label class="control-label">Mode :</label>
-                                <div class="controls">
-                                    <select name="mode" class="span4">
-                                        <option value="Common" <c:if test="${jobSummary.mode == 'Common'}">selected</c:if>>Common</option>
-                                        <option value="Spring" <c:if test="${jobSummary.mode == 'Spring'}">selected</c:if>>Spring</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="control-group">
                                 <label class="control-label">Misfire Policy :</label>
                                 <div class="controls">
                                     <select name="misfirePolicy" class="span4">

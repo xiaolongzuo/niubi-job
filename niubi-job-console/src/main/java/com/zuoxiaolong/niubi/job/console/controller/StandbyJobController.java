@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.console.controller;
 
 import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.service.StandbyJobService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +57,8 @@ public class StandbyJobController extends AbstractController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @ExceptionForward("/standbyJobSummaries")
     public String upload(String packagesToScan, @RequestParam MultipartFile jobJar) {
+        AssertHelper.notNull(jobJar, "jobJar can't be null.");
+        AssertHelper.notEmpty(packagesToScan, "packagesToScan can't be empty.");
         String jarFilePath = getRequest().getServletContext().getRealPath("job/standby/" + jobJar.getOriginalFilename());
         try {
             IOHelper.writeFile(jarFilePath, jobJar.getBytes());

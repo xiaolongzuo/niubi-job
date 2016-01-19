@@ -16,6 +16,8 @@ package com.zuoxiaolong.niubi.job.spring.bean;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.springframework.beans.BeansException;
@@ -51,7 +53,18 @@ public class SpringJobBeanFactory implements JobBeanFactory {
 
     @Override
     public <T> T getJobBean(Class<T> clazz) {
-        return applicationContext.getBean(clazz);
+        T instance;
+        try {
+            instance = applicationContext.getBean(clazz);
+        } catch (Throwable e) {
+            LoggerHelper.warn("can't find instance for " + clazz);
+            try {
+                instance = clazz.newInstance();
+            } catch (Throwable e1) {
+                throw new NiubiException(e1);
+            }
+        }
+        return instance;
     }
 
 }

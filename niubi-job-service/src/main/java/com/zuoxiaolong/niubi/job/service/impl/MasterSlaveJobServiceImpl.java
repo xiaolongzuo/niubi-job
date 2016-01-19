@@ -83,12 +83,14 @@ public class MasterSlaveJobServiceImpl extends AbstractService implements Master
         JobScanClassLoader classLoader = JobScanClassLoaderFactory.createClassLoader(applicationContext.getClassLoader(), jarFilePath);
         JobScanner jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarFilePath);
         List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
+        String mode = jobScanner.hasSpringEnvironment() ? "Spring" : "Common";
         for (JobDescriptor jobDescriptor : jobDescriptorList) {
             MasterSlaveJob masterSlaveJob = new MasterSlaveJob();
             masterSlaveJob.setGroupName(jobDescriptor.group());
             masterSlaveJob.setJobName(jobDescriptor.name());
             masterSlaveJob.setJarFileName(jarFileName);
             masterSlaveJob.setPackagesToScan(packagesToScan);
+            masterSlaveJob.setMode(mode);
             baseDao.save(masterSlaveJob);
 
             MasterSlaveJobSummary masterSlaveJobSummary = new MasterSlaveJobSummary();

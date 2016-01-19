@@ -83,12 +83,14 @@ public class StandbyJobServiceImpl extends AbstractService implements StandbyJob
         JobScanClassLoader classLoader = JobScanClassLoaderFactory.createClassLoader(applicationContext.getClassLoader(), jarFilePath);
         JobScanner jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarFilePath);
         List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
+        String mode = jobScanner.hasSpringEnvironment() ? "Spring" : "Common";
         for (JobDescriptor jobDescriptor : jobDescriptorList) {
             StandbyJob standbyJob = new StandbyJob();
             standbyJob.setGroupName(jobDescriptor.group());
             standbyJob.setJobName(jobDescriptor.name());
             standbyJob.setJarFileName(jarFileName);
             standbyJob.setPackagesToScan(packagesToScan);
+            standbyJob.setMode(mode);
             baseDao.save(standbyJob);
 
             StandbyJobSummary standbyJobSummary = new StandbyJobSummary();

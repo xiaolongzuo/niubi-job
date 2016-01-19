@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.console.controller;
 
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobService;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobSummaryService;
@@ -49,14 +50,16 @@ public class MasterSlaveJobSummaryController extends AbstractController {
 
     @RequestMapping(value = "/{id}")
     public String input(@PathVariable String id, Model model) {
-        MasterSlaveJobSummary standbyJobSummary = masterSlaveJobSummaryService.getJobSummary(id);
-        model.addAttribute("jobSummary", standbyJobSummary);
-        model.addAttribute("jarFileNameList", masterSlaveJobService.getJarFileNameList(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName()));
+        AssertHelper.notEmpty(id, "cron can't be empty.");
+        MasterSlaveJobSummary masterSlaveJobSummary = masterSlaveJobSummaryService.getJobSummary(id);
+        model.addAttribute("jobSummary", masterSlaveJobSummary);
+        model.addAttribute("jarFileNameList", masterSlaveJobService.getJarFileNameList(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName()));
         return "master_slave_job_summary_input";
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public String update(MasterSlaveJobSummary masterSlaveJobSummary) {
+        AssertHelper.notEmpty(masterSlaveJobSummary.getCron(), "cron can't be empty.");
         masterSlaveJobSummaryService.saveJobSummary(masterSlaveJobSummary);
         return success("/masterSlaveJobSummaries");
     }
