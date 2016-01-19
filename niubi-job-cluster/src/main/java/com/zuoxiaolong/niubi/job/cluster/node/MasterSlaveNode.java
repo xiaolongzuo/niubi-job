@@ -232,11 +232,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     executeOperation(nodeData, jobData);
                     return;
                 }
-                if (!EventHelper.isChildRemoveEvent(event)) {
-                    //clear node path ,ready for next allocation
-                    data.clearNodePath();
-                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                }
             }
         };
     }
