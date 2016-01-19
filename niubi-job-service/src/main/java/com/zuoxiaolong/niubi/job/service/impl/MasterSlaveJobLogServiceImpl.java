@@ -53,28 +53,29 @@ public class MasterSlaveJobLogServiceImpl extends AbstractService implements Mas
 
     @Override
     public void updateJobLog(MasterSlaveJobData.Data data) {
-        if (!StringHelper.isEmpty(data.getJobOperationLogId())) {
-            MasterSlaveJobLog masterSlaveJobLog = baseDao.get(MasterSlaveJobLog.class, data.getJobOperationLogId());
-            if (masterSlaveJobLog != null) {
-                int retryTimes = 10;
-                ReflectHelper.copyFieldValuesSkipNull(data, masterSlaveJobLog);
-                //retry, because the update operation may occur before the save operation.
-                while (retryTimes-- > 0) {
-                    try {
-                        baseDao.update(masterSlaveJobLog);
-                    } catch (IllegalArgumentException e) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e1) {
-                            //ignored
-                        }
-                    }
-                }
-
-            }
-            data.clearOperationLog();
-            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+        if (StringHelper.isEmpty(data.getJobOperationLogId())) {
+            return;
         }
+        MasterSlaveJobLog masterSlaveJobLog = baseDao.get(MasterSlaveJobLog.class, data.getJobOperationLogId());
+        if (masterSlaveJobLog == null) {
+            return;
+        }
+        int retryTimes = 10;
+        ReflectHelper.copyFieldValuesSkipNull(data, masterSlaveJobLog);
+        //retry, because the update operation may occur before the save operation.
+        while (retryTimes-- > 0) {
+            try {
+                baseDao.update(masterSlaveJobLog);
+            } catch (IllegalArgumentException e) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    //ignored
+                }
+            }
+        }
+        data.clearOperationLog();
+        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
     }
 
     @Override

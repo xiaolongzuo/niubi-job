@@ -45,11 +45,6 @@ public class StandbyJobData extends AbstractGenericData<StandbyJobData, StandbyJ
     @Getter
     public static class Data extends AbstractJobData<Data>{
 
-        public void init() {
-            setState("Shutdown");
-            setOperation(null);
-            setOriginalJarFileName(null);
-        }
     }
 
 }

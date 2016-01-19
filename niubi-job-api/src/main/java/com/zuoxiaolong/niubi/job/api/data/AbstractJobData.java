@@ -173,8 +173,14 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     public boolean isOperated() {
         return StringHelper.isEmpty(this.operation) && StringHelper.isEmpty(this.originalJarFileName)
-                && this.operationResult != null && !this.operationResult.equals("Waiting")
-                && !StringHelper.isEmpty(this.jobOperationLogId);
+                && this.operationResult != null && !this.operationResult.equals("Waiting");
+    }
+
+    public void init() {
+        setState("Shutdown");
+        setOperation(null);
+        setOriginalJarFileName(null);
+        setOperationResult("Success");
     }
 
     public void operateSuccess() {
