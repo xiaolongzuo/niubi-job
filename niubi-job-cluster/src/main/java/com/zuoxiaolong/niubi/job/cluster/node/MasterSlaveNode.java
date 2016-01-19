@@ -126,15 +126,13 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     synchronized (mutex) {
                         List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
                         MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
-                        Integer runningJobCount = 0;
                         if (!ListHelper.isEmpty(masterSlaveNodeDataList) && masterSlaveNodeDataList.size() == 1) {
                             MasterSlaveNodeData masterSlaveNodeData = masterSlaveNodeDataList.get(0);
                             if (nodePath.equals(masterSlaveNodeData.getPath())) {
-                                runningJobCount = startupJobs();
+                                startupJobs(nodeData);
                             }
                         }
                         nodeData.setState("Master");
-                        nodeData.setRunningJobCount(runningJobCount);
                         masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
@@ -146,7 +144,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 }
             }
 
-            private Integer startupJobs() {
+            private Integer startupJobs(MasterSlaveNodeData.Data nodeData) {
                 List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
                 int runningJobCount = 0;
                 for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
@@ -155,7 +153,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                         if ("Startup".equals(data.getState())) {
                             Container container = getContainer(masterSlaveJobData.getData().getJarFileName(), masterSlaveJobData.getData().getPackagesToScan(), masterSlaveJobData.getData().isSpring());
                             container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                            runningJobCount++;
+                            data.setNodePath(nodePath);
+                            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                            nodeData.addJobPath(masterSlaveJobData.getPath());
                         }
                     } catch (Exception e) {
                         LoggerHelper.error("start jar failed [" + masterSlaveJobData.getPath() + "]", e);
