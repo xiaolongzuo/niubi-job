@@ -25,6 +25,8 @@ import com.zuoxiaolong.niubi.job.service.StandbyJobLogService;
 import com.zuoxiaolong.niubi.job.service.StandbyJobSummaryService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
+import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,18 +49,21 @@ public class StandbyJobSummaryListener {
     public void listen() throws Exception {
         StandbyApiFactory standbyApiFactory = new StandbyApiFactoryImpl(client);
         PathChildrenCache pathChildrenCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
-        pathChildrenCache.getListenable().addListener((clientInner, event) -> {
-            if (!EventHelper.isChildUpdateEvent(event) && !EventHelper.isChildAddEvent(event)) {
-                return;
+        pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener() {
+            @Override
+            public synchronized void childEvent(CuratorFramework clientInner, PathChildrenCacheEvent event) throws Exception {
+                if (!EventHelper.isChildUpdateEvent(event) && !EventHelper.isChildAddEvent(event)) {
+                    return;
+                }
+                StandbyJobData standbyJobData = new StandbyJobData(event.getData());
+                if (!standbyJobData.getData().isOperated()) {
+                    return;
+                }
+                LoggerHelper.info("begin update standby job summary " + standbyJobData.getData());
+                standbyJobSummaryService.updateJobSummary(standbyJobData.getData());
+                standbyJobLogService.updateJobLog(standbyJobData.getData());
+                LoggerHelper.info("update standby job summary successfully " + standbyJobData.getData());
             }
-            StandbyJobData standbyJobData = new StandbyJobData(event.getData());
-            if (!standbyJobData.getData().isOperated()) {
-                return;
-            }
-            LoggerHelper.info("begin update standby job summary " + standbyJobData.getData());
-            standbyJobSummaryService.updateJobSummary(standbyJobData.getData());
-            standbyJobLogService.updateJobLog(standbyJobData.getData());
-            LoggerHelper.info("update standby job summary successfully " + standbyJobData.getData());
         });
         pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
     }
