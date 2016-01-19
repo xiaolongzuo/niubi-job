@@ -35,4 +35,6 @@ public interface MasterSlaveJobSummaryService {
 
     void updateJobSummary(MasterSlaveJobData.Data data);
 
+    void updateJobSummary(String id);
+
 }

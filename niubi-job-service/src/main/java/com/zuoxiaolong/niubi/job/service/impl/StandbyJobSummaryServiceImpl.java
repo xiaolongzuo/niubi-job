@@ -86,7 +86,6 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
         StandbyJobSummary standbyJobSummary = baseDao.getUnique(StandbyJobSummary.class, param);
         ReflectHelper.copyFieldValuesSkipNull(data, standbyJobSummary);
         baseDao.update(standbyJobSummary);
-        standbyJobLogService.updateJobLog(data);
     }
 
     @Override
@@ -105,6 +104,13 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
             }
         }
         return standbyJobSummary;
+    }
+
+    @Override
+    public void updateJobSummary(String id) {
+        StandbyJobSummary standbyJobSummary = baseDao.get(StandbyJobSummary.class, id);
+        StandbyJobData standbyJobData = standbyApiFactory.jobApi().getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName());
+        updateJobSummary(standbyJobData.getData());
     }
 
 }

@@ -65,4 +65,12 @@ public class StandbyJobSummaryController extends AbstractController {
         return success("/standbyJobSummaries");
     }
 
+    @RequestMapping(value = "/{id}/synchronize")
+    @ExceptionForward("/standbyJobSummaries")
+    public String synchronize(@PathVariable String id) {
+        AssertHelper.notEmpty(id, "id can't be empty.");
+        standbyJobSummaryService.updateJobSummary(id);
+        return success("/standbyJobSummaries");
+    }
+
 }

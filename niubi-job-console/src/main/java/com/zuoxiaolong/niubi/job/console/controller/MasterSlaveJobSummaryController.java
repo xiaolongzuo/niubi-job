@@ -66,4 +66,11 @@ public class MasterSlaveJobSummaryController extends AbstractController {
         return success("/masterSlaveJobSummaries");
     }
 
+    @RequestMapping(value = "/{id}/synchronize")
+    @ExceptionForward("/masterSlaveJobSummaries")
+    public String synchronize(@PathVariable String id) {
+        AssertHelper.notEmpty(id, "id can't be empty.");
+        masterSlaveJobSummaryService.updateJobSummary(id);
+        return success("/masterSlaveJobSummaries");
+    }
 }

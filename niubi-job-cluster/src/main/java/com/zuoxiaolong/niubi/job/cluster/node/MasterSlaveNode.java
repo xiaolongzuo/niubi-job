@@ -240,14 +240,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         MasterSlaveJobData.Data data = jobData.getData();
         try {
             if (data.isStart() || data.isRestart()) {
-                if (data.isRestart()) {
-                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                    container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                    nodeData.removeJobPath(jobData.getPath());
-                }
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                nodeData.addJobPath(jobData.getPath());
+                if (data.isStart()) {
+                    nodeData.addJobPath(jobData.getPath());
+                }
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());

@@ -33,6 +33,8 @@ public interface StandbyJobSummaryService {
 
     StandbyJobSummary getJobSummary(String id);
 
+    void updateJobSummary(String id);
+
     void updateJobSummary(StandbyJobData.Data data);
 
 }

@@ -44,6 +44,7 @@
                             <th>Cron</th>
                             <th>Jar file name</th>
                             <th>Modify time</th>
+                            <th>Operation</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -60,6 +61,7 @@
                                 <td>${jobSummary.cron}</td>
                                 <td>${jobSummary.jarFileName}</td>
                                 <td>${jobSummary.modifyDateString}</td>
+                                <td><a href="/standbyJobSummaries/${jobSummary.id}/synchronize" class="btn btn-primary btn-mini">Synchronize</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>

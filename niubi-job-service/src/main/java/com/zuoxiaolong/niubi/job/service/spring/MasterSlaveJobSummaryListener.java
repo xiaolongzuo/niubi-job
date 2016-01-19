@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveJobSummaryService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -35,7 +36,10 @@ import org.springframework.stereotype.Component;
 public class MasterSlaveJobSummaryListener {
 
     @Autowired
-    private MasterSlaveJobSummaryService standbyJobSummaryService;
+    private MasterSlaveJobSummaryService masterSlaveJobSummaryService;
+
+    @Autowired
+    private MasterSlaveJobLogService masterSlaveJobLogService;
 
     @Autowired
     private CuratorFramework client;
@@ -51,8 +55,10 @@ public class MasterSlaveJobSummaryListener {
             if (!masterSlaveJobData.getData().isOperated()) {
                 return;
             }
-            LoggerHelper.info("begin update master-slave job summary" + masterSlaveJobData.getData());
-            standbyJobSummaryService.updateJobSummary(masterSlaveJobData.getData());
+            LoggerHelper.info("begin update master-slave job summary " + masterSlaveJobData.getData());
+            masterSlaveJobSummaryService.updateJobSummary(masterSlaveJobData.getData());
+            masterSlaveJobLogService.updateJobLog(masterSlaveJobData.getData());
+            LoggerHelper.info("update master-slave job summary successfully " + masterSlaveJobData.getData());
         });
         pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
     }

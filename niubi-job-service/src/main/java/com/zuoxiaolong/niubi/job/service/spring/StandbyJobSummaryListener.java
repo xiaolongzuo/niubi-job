@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.service.StandbyJobLogService;
 import com.zuoxiaolong.niubi.job.service.StandbyJobSummaryService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -38,6 +39,9 @@ public class StandbyJobSummaryListener {
     private StandbyJobSummaryService standbyJobSummaryService;
 
     @Autowired
+    private StandbyJobLogService standbyJobLogService;
+
+    @Autowired
     private CuratorFramework client;
 
     public void listen() throws Exception {
@@ -51,8 +55,10 @@ public class StandbyJobSummaryListener {
             if (!standbyJobData.getData().isOperated()) {
                 return;
             }
-            LoggerHelper.info("begin update standby job summary" + standbyJobData.getData());
+            LoggerHelper.info("begin update standby job summary " + standbyJobData.getData());
             standbyJobSummaryService.updateJobSummary(standbyJobData.getData());
+            standbyJobLogService.updateJobLog(standbyJobData.getData());
+            LoggerHelper.info("update standby job summary successfully " + standbyJobData.getData());
         });
         pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);
     }

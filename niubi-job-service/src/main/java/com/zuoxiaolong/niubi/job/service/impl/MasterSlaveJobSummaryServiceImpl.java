@@ -86,7 +86,13 @@ public class MasterSlaveJobSummaryServiceImpl extends AbstractService implements
         MasterSlaveJobSummary masterSlaveJobSummary = baseDao.getUnique(MasterSlaveJobSummary.class, param);
         ReflectHelper.copyFieldValuesSkipNull(data, masterSlaveJobSummary);
         baseDao.update(masterSlaveJobSummary);
-        masterSlaveJobLogService.updateJobLog(data);
+    }
+
+    @Override
+    public void updateJobSummary(String id) {
+        MasterSlaveJobSummary masterSlaveJobSummary = baseDao.get(MasterSlaveJobSummary.class, id);
+        MasterSlaveJobData masterSlaveJobData = masterSlaveApiFactory.jobApi().getJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName());
+        updateJobSummary(masterSlaveJobData.getData());
     }
 
     @Override
