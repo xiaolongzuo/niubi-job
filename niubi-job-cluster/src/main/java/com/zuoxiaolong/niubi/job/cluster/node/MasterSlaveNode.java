@@ -252,7 +252,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
                 container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
-                nodeData.setRunningJobCount(nodeData.getRunningJobCount() - 1);
                 nodeData.removeJobPath(jobData.getPath());
                 data.setState("Pause");
             }
