@@ -55,17 +55,6 @@ public class ApplicationClassLoader extends URLClassLoader {
         }
         synchronized (getClassLoadingLock(name)) {
             try {
-                clazz = findSystemClass(name);
-                if (clazz != null) {
-                    if (resolve) {
-                        resolveClass(clazz);
-                    }
-                    return clazz;
-                }
-            } catch (Throwable e) {
-                //ignored
-            }
-            try {
                 InputStream resource = getResourceAsStream(binaryNameToPath(name, false));
                 byte[] bytes = IOHelper.readStreamBytesAndClose(resource);
                 clazz = defineClass(name, bytes, 0, bytes.length);
@@ -81,6 +70,17 @@ public class ApplicationClassLoader extends URLClassLoader {
             }
             try {
                 clazz = parent.loadClass(name);
+                if (clazz != null) {
+                    if (resolve) {
+                        resolveClass(clazz);
+                    }
+                    return clazz;
+                }
+            } catch (Throwable e) {
+                //ignored
+            }
+            try {
+                clazz = findSystemClass(name);
                 if (clazz != null) {
                     if (resolve) {
                         resolveClass(clazz);
