@@ -53,7 +53,7 @@ public abstract class JarFileHelper {
 
     public static String downloadJarFile(String jarFileParentPath, String jarUrl) throws IOException {
         String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
-        String jarFilePath = jarFileParentPath + jarFileName;
+        String jarFilePath = StringHelper.appendSlant(jarFileParentPath) + jarFileName;
         File file = new File(jarFilePath);
         if (file.exists()) {
             return jarFilePath;
