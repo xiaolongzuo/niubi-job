@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 
@@ -32,16 +30,7 @@ public class SimpleLocalJobNode extends AbstractLocalJobNode {
     private Container container;
 
     public SimpleLocalJobNode(String packagesToScan) {
-        this(packagesToScan, StringHelper.emptyArray());
-    }
-
-    public SimpleLocalJobNode(String packagesToScan, String[] propertiesFileNames) {
-        this(ClassHelper.getDefaultClassLoader(), packagesToScan, propertiesFileNames);
-    }
-
-    SimpleLocalJobNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
-        super(classLoader, packagesToScan, propertiesFileNames);
-        this.container = new DefaultContainer(classLoader, packagesToScan);
+        this.container = new DefaultContainer(packagesToScan);
     }
 
     @Override

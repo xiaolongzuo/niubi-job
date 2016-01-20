@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.spring.node;
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractLocalJobNode;
 import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
@@ -31,9 +32,9 @@ public class SimpleSpringLocalJobNode extends AbstractLocalJobNode {
 
     private Container container;
 
-    public SimpleSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan, String... propertiesFileNames) {
-        super(applicationContext.getClassLoader(), packagesToScan, propertiesFileNames);
-        this.container = new DefaultSpringContainer(applicationContext, getConfiguration(), packagesToScan);
+    public SimpleSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan) {
+        ClassHelper.overrideThreadContextClassLoader(applicationContext.getClassLoader());
+        this.container = new DefaultSpringContainer(applicationContext, packagesToScan);
     }
 
     @Override

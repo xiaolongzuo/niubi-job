@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.schedule;
+package com.zuoxiaolong.niubi.job.scheduler;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 16/1/10 00:59
  */
-public interface ScheduleManager {
+public interface SchedulerManager {
 
     void startup();
 

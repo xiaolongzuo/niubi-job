@@ -14,30 +14,28 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.schedule;
+package com.zuoxiaolong.niubi.job.scheduler;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Xiaolong Zuo
  * @since 16/1/10 01:09
  */
-public class DefaultScheduleManager implements ScheduleManager {
+public class DefaultSchedulerManager implements SchedulerManager {
 
     private Scheduler scheduler;
 
@@ -47,21 +45,40 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     private Map<String, ScheduleStatus> jobStatusMap;
 
-    public DefaultScheduleManager(Configuration configuration, JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
-        AssertHelper.notNull(configuration, "configuration can't be null.");
+    public DefaultSchedulerManager(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+        Properties properties = new Properties();
+        try {
+            properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("com/zuoxiaolong/niubi/job/scheduler/quartz-default.properties"));
+        } catch (IOException e) {
+            throw new NiubiException(e);
+        }
+        try {
+            properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("quartz.properties"));
+        } catch (IOException e) {
+            LoggerHelper.warn("quartz properties not found ,use default instead.");
+        }
+        AssertHelper.notNull(properties, "configuration can't be null.");
         AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
         AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
-        initScheduler(configuration);
+        initScheduler(properties);
         initJobDetails(jobBeanFactory, jobDescriptorList);
     }
 
-    protected void initScheduler(Configuration configuration) {
+    public DefaultSchedulerManager(Properties properties, JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+        AssertHelper.notNull(properties, "configuration can't be null.");
+        AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
+        AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
+        initScheduler(properties);
+        initJobDetails(jobBeanFactory, jobDescriptorList);
+    }
+
+    protected void initScheduler(Properties properties) {
         this.groupNameListMap = new ConcurrentHashMap<>();
         this.groupList = new ArrayList<>();
         this.jobStatusMap = new ConcurrentHashMap<>();
         try {
             StdSchedulerFactory schedulerFactory = new StdSchedulerFactory();
-            schedulerFactory.initialize(configuration.getProperties());
+            schedulerFactory.initialize(properties);
             scheduler = schedulerFactory.getScheduler();
             scheduler.start();
         } catch (SchedulerException e) {
@@ -72,7 +89,7 @@ public class DefaultScheduleManager implements ScheduleManager {
 
     protected void initJobDetails(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
         for (JobDescriptor descriptor : jobDescriptorList) {
-            addJobDetail(new DefaultScheduleJobDescriptor(descriptor));
+            addJobDetail(new DefaultSchedulerJobDescriptor(descriptor));
         }
         try {
             scheduler.getContext().put(JobBeanFactory.DATA_MAP_KEY, jobBeanFactory);
@@ -82,9 +99,9 @@ public class DefaultScheduleManager implements ScheduleManager {
         }
     }
 
-    protected void addJobDetail(ScheduleJobDescriptor descriptor) {
+    protected void addJobDetail(SchedulerJobDescriptor descriptor) {
         try {
-            scheduler.addJob(descriptor.putJobData(ScheduleJobDescriptor.DATA_MAP_KEY, descriptor).jobDetail(), true);
+            scheduler.addJob(descriptor.putJobData(SchedulerJobDescriptor.DATA_MAP_KEY, descriptor).jobDetail(), true);
         } catch (SchedulerException e) {
             LoggerHelper.error("add job failed.", e);
             throw new NiubiException(e);
@@ -134,7 +151,7 @@ public class DefaultScheduleManager implements ScheduleManager {
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
-            ScheduleJobDescriptor jobDescriptor;
+            SchedulerJobDescriptor jobDescriptor;
             try {
                 JobDetail jobDetail = scheduler.getJobDetail(jobKey);
                 jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
@@ -185,7 +202,7 @@ public class DefaultScheduleManager implements ScheduleManager {
     public synchronized void startupManual(String group, String name, String cron, String misfirePolicy) {
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-        ScheduleJobDescriptor jobDescriptor;
+        SchedulerJobDescriptor jobDescriptor;
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);

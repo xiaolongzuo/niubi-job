@@ -16,12 +16,12 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
-import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
-import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
+
+import java.util.Properties;
 
 /**
  * 默认的容器实现类
@@ -33,35 +33,32 @@ public class DefaultContainer extends AbstractContainer {
 
     private JobBeanFactory jobBeanFactory;
 
-    private ScheduleManager scheduleManager;
+    private SchedulerManager schedulerManager;
 
     /**
      * for local
-     * @param classLoader
      * @param packagesToScan
      */
-    public DefaultContainer(ClassLoader classLoader, String packagesToScan) {
-        super(classLoader, packagesToScan);
+    public DefaultContainer(String packagesToScan) {
+        super(packagesToScan);
         this.jobBeanFactory = new DefaultJobBeanFactory();
-        Configuration configuration = new Configuration(classLoader);
-        this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
+        this.schedulerManager = new DefaultSchedulerManager(this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }
 
     /**
      * for remote
-     * @param configuration
+     * @param classLoader
      * @param packagesToScan
-     * @param jarUrl
+     * @param jarFilePath
      */
-    public DefaultContainer(Configuration configuration, String packagesToScan, String jarUrl) {
-        super(ClassHelper.getDefaultClassLoader(), packagesToScan, jarUrl);
+    public DefaultContainer(ClassLoader classLoader, Properties properties, String packagesToScan, String jarFilePath) {
+        super(classLoader, packagesToScan, jarFilePath);
         this.jobBeanFactory = new DefaultJobBeanFactory();
-        this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
+        this.schedulerManager = new DefaultSchedulerManager(properties, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }
 
-
-    public ScheduleManager scheduleManager() {
-        return scheduleManager;
+    public SchedulerManager schedulerManager() {
+        return schedulerManager;
     }
 
 }

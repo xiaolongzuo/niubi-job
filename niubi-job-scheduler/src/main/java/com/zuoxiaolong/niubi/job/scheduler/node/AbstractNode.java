@@ -16,12 +16,15 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.apache.log4j.PropertyConfigurator;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Properties;
 
 /**
  * @author Xiaolong Zuo
@@ -31,16 +34,34 @@ public abstract class AbstractNode implements Node {
 
     private String ip;
 
-    private Configuration configuration;
-
-    public AbstractNode(ClassLoader classLoader, String[] propertiesFileNames) {
-        this.configuration = new Configuration(classLoader);
-        if (!StringHelper.isEmpty(propertiesFileNames)) {
-            for (String propertiesFileName : propertiesFileNames) {
-                this.configuration.addProperties(propertiesFileName);
-            }
+    /**
+     * for local
+     */
+    public AbstractNode() {
+        Properties properties = new Properties();
+        try {
+            properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("com/zuoxiaolong/niubi/job/scheduler/node/log4j-default.properties"));
+        } catch (IOException e) {
+            throw new NiubiException(e);
         }
-        PropertyConfigurator.configure(this.configuration.getProperties());
+        try {
+            properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("log4j.properties"));
+        } catch (IOException e) {
+            LoggerHelper.warn("log4j properties not found ,use default instead.");
+        }
+        PropertyConfigurator.configure(properties);
+        try {
+            this.ip = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            this.ip = "unknown";
+        }
+    }
+    /**
+     * for remote
+     * @param properties
+     */
+    public AbstractNode(Properties properties) {
+        PropertyConfigurator.configure(properties);
         try {
             this.ip = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
@@ -50,10 +71,6 @@ public abstract class AbstractNode implements Node {
 
     protected String getIp() {
         return ip;
-    }
-
-    protected Configuration getConfiguration() {
-        return configuration;
     }
 
 }

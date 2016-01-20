@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
+import com.zuoxiaolong.niubi.job.cluster.launcher.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -64,14 +65,10 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private StandbyApiFactory standbyApiFactory;
 
-    private String zookeeperAddresses;
-
     private String nodePath;
 
-    public StandbyNode(String zookeeperAddresses, String jarRepertoryUrl, String[] propertiesFileNames) {
-        super(jarRepertoryUrl, propertiesFileNames);
-        this.zookeeperAddresses = zookeeperAddresses;
-        this.client = CuratorFrameworkFactory.newClient(this.zookeeperAddresses, retryPolicy);
+    public StandbyNode() {
+        this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
 
         this.standbyApiFactory = new StandbyApiFactoryImpl(client);
@@ -151,7 +148,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         StandbyJobData.Data data = standbyJobData.getData();
                         if ("Startup".equals(data.getState())) {
                             Container container = getContainer(standbyJobData.getData().getJarFileName(), standbyJobData.getData().getPackagesToScan(), standbyJobData.getData().isSpring());
-                            container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                            container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                             runningJobCount++;
                         }
                     } catch (Exception e) {
@@ -167,7 +164,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                     synchronized (mutex) {
                         LoggerHelper.info(getIp() + "'s connection has been un-connected");
                         for (Container container : getContainerCache().values()) {
-                            container.scheduleManager().shutdown();
+                            container.schedulerManager().shutdown();
                         }
                         StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
                         standbyApiFactory.nodeApi().updateNode(nodePath, data);
@@ -209,14 +206,14 @@ public class StandbyNode extends AbstractRemoteJobNode {
         try {
             if (data.isStart() || data.isRestart()) {
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                 if (data.isStart()) {
                     nodeData.increment();
                 }
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.decrement();
                 data.setState("Pause");
             }

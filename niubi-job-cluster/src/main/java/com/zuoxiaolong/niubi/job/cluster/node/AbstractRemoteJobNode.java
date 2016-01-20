@@ -16,16 +16,19 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.cluster.launcher.Bootstrap;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
+import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
-import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
-import org.quartz.impl.StdSchedulerFactory;
 
+import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -39,11 +42,8 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
 
     private Map<String, Container> containerCache;
 
-    private String jarRepertoryUrl;
-
-    public AbstractRemoteJobNode(String jarRepertoryUrl, String[] propertiesFileNames) {
-        super(ClassHelper.getDefaultClassLoader(), propertiesFileNames);
-        this.jarRepertoryUrl = StringHelper.appendSlant(jarRepertoryUrl);
+    public AbstractRemoteJobNode() {
+        super(Bootstrap.properties());
         this.containerCache = new ConcurrentHashMap<>();
     }
 
@@ -52,17 +52,21 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
     }
 
     public Container getContainer(String jarFileName, String packagesToScan, boolean isSpring) {
-        String jarUrl = jarRepertoryUrl + jarFileName;
-        Container container = containerCache.get(jarUrl);
+        Container container = containerCache.get(jarFileName);
         if (container != null) {
             return container;
         }
         lock.lock();
         try {
-            container = containerCache.get(jarUrl);
+            container = containerCache.get(jarFileName);
             if (container == null) {
-                container = createContainer(jarUrl, packagesToScan, isSpring);
-                containerCache.put(jarUrl, container);
+                try {
+                    container = createContainer(jarFileName, packagesToScan, isSpring);
+                } catch (Exception e) {
+                    LoggerHelper.error("create container for " + jarFileName + " failed.", e);
+                    throw new NiubiException(e);
+                }
+                containerCache.put(jarFileName, container);
             }
             return container;
         } finally {
@@ -70,15 +74,19 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         }
     }
 
-    private Container createContainer(String jarUrl, String packagesToScan, boolean isSpring) {
-        Container container;
-        getConfiguration().addProperty(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarUrl);
+    public Container createContainer(String jarFileName, String packagesToScan, boolean isSpring) throws Exception {
+        String jarFilePath = JarFileHelper.downloadJarFile(Bootstrap.getJobDir(), Bootstrap.getJarUrl(jarFileName));
+        String containerClassName;
         if (isSpring) {
-            container = new DefaultSpringContainer(getConfiguration(), packagesToScan, jarUrl);
+            containerClassName = "com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer";
         } else {
-            container = new DefaultContainer(getConfiguration(), packagesToScan, jarUrl);
+            containerClassName = "com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer";
         }
-        return container;
+        ApplicationClassLoader applicationClassLoader = ApplicationClassLoaderFactory.getJarApplicationClassLoader(jarFilePath);
+        Class<? extends Container> containerClass = (Class<? extends Container>) applicationClassLoader.loadClass(containerClassName);
+        Class<?>[] parameterTypes = new Class[]{ClassLoader.class, Properties.class, String.class, String.class};
+        Constructor<? extends Container> containerConstructor = containerClass.getConstructor(parameterTypes);
+        return containerConstructor.newInstance(applicationClassLoader, Bootstrap.properties(), packagesToScan, jarFilePath);
     }
 
 }

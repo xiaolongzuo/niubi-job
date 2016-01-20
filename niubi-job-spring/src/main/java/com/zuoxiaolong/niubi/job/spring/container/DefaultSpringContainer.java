@@ -16,14 +16,14 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.container.AbstractContainer;
-import com.zuoxiaolong.niubi.job.scheduler.schedule.DefaultScheduleManager;
-import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
 import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
 import org.springframework.context.ApplicationContext;
+
+import java.util.Properties;
 
 /**
  *
@@ -34,35 +34,32 @@ public class DefaultSpringContainer extends AbstractContainer {
 
     private JobBeanFactory jobBeanFactory;
 
-    private ScheduleManager scheduleManager;
+    private SchedulerManager schedulerManager;
 
     /**
      * for local
      * @param applicationContext
-     * @param configuration
      * @param packagesToScan
      */
-    public DefaultSpringContainer(ApplicationContext applicationContext, Configuration configuration, String packagesToScan) {
-        super(applicationContext.getClassLoader(), packagesToScan);
+    public DefaultSpringContainer(ApplicationContext applicationContext, String packagesToScan) {
+        super(packagesToScan);
         this.jobBeanFactory = new SpringJobBeanFactory(applicationContext);
-        this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
+        this.schedulerManager = new DefaultSchedulerManager(this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }
 
     /**
      * for remote
-     * @param configuration
      * @param packagesToScan
-     * @param jarUrl
      */
-    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String jarUrl) {
-        super(ClassHelper.getDefaultClassLoader(), packagesToScan, jarUrl);
+    public DefaultSpringContainer(ClassLoader classLoader, Properties properties, String packagesToScan, String jarFilePath) {
+        super(classLoader, packagesToScan, jarFilePath);
         this.jobBeanFactory = new SpringJobBeanFactory();
-        this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
+        this.schedulerManager = new DefaultSchedulerManager(properties, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }
 
     @Override
-    public ScheduleManager scheduleManager() {
-        return scheduleManager;
+    public SchedulerManager schedulerManager() {
+        return schedulerManager;
     }
 
 }

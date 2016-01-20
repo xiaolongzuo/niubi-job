@@ -14,16 +14,32 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scheduler.schedule;
+package com.zuoxiaolong.niubi.job.scheduler;
+
+import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
+import org.quartz.JobDetail;
+import org.quartz.JobKey;
+import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 
 /**
- * 容器的状态
- *
  * @author Xiaolong Zuo
- * @since 16/1/9 14:04
+ * @since 16/1/16 01:30
  */
-public enum ScheduleStatus {
+public interface SchedulerJobDescriptor extends JobDescriptor {
 
-    STARTUP, PAUSE, SHUTDOWN
+    boolean isManualTrigger();
+
+    JobDetail jobDetail();
+
+    SchedulerJobDescriptor putJobData(String key, Object value);
+
+    Trigger trigger();
+
+    SchedulerJobDescriptor withTrigger(String cron, String misfirePolicy);
+
+    TriggerKey triggerKey();
+
+    JobKey jobKey();
 
 }

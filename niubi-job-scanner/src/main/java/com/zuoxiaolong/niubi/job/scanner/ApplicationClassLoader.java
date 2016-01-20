@@ -19,7 +19,6 @@ package com.zuoxiaolong.niubi.job.scanner;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 import java.io.File;
 import java.io.InputStream;
@@ -36,14 +35,11 @@ public class ApplicationClassLoader extends URLClassLoader {
 
     private ClassLoader parent;
 
-    private String[] jarFilePaths;
-
     private Map<String, Class<?>> classMap = new HashMap<>();
 
     ApplicationClassLoader(ClassLoader parent) {
         super(new URL[]{});
         this.parent = parent;
-        this.jarFilePaths = StringHelper.emptyArray();
     }
 
     @Override
@@ -58,18 +54,6 @@ public class ApplicationClassLoader extends URLClassLoader {
             return clazz;
         }
         synchronized (getClassLoadingLock(name)) {
-
-            try {
-                clazz = findLoadedClass(name);
-                if (clazz != null) {
-                    if (resolve) {
-                        resolveClass(clazz);
-                    }
-                    return clazz;
-                }
-            } catch (Throwable e) {
-                //ignored
-            }
             try {
                 clazz = findSystemClass(name);
                 if (clazz != null) {
@@ -87,6 +71,17 @@ public class ApplicationClassLoader extends URLClassLoader {
                 clazz = defineClass(name, bytes, 0, bytes.length);
                 if (clazz != null) {
                     classMap.put(name, clazz);
+                    if (resolve) {
+                        resolveClass(clazz);
+                    }
+                    return clazz;
+                }
+            } catch (Throwable e) {
+                //ignored
+            }
+            try {
+                clazz = parent.loadClass(name);
+                if (clazz != null) {
                     if (resolve) {
                         resolveClass(clazz);
                     }
@@ -115,15 +110,28 @@ public class ApplicationClassLoader extends URLClassLoader {
         super.addURL(url);
     }
 
-    public String[] getJarFilePaths() {
-        return jarFilePaths;
+    public synchronized void addFiles(Object... filePaths) {
+        if (ListHelper.isEmpty(filePaths)) {
+            return;
+        }
+        for (Object filePath : filePaths) {
+            File file = new File(filePath.toString());
+            if (file.exists()) {
+                try {
+                    addURL(file.toURI().toURL());
+                } catch (Throwable e) {
+                    LoggerHelper.warn("jar file [" + filePath + "] can't be add.");
+                }
+            } else {
+                LoggerHelper.warn("jar file [" + filePath + "] can't be found.");
+            }
+        }
     }
 
     public synchronized void addJarFiles(String... jarFilePaths) {
         if (ListHelper.isEmpty(jarFilePaths)) {
             return;
         }
-        this.jarFilePaths = StringHelper.mergeArray(this.jarFilePaths, jarFilePaths);
         for (String jarFilePath : jarFilePaths) {
             File file = new File(jarFilePath);
             if (file.exists()) {

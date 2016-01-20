@@ -22,23 +22,12 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
  */
 public abstract class AbstractLocalJobNode extends AbstractNode implements LocalJobNode {
 
-    private String packagesToScan;
-
-    public AbstractLocalJobNode(ClassLoader classLoader, String packagesToScan, String[] propertiesFileNames) {
-        super(classLoader, propertiesFileNames);
-        this.packagesToScan = packagesToScan;
-    }
-
-    protected String getPackagesToScan() {
-        return packagesToScan;
-    }
-
     public void join() {
-        getContainer().scheduleManager().startup();
+        getContainer().schedulerManager().startup();
     }
 
     public void exit() {
-        getContainer().scheduleManager().shutdown();
+        getContainer().schedulerManager().shutdown();
     }
 
 }

@@ -23,7 +23,7 @@ import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJob;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoaderFactory;
+import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
@@ -80,7 +80,7 @@ public class MasterSlaveJobServiceImpl extends AbstractService implements Master
             throw new ServiceException("This jar [" + jarFileName + "] has been uploaded before.");
         }
 
-        ApplicationClassLoader classLoader = JobScanClassLoaderFactory.createClassLoader(applicationContext.getClassLoader(), jarFilePath);
+        ApplicationClassLoader classLoader = ApplicationClassLoaderFactory.createNormalApplicationClassLoader(applicationContext.getClassLoader(), jarFilePath);
         JobScanner jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarFilePath);
         List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
         String mode = jobScanner.hasSpringEnvironment() ? "Spring" : "Common";

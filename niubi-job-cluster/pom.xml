@@ -28,6 +28,16 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>job.properties</exclude>
+                    <exclude>log4j.properties</exclude>
+                    <exclude>quartz.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -67,9 +77,9 @@
                         <mkdir dir="${user.dir}/logs"/>
                         <mkdir dir="${user.dir}/conf"/>
                         <mkdir dir="${user.dir}/bin"/>
-                        <mkdir dir="${user.dir}/jar"/>
-                        <mkdir dir="${user.dir}/jar/standby"/>
-                        <mkdir dir="${user.dir}/jar/masterSlave"/>
+                        <mkdir dir="${user.dir}/job"/>
+                        <mkdir dir="${user.dir}/job/standby"/>
+                        <mkdir dir="${user.dir}/job/masterSlave"/>
                         <copy todir="${user.dir}/conf">
                             <fileset dir="${user.dir}/niubi-job-cluster/target/classes">
                                 <include name="job.properties" />

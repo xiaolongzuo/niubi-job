@@ -1,4 +1,4 @@
-package com.zuoxiaolong.niubi.job.scheduler.schedule;
+package com.zuoxiaolong.niubi.job.scheduler;
 
 /*
  * Copyright 2002-2015 the original author or authors.
@@ -28,19 +28,19 @@ import java.lang.reflect.Method;
  * @author Xiaolong Zuo
  * @since 1/12/2016 16:38
  */
-public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implements ScheduleJobDescriptor {
+public class DefaultSchedulerJobDescriptor extends DefaultJobDescriptor implements SchedulerJobDescriptor {
 
     private JobDataMap jobDataMap;
 
-    DefaultScheduleJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
+    DefaultSchedulerJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
         super(clazz, method, hasParameter, schedule.cron(), schedule.misfirePolicy());
     }
 
-    DefaultScheduleJobDescriptor(JobDescriptor jobDescriptor) {
+    DefaultSchedulerJobDescriptor(JobDescriptor jobDescriptor) {
         this(jobDescriptor.clazz(), jobDescriptor.method(), jobDescriptor.hasParameter(), jobDescriptor.cron(), jobDescriptor.misfirePolicy());
     }
 
-    DefaultScheduleJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
+    DefaultSchedulerJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
         super(clazz, method, hasParameter, cron, misfirePolicy);
         this.jobDataMap = new JobDataMap();
     }
@@ -55,7 +55,7 @@ public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implement
         return JobKey.jobKey(name(), group());
     }
 
-    public ScheduleJobDescriptor putJobData(String key, Object value) {
+    public SchedulerJobDescriptor putJobData(String key, Object value) {
         jobDataMap.put(key, value);
         return this;
     }
@@ -69,7 +69,7 @@ public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implement
     }
 
     @Override
-    public ScheduleJobDescriptor withTrigger(String cron, String misfirePolicy) {
+    public SchedulerJobDescriptor withTrigger(String cron, String misfirePolicy) {
         this.cron = cron;
         this.misfirePolicy = MisfirePolicy.valueOf(misfirePolicy);
         return this;

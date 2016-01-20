@@ -16,7 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
+import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 
 /**
  * niubi-job运行的容器
@@ -26,6 +26,6 @@ import com.zuoxiaolong.niubi.job.scheduler.schedule.ScheduleManager;
  */
 public interface Container {
 
-    ScheduleManager scheduleManager();
+    SchedulerManager schedulerManager();
 
 }

@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
+import com.zuoxiaolong.niubi.job.cluster.launcher.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -71,9 +72,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
     private PathChildrenCache nodeCache;
 
-    public MasterSlaveNode(String zookeeperAddresses, String jarRepertoryUrl, String[] propertiesFileNames) {
-        super(jarRepertoryUrl, propertiesFileNames);
-        this.client = CuratorFrameworkFactory.newClient(zookeeperAddresses, retryPolicy);
+    public MasterSlaveNode() {
+        this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
 
         this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
@@ -145,7 +145,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         for (String path : nodeData.getJobPaths()) {
             MasterSlaveJobData.Data data = masterSlaveApiFactory.jobApi().getJob(path).getData();
             if (this.nodePath.equals(nodePath)) {
-                getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).scheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring()).schedulerManager().shutdown(data.getGroupName(), data.getJobName());
             }
             data.release();
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
@@ -262,14 +262,14 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         try {
             if (data.isStart() || data.isRestart()) {
                 Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.scheduleManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                 if (data.isStart()) {
                     nodeData.addJobPath(jobData.getPath());
                 }
                 data.setState("Startup");
             } else {
                 Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.scheduleManager().shutdown(data.getGroupName(), data.getJobName());
+                container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
                 nodeData.removeJobPath(jobData.getPath());
                 data.clearNodePath();
                 data.setState("Pause");

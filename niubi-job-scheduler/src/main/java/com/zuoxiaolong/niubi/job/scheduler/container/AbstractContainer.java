@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 
@@ -30,19 +31,17 @@ public abstract class AbstractContainer implements Container {
 
     /**
      * for local
-     * @param classLoader
      */
-    public AbstractContainer(ClassLoader classLoader, String packagesToScan) {
-        this.jobScanner = JobScannerFactory.createClasspathJobScanner(classLoader, packagesToScan);
+    public AbstractContainer(String packagesToScan) {
+        this.jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
     }
 
     /**
      * for remote
-     * @param jarUrl
      */
-    public AbstractContainer(ClassLoader classLoader, String packagesToScan, String jarUrl) {
-        AssertHelper.notEmpty(jarUrl, "jar url can't be empty.");
-        this.jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarUrl);
+    public AbstractContainer(ClassLoader classLoader, String packagesToScan, String jarFilePath) {
+        AssertHelper.notEmpty(jarFilePath, "jarFilePath can't be empty.");
+        this.jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarFilePath);
     }
 
     protected JobScanner getJobScanner() {
