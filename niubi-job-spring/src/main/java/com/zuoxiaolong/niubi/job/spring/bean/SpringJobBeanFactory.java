@@ -34,7 +34,6 @@ public class SpringJobBeanFactory implements JobBeanFactory {
 
     /**
      * for remote
-     * NOTE:must override ClassLoader before call this method.
      * @throws BeansException
      */
     public SpringJobBeanFactory() throws BeansException {

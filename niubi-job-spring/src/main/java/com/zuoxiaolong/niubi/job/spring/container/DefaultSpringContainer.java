@@ -16,6 +16,7 @@ package com.zuoxiaolong.niubi.job.spring.container;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
 import com.zuoxiaolong.niubi.job.scheduler.container.AbstractContainer;
@@ -51,10 +52,10 @@ public class DefaultSpringContainer extends AbstractContainer {
      * for remote
      * @param configuration
      * @param packagesToScan
-     * @param jarUrls
+     * @param jarUrl
      */
-    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String... jarUrls) {
-        super(packagesToScan, jarUrls);
+    public DefaultSpringContainer(Configuration configuration, String packagesToScan, String jarUrl) {
+        super(ClassHelper.getDefaultClassLoader(), packagesToScan, jarUrl);
         this.jobBeanFactory = new SpringJobBeanFactory();
         this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }

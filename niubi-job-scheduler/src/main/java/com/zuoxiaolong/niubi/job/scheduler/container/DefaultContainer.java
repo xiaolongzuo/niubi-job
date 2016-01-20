@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.config.Configuration;
@@ -50,10 +51,10 @@ public class DefaultContainer extends AbstractContainer {
      * for remote
      * @param configuration
      * @param packagesToScan
-     * @param jarUrls
+     * @param jarUrl
      */
-    public DefaultContainer(Configuration configuration, String packagesToScan, String... jarUrls) {
-        super(packagesToScan, jarUrls);
+    public DefaultContainer(Configuration configuration, String packagesToScan, String jarUrl) {
+        super(ClassHelper.getDefaultClassLoader(), packagesToScan, jarUrl);
         this.jobBeanFactory = new DefaultJobBeanFactory();
         this.scheduleManager = new DefaultScheduleManager(configuration, this.jobBeanFactory, getJobScanner().getJobDescriptorList());
     }

@@ -16,11 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.container;
 
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
-import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
-import com.zuoxiaolong.niubi.job.scanner.JobScanClassLoader;
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 
@@ -30,8 +26,6 @@ import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
  */
 public abstract class AbstractContainer implements Container {
 
-    private ClassLoader classLoader;
-
     private JobScanner jobScanner;
 
     /**
@@ -39,26 +33,16 @@ public abstract class AbstractContainer implements Container {
      * @param classLoader
      */
     public AbstractContainer(ClassLoader classLoader, String packagesToScan) {
-        this.classLoader = classLoader;
         this.jobScanner = JobScannerFactory.createClasspathJobScanner(classLoader, packagesToScan);
     }
 
     /**
      * for remote
-     * @param jarUrls
+     * @param jarUrl
      */
-    public AbstractContainer(String packagesToScan, String... jarUrls) {
-        this.classLoader = ClassHelper.getDefaultClassLoader();
-        String[] jarFilePaths = StringHelper.emptyArray();
-        if (!ListHelper.isEmpty(jarUrls)) {
-            jarFilePaths = JarFileHelper.download(this.classLoader.getResource("").getFile(), jarUrls);
-        }
-        ((JobScanClassLoader)this.classLoader).addJarFiles(jarFilePaths);
-        this.jobScanner = JobScannerFactory.createJarFileJobScanner(this.classLoader, packagesToScan, jarFilePaths);
-    }
-
-    protected ClassLoader classLoader() {
-        return classLoader;
+    public AbstractContainer(ClassLoader classLoader, String packagesToScan, String jarUrl) {
+        AssertHelper.notEmpty(jarUrl, "jar url can't be empty.");
+        this.jobScanner = JobScannerFactory.createJarFileJobScanner(classLoader, packagesToScan, jarUrl);
     }
 
     protected JobScanner getJobScanner() {

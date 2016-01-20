@@ -14,20 +14,29 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.scanner;
+package com.zuoxiaolong.niubi.job.cluster.launcher;
+
+import com.zuoxiaolong.niubi.job.scheduler.container.Container;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/18 00:37
+ * @since 16/1/20 23:24
  */
-public class JobScanClassLoaderFactory {
+public class ContainerFactory {
 
-    private JobScanClassLoaderFactory() {}
+    private ContainerFactory() {}
 
-    public static ApplicationClassLoader createClassLoader(ClassLoader parent, String... jarFilePaths) {
-        ApplicationClassLoader classLoader = new ApplicationClassLoader(parent);
-        classLoader.addJarFiles(jarFilePaths);
-        return classLoader;
-    }
+    private static Map<Container, ClassLoader> classLoaderCache = new HashMap<>();
+
+//    public static Container createContainer(String containerClassName, Configuration configuration, String jarUrl, String packagesToScan) {
+//
+//    }
+//
+//    public static ClassLoader getClassLoader() {
+//
+//    }
 
 }

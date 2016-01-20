@@ -4,6 +4,7 @@
 .mtj.tmp/
 target/
 .idea/
+conf/
 
 # Package Files #
 *.jar

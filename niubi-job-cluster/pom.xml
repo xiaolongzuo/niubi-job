@@ -27,4 +27,60 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${user.dir}/lib</outputDirectory>
+                    <excludeTransitive>false</excludeTransitive>
+                    <stripVersion>true</stripVersion>
+                    <excludeScope>provided</excludeScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>build-node</id>
+                        <phase>package</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <tasks>
+                        <mkdir dir="${user.dir}/lib"/>
+                        <mkdir dir="${user.dir}/logs"/>
+                        <mkdir dir="${user.dir}/conf"/>
+                        <mkdir dir="${user.dir}/bin"/>
+                        <mkdir dir="${user.dir}/jar"/>
+                        <mkdir dir="${user.dir}/jar/standby"/>
+                        <mkdir dir="${user.dir}/jar/masterSlave"/>
+                        <copy todir="${user.dir}/conf">
+                            <fileset dir="${user.dir}/niubi-job-cluster/target/classes">
+                                <include name="job.properties" />
+                                <include name="log4j.properties" />
+                                <include name="quartz.properties" />
+                            </fileset>
+                        </copy>
+                    </tasks>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
