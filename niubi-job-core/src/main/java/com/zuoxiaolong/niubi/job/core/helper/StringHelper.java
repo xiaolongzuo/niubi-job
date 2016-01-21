@@ -32,6 +32,7 @@ public abstract class StringHelper {
         if (url == null ) {
             return null;
         }
+        url = url.replace("\\", "/");
         if (url.endsWith("/")) {
             return url;
         }

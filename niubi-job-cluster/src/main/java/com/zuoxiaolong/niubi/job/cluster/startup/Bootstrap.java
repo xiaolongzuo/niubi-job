@@ -125,7 +125,7 @@ public class Bootstrap {
     }
 
     public static Properties properties() {
-        return properties;
+        return new Properties(properties);
     }
 
     public static String getJarUrl(String jarFileName) {

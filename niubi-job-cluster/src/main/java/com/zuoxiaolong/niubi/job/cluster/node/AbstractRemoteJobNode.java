@@ -23,6 +23,7 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
+import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -92,7 +93,9 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         Class<? extends Container> containerClass = (Class<? extends Container>) jarApplicationClassLoader.loadClass(containerClassName);
         Class<?>[] parameterTypes = new Class[]{ClassLoader.class, Properties.class, String.class, String.class};
         Constructor<? extends Container> containerConstructor = containerClass.getConstructor(parameterTypes);
-        return containerConstructor.newInstance(jarApplicationClassLoader, Bootstrap.properties(), packagesToScan, jarFilePath);
+        Properties properties = Bootstrap.properties();
+        properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarFilePath);
+        return containerConstructor.newInstance(jarApplicationClassLoader, properties, packagesToScan, jarFilePath);
     }
 
 }
