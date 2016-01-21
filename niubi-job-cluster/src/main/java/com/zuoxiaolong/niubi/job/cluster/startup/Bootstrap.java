@@ -80,7 +80,13 @@ public class Bootstrap {
     }
 
     private static void await() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(9101, 1, InetAddress.getByName("localhost"));
+        ServerSocket serverSocket;
+        try {
+            serverSocket = new ServerSocket(9101, 1, InetAddress.getByName("localhost"));
+        } catch (Exception e) {
+            LoggerHelper.error("socket create failed.", e);
+            throw new NiubiException(e);
+        }
         while (true) {
             Socket socket = serverSocket.accept();
             String command = StringHelper.getString(IOHelper.readStreamBytes(socket.getInputStream()));
