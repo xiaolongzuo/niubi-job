@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import java.util.List;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 12:56
  */
 public interface MasterSlaveNodeApi {

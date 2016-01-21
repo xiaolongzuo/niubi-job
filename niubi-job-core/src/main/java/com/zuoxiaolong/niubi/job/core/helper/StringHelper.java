@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/12/2016 12:19
  */
 public abstract class StringHelper {

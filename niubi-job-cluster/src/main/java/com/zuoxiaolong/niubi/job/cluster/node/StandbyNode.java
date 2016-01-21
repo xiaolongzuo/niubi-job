@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 主备模式实现
+ * standby mode.
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43

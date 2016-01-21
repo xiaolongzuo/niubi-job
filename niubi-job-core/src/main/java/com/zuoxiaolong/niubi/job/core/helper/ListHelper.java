@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/11/2016 14:31
  */
 public abstract class ListHelper {

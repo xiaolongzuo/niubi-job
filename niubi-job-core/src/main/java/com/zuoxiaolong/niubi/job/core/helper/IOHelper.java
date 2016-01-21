@@ -23,7 +23,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 10/26/2015 19:20
  */
 public abstract class IOHelper {

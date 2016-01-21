@@ -26,7 +26,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ClassUtils;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/13/2016 14:25
  */
 public class SpringJobBeanFactory implements JobBeanFactory {

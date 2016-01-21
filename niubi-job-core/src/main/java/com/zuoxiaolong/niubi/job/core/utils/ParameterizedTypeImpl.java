@@ -20,7 +20,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 12/10/2015 17:11
  */
 public class ParameterizedTypeImpl implements ParameterizedType {

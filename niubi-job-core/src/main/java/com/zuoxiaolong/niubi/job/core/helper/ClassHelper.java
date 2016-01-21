@@ -17,7 +17,7 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/11/2016 20:17
  */
 public abstract class ClassHelper {

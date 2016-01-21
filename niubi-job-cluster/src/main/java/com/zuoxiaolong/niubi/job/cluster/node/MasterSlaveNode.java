@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
- * 主从模式实现
+ * master-slave mode.
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:43

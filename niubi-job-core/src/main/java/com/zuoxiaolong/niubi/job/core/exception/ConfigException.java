@@ -17,7 +17,7 @@ package com.zuoxiaolong.niubi.job.core.exception;
  */
 
 /**
- * @author 左潇龙
+ * @author Xiaolong Zuo
  * @since 1/11/2016 20:07
  */
 public class ConfigException extends RuntimeException {
