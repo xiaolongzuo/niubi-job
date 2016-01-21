@@ -41,7 +41,7 @@ public class Bootstrap {
 
     private static final ApplicationClassLoader applicationClassLoader;
 
-    private static final String rootDir;
+    private static String rootDir;
 
     private static final String confDir;
 
@@ -62,6 +62,10 @@ public class Bootstrap {
 
     static {
         rootDir = System.getProperty("user.dir");
+        File binDir = new File(rootDir + "/bin");
+        if (!binDir.exists()) {
+            rootDir = rootDir.substring(0, rootDir.lastIndexOf("/"));
+        }
         confDir = rootDir + "/conf";
         libDir = rootDir + "/lib";
         jobDir = rootDir + "/job";

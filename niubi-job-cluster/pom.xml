@@ -43,7 +43,6 @@
                 <configuration>
                     <outputDirectory>${user.dir}/lib</outputDirectory>
                     <excludeTransitive>false</excludeTransitive>
-                    <stripVersion>true</stripVersion>
                     <overWriteIfNewer>true</overWriteIfNewer>
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
@@ -107,6 +106,7 @@
                         <copy todir="${user.dir}/bin" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
                                 <include name="startup.bat" />
+                                <include name="startup.sh" />
                             </fileset>
                         </copy>
                         <copy todir="${user.dir}/conf" overwrite="true">
