@@ -11,6 +11,10 @@
 
     <artifactId>niubi-job-cluster</artifactId>
 
+    <properties>
+        <cluster.build.dir>${user.dir}/niubi-job-cluster/target</cluster.build.dir>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
@@ -41,11 +45,13 @@
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>
-                    <outputDirectory>${user.dir}/lib</outputDirectory>
+                    <outputDirectory>${cluster.build.dir}/lib</outputDirectory>
                     <excludeTransitive>false</excludeTransitive>
                     <overWriteIfNewer>true</overWriteIfNewer>
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
+                    <stripVersion>true</stripVersion>
+                    <stripClassifier>true</stripClassifier>
                     <excludeScope>provided</excludeScope>
                 </configuration>
                 <executions>
@@ -65,6 +71,8 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
                             <mainClass>com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap</mainClass>
                         </manifest>
                     </archive>
@@ -96,33 +104,48 @@
                 </executions>
                 <configuration>
                     <target>
-                        <mkdir dir="${user.dir}/lib"/>
-                        <mkdir dir="${user.dir}/logs"/>
-                        <mkdir dir="${user.dir}/conf"/>
-                        <mkdir dir="${user.dir}/bin"/>
-                        <mkdir dir="${user.dir}/job"/>
-                        <mkdir dir="${user.dir}/job/standby"/>
-                        <mkdir dir="${user.dir}/job/masterSlave"/>
-                        <copy todir="${user.dir}/bin" overwrite="true">
+                        <mkdir dir="${cluster.build.dir}/lib"/>
+                        <mkdir dir="${cluster.build.dir}/logs"/>
+                        <mkdir dir="${cluster.build.dir}/conf"/>
+                        <mkdir dir="${cluster.build.dir}/bin"/>
+                        <mkdir dir="${cluster.build.dir}/job"/>
+                        <mkdir dir="${cluster.build.dir}/job/standby"/>
+                        <mkdir dir="${cluster.build.dir}/job/masterSlave"/>
+                        <copy todir="${cluster.build.dir}/bin" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
-                                <include name="startup.bat" />
-                                <include name="startup.sh" />
-                                <include name="bootstrap.sh" />
-                                <include name="shutdown.sh" />
+                                <include name="startup.bat"/>
+                                <include name="startup.sh"/>
+                                <include name="bootstrap.sh"/>
+                                <include name="shutdown.sh"/>
                             </fileset>
                         </copy>
-                        <copy todir="${user.dir}/conf" overwrite="true">
+                        <chmod dir="${cluster.build.dir}/bin" perm="+x" includes="**/*.sh"/>
+                        <copy todir="${cluster.build.dir}/conf" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
-                                <include name="job.properties" />
+                                <include name="job.properties"/>
                                 <include name="log4j.properties"/>
-                                <include name="quartz.properties" />
+                                <include name="quartz.properties"/>
                             </fileset>
                         </copy>
-                        <copy todir="${user.dir}/lib" overwrite="true">
+                        <copy todir="${cluster.build.dir}/lib" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/target">
                                 <include name="niubi-job-cluster.jar"/>
                             </fileset>
                         </copy>
+                        <delete file="${user.dir}/niubi-job-cluster.zip"/>
+                        <delete file="${user.dir}/niubi-job-cluster.tar.gz"/>
+                        <zip destfile="${user.dir}/niubi-job-cluster.zip"
+                             basedir="${cluster.build.dir}"
+                             includes="bin/**,conf/**,job/**,lib/**,logs/**,LICENSE,README.md"
+                             excludes="**/*.log*,job/masterSlave/**.jar,job/standby/**.jar"
+                                />
+                        <tar destfile="${user.dir}/niubi-job-cluster.tar"
+                             basedir="${cluster.build.dir}"
+                             includes="bin/**,conf/**,job/**,lib/**,logs/**,LICENSE,README.md"
+                             excludes="**/*.log*,job/masterSlave/**.jar,job/standby/**.jar"
+                                />
+                        <gzip destfile="${user.dir}/niubi-job-cluster.tar.gz" src="${user.dir}/niubi-job-cluster.tar"/>
+                        <delete file="${user.dir}/niubi-job-cluster.tar"/>
                     </target>
                 </configuration>
             </plugin>
