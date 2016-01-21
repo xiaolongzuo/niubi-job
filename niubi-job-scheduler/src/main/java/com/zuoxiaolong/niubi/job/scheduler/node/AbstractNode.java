@@ -46,7 +46,7 @@ public abstract class AbstractNode implements Node {
         }
         try {
             properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("log4j.properties"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerHelper.warn("log4j properties not found ,use default instead.");
         }
         PropertyConfigurator.configure(properties);

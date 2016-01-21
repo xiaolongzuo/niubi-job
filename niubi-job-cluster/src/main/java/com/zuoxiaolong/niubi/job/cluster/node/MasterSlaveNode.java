@@ -22,7 +22,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
-import com.zuoxiaolong.niubi.job.cluster.launcher.Bootstrap;
+import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;

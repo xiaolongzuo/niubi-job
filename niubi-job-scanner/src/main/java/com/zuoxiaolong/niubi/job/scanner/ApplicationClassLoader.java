@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.scanner;
 
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
@@ -33,13 +34,24 @@ import java.util.Map;
  */
 public class ApplicationClassLoader extends URLClassLoader {
 
-    private ClassLoader parent;
-
     private Map<String, Class<?>> classMap = new HashMap<>();
 
-    ApplicationClassLoader(ClassLoader parent) {
-        super(new URL[]{});
-        this.parent = parent;
+    private ClassLoader javaClassLoader;
+
+    private boolean entrust;
+
+    ApplicationClassLoader(ClassLoader parent, boolean entrust) {
+        super(new URL[]{}, parent);
+        AssertHelper.notNull(getParent(), "parent can't be null.");
+        this.entrust = entrust;
+        ClassLoader classLoader = String.class.getClassLoader();
+        if (classLoader == null) {
+            classLoader = getSystemClassLoader();
+            while (classLoader.getParent() != null) {
+                classLoader = classLoader.getParent();
+            }
+        }
+        this.javaClassLoader = classLoader;
     }
 
     @Override
@@ -55,6 +67,41 @@ public class ApplicationClassLoader extends URLClassLoader {
         }
         synchronized (getClassLoadingLock(name)) {
             try {
+                clazz = findLoadedClass(name);
+                if (clazz != null) {
+                    if (resolve) {
+                        resolveClass(clazz);
+                    }
+                    return clazz;
+                }
+            } catch (Throwable e) {
+                //ignored
+            }
+            try {
+                clazz = javaClassLoader.loadClass(name);
+                if (clazz != null) {
+                    if (resolve) {
+                        resolveClass(clazz);
+                    }
+                    return clazz;
+                }
+            } catch (Throwable e) {
+                //ignored
+            }
+            try {
+                if (entrust) {
+                    clazz = super.loadClass(name, resolve);
+                    if (clazz != null) {
+                        if (resolve) {
+                            resolveClass(clazz);
+                        }
+                        return clazz;
+                    }
+                }
+            } catch (Throwable e) {
+                //ignored
+            }
+            try {
                 InputStream resource = getResourceAsStream(binaryNameToPath(name, false));
                 byte[] bytes = IOHelper.readStreamBytesAndClose(resource);
                 clazz = defineClass(name, bytes, 0, bytes.length);
@@ -69,23 +116,14 @@ public class ApplicationClassLoader extends URLClassLoader {
                 //ignored
             }
             try {
-                clazz = parent.loadClass(name);
-                if (clazz != null) {
-                    if (resolve) {
-                        resolveClass(clazz);
+                if (!entrust) {
+                    clazz = super.loadClass(name, resolve);
+                    if (clazz != null) {
+                        if (resolve) {
+                            resolveClass(clazz);
+                        }
+                        return clazz;
                     }
-                    return clazz;
-                }
-            } catch (Throwable e) {
-                //ignored
-            }
-            try {
-                clazz = findSystemClass(name);
-                if (clazz != null) {
-                    if (resolve) {
-                        resolveClass(clazz);
-                    }
-                    return clazz;
                 }
             } catch (Throwable e) {
                 //ignored
@@ -103,6 +141,41 @@ public class ApplicationClassLoader extends URLClassLoader {
         path.append(binaryName.replace('.', '/'));
         path.append(".class");
         return path.toString();
+    }
+
+    @Override
+    public URL getResource(String name) {
+        URL url = javaClassLoader.getResource(name);
+        if (url != null) {
+            return url;
+        }
+        if (entrust) {
+            ClassLoader parent = getParent();
+            if (parent instanceof URLClassLoader) {
+                url = ((URLClassLoader)parent).findResource(name);
+            } else {
+                url = parent.getResource(name);
+            }
+            if (url != null) {
+                return url;
+            }
+        }
+        url = findResource(name);
+        if (url != null) {
+            return url;
+        }
+        if (entrust) {
+            ClassLoader parent = getParent();
+            if (parent instanceof URLClassLoader) {
+                url = ((URLClassLoader)parent).findResource(name);
+            } else {
+                url = parent.getResource(name);
+            }
+            if (url != null) {
+                return url;
+            }
+        }
+        return null;
     }
 
     @Override

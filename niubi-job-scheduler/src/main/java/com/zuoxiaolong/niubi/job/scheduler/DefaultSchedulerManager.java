@@ -54,7 +54,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
         }
         try {
             properties.load(ClassHelper.getDefaultClassLoader().getResourceAsStream("quartz.properties"));
-        } catch (IOException e) {
+        } catch (Exception e) {
             LoggerHelper.warn("quartz properties not found ,use default instead.");
         }
         AssertHelper.notNull(properties, "configuration can't be null.");
@@ -261,6 +261,23 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 return;
             }
             jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
+            checkIsEmpty();
+        }
+    }
+
+    private synchronized void checkIsEmpty() {
+        for (String key : jobStatusMap.keySet()) {
+            if (jobStatusMap.get(key).equals("Startup")) {
+                break;
+            }
+        }
+        try {
+            if (scheduler != null) {
+                scheduler.shutdown(true);
+            }
+        } catch (SchedulerException e) {
+            LoggerHelper.error("shutdown scheduler failed.", e);
+            throw new NiubiException(e);
         }
     }
 

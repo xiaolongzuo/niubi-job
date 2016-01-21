@@ -42,7 +42,7 @@ public abstract class ApplicationClassLoaderFactory {
         if (systemClassLoader == null) {
             throw new IllegalStateException("Can't create nodeClassLoader because systemClassLoader is null.");
         }
-        nodeApplicationClassLoader = new ApplicationClassLoader(systemClassLoader);
+        nodeApplicationClassLoader = new ApplicationClassLoader(systemClassLoader, true);
         return nodeApplicationClassLoader;
     }
 
@@ -56,7 +56,7 @@ public abstract class ApplicationClassLoaderFactory {
             if (jarApplicationClassLoader != null) {
                 return jarApplicationClassLoader;
             }
-            jarApplicationClassLoader = new ApplicationClassLoader(nodeApplicationClassLoader);
+            jarApplicationClassLoader = new ApplicationClassLoader(nodeApplicationClassLoader, false);
             jarApplicationClassLoader.addJarFiles(jarFilePath);
             jarApplicationClassLoaderCache.put(jarFilePath, jarApplicationClassLoader);
             return jarApplicationClassLoader;
@@ -64,7 +64,7 @@ public abstract class ApplicationClassLoaderFactory {
     }
 
     public static ApplicationClassLoader createNormalApplicationClassLoader(ClassLoader parent, String... jarFilePaths){
-        ApplicationClassLoader classLoader = new ApplicationClassLoader(parent);
+        ApplicationClassLoader classLoader = new ApplicationClassLoader(parent, true);
         classLoader.addJarFiles(jarFilePaths);
         return classLoader;
     }

@@ -16,15 +16,15 @@
 
 package com.zuoxiaolong.niubi.job.cluster.node;
 
-import com.zuoxiaolong.niubi.job.cluster.launcher.Bootstrap;
+import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
@@ -52,6 +52,13 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
     }
 
     public Container getContainer(String jarFileName, String packagesToScan, boolean isSpring) {
+        String jarFilePath;
+        try {
+            jarFilePath = JarFileHelper.downloadJarFile(Bootstrap.getJobDir(), Bootstrap.getJarUrl(jarFileName));
+        } catch (IOException e) {
+            LoggerHelper.error("download jar file failed. [" + jarFileName + "]", e);
+            throw new NiubiException(e);
+        }
         Container container = containerCache.get(jarFileName);
         if (container != null) {
             return container;
@@ -61,7 +68,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
             container = containerCache.get(jarFileName);
             if (container == null) {
                 try {
-                    container = createContainer(jarFileName, packagesToScan, isSpring);
+                    container = createContainer(jarFilePath, packagesToScan, isSpring);
                 } catch (Exception e) {
                     LoggerHelper.error("create container for " + jarFileName + " failed.", e);
                     throw new NiubiException(e);
@@ -74,19 +81,18 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         }
     }
 
-    public Container createContainer(String jarFileName, String packagesToScan, boolean isSpring) throws Exception {
-        String jarFilePath = JarFileHelper.downloadJarFile(Bootstrap.getJobDir(), Bootstrap.getJarUrl(jarFileName));
+    public Container createContainer(String jarFilePath, String packagesToScan, boolean isSpring) throws Exception {
         String containerClassName;
         if (isSpring) {
             containerClassName = "com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer";
         } else {
             containerClassName = "com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer";
         }
-        ApplicationClassLoader applicationClassLoader = ApplicationClassLoaderFactory.getJarApplicationClassLoader(jarFilePath);
-        Class<? extends Container> containerClass = (Class<? extends Container>) applicationClassLoader.loadClass(containerClassName);
+        ClassLoader jarApplicationClassLoader = ApplicationClassLoaderFactory.getJarApplicationClassLoader(jarFilePath);
+        Class<? extends Container> containerClass = (Class<? extends Container>) jarApplicationClassLoader.loadClass(containerClassName);
         Class<?>[] parameterTypes = new Class[]{ClassLoader.class, Properties.class, String.class, String.class};
         Constructor<? extends Container> containerConstructor = containerClass.getConstructor(parameterTypes);
-        return containerConstructor.newInstance(applicationClassLoader, Bootstrap.properties(), packagesToScan, jarFilePath);
+        return containerConstructor.newInstance(jarApplicationClassLoader, Bootstrap.properties(), packagesToScan, jarFilePath);
     }
 
 }

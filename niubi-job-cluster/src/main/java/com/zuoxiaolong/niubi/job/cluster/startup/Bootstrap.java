@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.cluster.launcher;
+package com.zuoxiaolong.niubi.job.cluster.startup;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
