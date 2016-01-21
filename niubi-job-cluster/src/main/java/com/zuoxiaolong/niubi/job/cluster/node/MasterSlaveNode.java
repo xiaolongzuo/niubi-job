@@ -306,37 +306,49 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
     @Override
     public void join() {
-        leaderSelector.start();
-        try {
-            this.jobCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
-        try {
-            this.nodeCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
+        synchronized (getContainerCache()) {
+            leaderSelector.start();
+            try {
+                this.jobCache.start();
+            } catch (Exception e) {
+                LoggerHelper.error("path children path start failed.", e);
+                throw new NiubiException(e);
+            }
+            try {
+                this.nodeCache.start();
+            } catch (Exception e) {
+                LoggerHelper.error("path children path start failed.", e);
+                throw new NiubiException(e);
+            }
         }
     }
 
     @Override
     public void exit() {
-        leaderSelector.close();
-        try {
-            jobCache.close();
-        } catch (IOException e) {
-            LoggerHelper.error("path children path close failed.", e);
-            throw new NiubiException(e);
+        synchronized (getContainerCache()) {
+            leaderSelector.close();
+            try {
+                jobCache.close();
+            } catch (IOException e) {
+                LoggerHelper.error("path children path close failed.", e);
+                throw new NiubiException(e);
+            }
+            try {
+                nodeCache.close();
+            } catch (IOException e) {
+                LoggerHelper.error("path children path close failed.", e);
+                throw new NiubiException(e);
+            }
+            client.close();
+            LoggerHelper.info("zk client has been closed.");
+            for (String key : getContainerCache().keySet()) {
+                getContainerCache().get(key).schedulerManager().shutdown();
+            }
+            LoggerHelper.info("containers has been shutdown.");
+            MasterSlaveNodeData nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+            releaseJobs(nodePath, nodeData.getData());
+            LoggerHelper.info("jobs has been released.");
         }
-        try {
-            nodeCache.close();
-        } catch (IOException e) {
-            LoggerHelper.error("path children path close failed.", e);
-            throw new NiubiException(e);
-        }
-        client.close();
     }
 
 }

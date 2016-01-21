@@ -18,6 +18,9 @@ package com.zuoxiaolong.niubi.job.cluster.startup;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
@@ -27,6 +30,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -36,6 +42,8 @@ import java.util.Properties;
  * @since 16/1/20 23:24
  */
 public class Bootstrap {
+
+    private Bootstrap() {}
 
     private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 
@@ -51,12 +59,34 @@ public class Bootstrap {
 
     private static final Properties properties;
 
-    private static final Object mutex = new Object();
-
     public static void main(String[] args) throws Exception {
-        synchronized (mutex) {
+        if (!ListHelper.isEmpty(args) && "start".equals(args[0])) {
             start();
-            mutex.wait();
+            LoggerHelper.info("bootstrap start successfully.");
+            await();
+            LoggerHelper.info("bootstrap begin stop.");
+            stop();
+            LoggerHelper.info("bootstrap stop successfully.");
+        } else if (!ListHelper.isEmpty(args) && "stop".equals(args[0])) {
+            sendCommand("Shutdown");
+        }
+    }
+
+    private static void sendCommand(String command) throws IOException {
+        Socket socket = new Socket("localhost", 9101);
+        socket.getOutputStream().write(StringHelper.getBytes(command));
+        socket.getOutputStream().flush();
+        socket.close();
+    }
+
+    private static void await() throws IOException {
+        ServerSocket serverSocket = new ServerSocket(9101, 1, InetAddress.getByName("localhost"));
+        while (true) {
+            Socket socket = serverSocket.accept();
+            String command = StringHelper.getString(IOHelper.readStreamBytes(socket.getInputStream()));
+            if ("Shutdown".equals(command)) {
+                break;
+            }
         }
     }
 
@@ -65,6 +95,10 @@ public class Bootstrap {
         File binDir = new File(rootDir + "/bin");
         if (!binDir.exists()) {
             rootDir = rootDir.substring(0, rootDir.lastIndexOf("/"));
+            binDir = new File(rootDir + "/bin");
+            if (!binDir.exists()) {
+                throw new NiubiException(new IllegalArgumentException("can't find bin path."));
+            }
         }
         confDir = rootDir + "/conf";
         libDir = rootDir + "/lib";
