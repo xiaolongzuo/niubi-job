@@ -229,7 +229,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
                 if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
                     //if has operation, wait a moment.
-                    if (checkHasOperation(jobData)) {
+                    if (checkNotExecuteOperation()) {
                         masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                         return;
                     }
@@ -262,15 +262,15 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         };
     }
 
-    private boolean checkHasOperation(MasterSlaveJobData currentJobData) {
+    private boolean checkNotExecuteOperation() {
         List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
         if (ListHelper.isEmpty(masterSlaveJobDataList)) {
             return false;
         }
         for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
             boolean hasOperation = !StringHelper.isEmpty(masterSlaveJobData.getData().getOperation());
-            boolean isSelf = currentJobData.getId().equals(masterSlaveJobData.getId());
-            if (hasOperation && !isSelf) {
+            boolean assigned = !StringHelper.isEmpty(masterSlaveJobData.getData().getNodePath());
+            if (hasOperation && assigned) {
                 return true;
             }
         }
