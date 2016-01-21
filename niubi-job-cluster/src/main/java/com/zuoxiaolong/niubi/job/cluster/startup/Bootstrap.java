@@ -59,6 +59,8 @@ public class Bootstrap {
 
     private static final Properties properties;
 
+    private static Object nodeInstance;
+
     public static void main(String[] args) throws Exception {
         if (!ListHelper.isEmpty(args) && "start".equals(args[0])) {
             start();
@@ -85,6 +87,12 @@ public class Bootstrap {
             serverSocket = new ServerSocket(9101, 1, InetAddress.getByName("localhost"));
         } catch (Exception e) {
             LoggerHelper.error("socket create failed.", e);
+            try {
+                stop();
+            } catch (Exception e1) {
+                LoggerHelper.error("stop node failed.", e1);
+                throw new NiubiException(e1);
+            }
             throw new NiubiException(e);
         }
         while (true) {
@@ -203,7 +211,7 @@ public class Bootstrap {
         }
         Class<?> nodeClass = applicationClassLoader.loadClass(nodeClassName);
         Constructor<?> nodeConstructor = nodeClass.getConstructor();
-        Object nodeInstance = nodeConstructor.newInstance();
+        nodeInstance = nodeConstructor.newInstance();
         Method joinMethod = nodeClass.getDeclaredMethod("join");
         joinMethod.invoke(nodeInstance);
     }
@@ -217,11 +225,11 @@ public class Bootstrap {
         } else {
             throw new ConfigException();
         }
-        Class<?> nodeClass = applicationClassLoader.loadClass(nodeClassName);
-        Constructor<?> nodeConstructor = nodeClass.getConstructor();
-        Object nodeInstance = nodeConstructor.newInstance();
-        Method exitMethod = nodeClass.getDeclaredMethod("exit");
-        exitMethod.invoke(nodeInstance);
+        if (nodeInstance != null ) {
+            Class<?> nodeClass = applicationClassLoader.loadClass(nodeClassName);
+            Method exitMethod = nodeClass.getDeclaredMethod("exit");
+            exitMethod.invoke(nodeInstance);
+        }
     }
 
 }

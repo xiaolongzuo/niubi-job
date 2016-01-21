@@ -339,8 +339,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 LoggerHelper.error("path children path close failed.", e);
                 throw new NiubiException(e);
             }
-            client.close();
-            LoggerHelper.info("zk client has been closed.");
+            LoggerHelper.info("selector and cache has been closed.");
             for (String key : getContainerCache().keySet()) {
                 getContainerCache().get(key).schedulerManager().shutdown();
             }
@@ -348,6 +347,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             MasterSlaveNodeData nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
             releaseJobs(nodePath, nodeData.getData());
             LoggerHelper.info("jobs has been released.");
+            client.close();
+            LoggerHelper.info("zk client has been closed.");
         }
     }
 
