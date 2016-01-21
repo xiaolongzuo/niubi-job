@@ -25,4 +25,8 @@
             <artifactId>curator-recipes</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <finalName>niubi-job-api</finalName>
+    </build>
 </project>

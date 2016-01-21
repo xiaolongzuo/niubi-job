@@ -5,6 +5,7 @@
 target/
 .idea/
 conf/
+bin/
 
 # Package Files #
 *.jar

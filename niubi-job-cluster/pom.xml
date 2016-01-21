@@ -33,9 +33,7 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <excludes>
-                    <exclude>job.properties</exclude>
-                    <exclude>log4j.properties</exclude>
-                    <exclude>quartz.properties</exclude>
+                    <exclude>*.*</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -46,6 +44,9 @@
                     <outputDirectory>${user.dir}/lib</outputDirectory>
                     <excludeTransitive>false</excludeTransitive>
                     <stripVersion>true</stripVersion>
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                    <overWriteReleases>true</overWriteReleases>
+                    <overWriteSnapshots>true</overWriteSnapshots>
                     <excludeScope>provided</excludeScope>
                 </configuration>
                 <executions>
@@ -53,6 +54,28 @@
                         <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>main-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -73,7 +96,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <tasks>
+                    <target>
                         <mkdir dir="${user.dir}/lib"/>
                         <mkdir dir="${user.dir}/logs"/>
                         <mkdir dir="${user.dir}/conf"/>
@@ -81,19 +104,24 @@
                         <mkdir dir="${user.dir}/job"/>
                         <mkdir dir="${user.dir}/job/standby"/>
                         <mkdir dir="${user.dir}/job/masterSlave"/>
-                        <copy todir="${user.dir}/conf">
+                        <copy todir="${user.dir}/bin" overwrite="true">
+                            <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
+                                <include name="startup.bat" />
+                            </fileset>
+                        </copy>
+                        <copy todir="${user.dir}/conf" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
                                 <include name="job.properties" />
-                                <include name="log4j.properties" />
+                                <include name="log4j.properties"/>
                                 <include name="quartz.properties" />
                             </fileset>
                         </copy>
-                        <copy todir="${user.dir}/lib">
+                        <copy todir="${user.dir}/lib" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/target">
-                                <include name="niubi-job-cluster.jar" />
+                                <include name="niubi-job-cluster.jar"/>
                             </fileset>
                         </copy>
-                    </tasks>
+                    </target>
                 </configuration>
             </plugin>
         </plugins>
