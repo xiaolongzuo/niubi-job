@@ -23,6 +23,7 @@ import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.util.ClassUtils;
 
 /**
  * @author 左潇龙
@@ -36,7 +37,8 @@ public class SpringJobBeanFactory implements JobBeanFactory {
      * for remote
      * @throws BeansException
      */
-    public SpringJobBeanFactory() throws BeansException {
+    public SpringJobBeanFactory(ClassLoader classLoader) throws BeansException {
+        ClassUtils.overrideThreadContextClassLoader(classLoader);
         this.applicationContext = new ClassPathXmlApplicationContext(JobScanner.APPLICATION_CONTEXT_XML_PATH);
     }
 
