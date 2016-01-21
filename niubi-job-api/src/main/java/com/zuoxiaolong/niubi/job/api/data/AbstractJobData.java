@@ -51,6 +51,16 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     private String operation;
 
+    private Long version;
+
+    public void incrementVersion() {
+        if (version == null || version == Long.MAX_VALUE) {
+            this.version = 1L;
+        } else {
+            this.version++;
+        }
+    }
+
     public String getGroupName() {
         return groupName;
     }

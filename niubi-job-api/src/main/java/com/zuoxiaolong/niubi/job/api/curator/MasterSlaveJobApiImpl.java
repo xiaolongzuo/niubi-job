@@ -47,6 +47,7 @@ public class MasterSlaveJobApiImpl extends AbstractCurdApiImpl implements Master
     public void saveJob(String group, String name, MasterSlaveJobData.Data data) {
         data.prepareOperation();
         MasterSlaveJobData masterSlaveJobData = new MasterSlaveJobData(PathHelper.getJobPath(getMasterSlavePathApi().getJobPath(), group, name), data);
+        masterSlaveJobData.getData().incrementVersion();
         if (checkExists(masterSlaveJobData.getPath())) {
             setData(masterSlaveJobData.getPath(), masterSlaveJobData.getDataBytes());
         } else {
@@ -57,6 +58,7 @@ public class MasterSlaveJobApiImpl extends AbstractCurdApiImpl implements Master
     @Override
     public void updateJob(String group, String name, MasterSlaveJobData.Data data) {
         MasterSlaveJobData masterSlaveJobData = new MasterSlaveJobData(PathHelper.getJobPath(getMasterSlavePathApi().getJobPath(), group, name), data);
+        masterSlaveJobData.getData().incrementVersion();
         setData(masterSlaveJobData.getPath(), masterSlaveJobData.getDataBytes());
     }
 

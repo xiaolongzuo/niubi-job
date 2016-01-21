@@ -47,6 +47,7 @@ public class StandbyJobApiImpl extends AbstractCurdApiImpl implements StandbyJob
     public void saveJob(String group, String name, StandbyJobData.Data data) {
         data.prepareOperation();
         StandbyJobData standbyJobData = new StandbyJobData(PathHelper.getJobPath(getStandbyPathApi().getJobPath(), group, name), data);
+        standbyJobData.getData().incrementVersion();
         if (checkExists(standbyJobData.getPath())) {
             setData(standbyJobData.getPath(), standbyJobData.getDataBytes());
         } else {
@@ -57,6 +58,7 @@ public class StandbyJobApiImpl extends AbstractCurdApiImpl implements StandbyJob
     @Override
     public void updateJob(String group, String name, StandbyJobData.Data data) {
         StandbyJobData standbyJobData = new StandbyJobData(PathHelper.getJobPath(getStandbyPathApi().getJobPath(), group, name), data);
+        standbyJobData.getData().incrementVersion();
         setData(standbyJobData.getPath(), standbyJobData.getDataBytes());
     }
 
