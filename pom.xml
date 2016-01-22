@@ -9,7 +9,7 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>niubi-job for spring application.</description>
+    <description>This is a distributed job scheduling framework.</description>
     <url>https://github.com/xiaolongzuo/niubi-job</url>
     <licenses>
         <license>
