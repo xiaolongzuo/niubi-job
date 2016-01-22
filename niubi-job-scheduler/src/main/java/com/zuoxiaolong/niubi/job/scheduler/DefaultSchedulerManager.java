@@ -149,6 +149,14 @@ public class DefaultSchedulerManager implements SchedulerManager {
     public synchronized void startup(String group, String name) {
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
+        try {
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
+        } catch (Throwable e) {
+            LoggerHelper.error("start scheduler failed.", e);
+            throw new NiubiException(e);
+        }
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             SchedulerJobDescriptor jobDescriptor;
@@ -257,8 +265,12 @@ public class DefaultSchedulerManager implements SchedulerManager {
             LoggerHelper.warn("group [" + group + "," + name + "] has been paused.");
         } else {
             try {
-                scheduler.pauseJob(jobKey);
-                LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
+                if (scheduler.isStarted()) {
+                    scheduler.pauseJob(jobKey);
+                    LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
+                } else {
+                    LoggerHelper.info("scheduler has been shutdown ,ignore the pause operation for [" + group + "," + name + "]");
+                }
             } catch (SchedulerException e) {
                 LoggerHelper.error("pause [" + group + "," + name + "] job failed.", e);
                 throw new NiubiException(e);
