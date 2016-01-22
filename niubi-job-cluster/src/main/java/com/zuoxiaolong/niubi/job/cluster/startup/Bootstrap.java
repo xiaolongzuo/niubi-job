@@ -75,7 +75,7 @@ public class Bootstrap {
     }
 
     private static void sendCommand(String command) throws IOException {
-        Socket socket = new Socket("localhost", 9101);
+        Socket socket = new Socket("localhost", getShutdownPort());
         socket.getOutputStream().write(StringHelper.getBytes(command));
         socket.getOutputStream().flush();
         socket.close();
@@ -84,7 +84,7 @@ public class Bootstrap {
     private static void await() throws IOException {
         ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(9101, 1, InetAddress.getByName("localhost"));
+            serverSocket = new ServerSocket(getShutdownPort(), 1, InetAddress.getByName("localhost"));
         } catch (Exception e) {
             LoggerHelper.error("socket create failed.", e);
             try {
@@ -168,6 +168,10 @@ public class Bootstrap {
 
     public static String getJarRepertoryUrl() {
         return StringHelper.appendSlant(properties.getProperty("jar.repertory.url", "http://localhost:8080/job"));
+    }
+
+    public static Integer getShutdownPort() {
+        return Integer.valueOf(properties.getProperty("shutdown.port", "9101"));
     }
 
     public static String getNodeMode() {
