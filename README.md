@@ -1,2 +1,2 @@
 # niubi-job
-一个具备高可靠性、高稳定性以及水平扩展能力的分布式任务调度框架。
+This is a distributed job scheduling framework.
