@@ -230,6 +230,11 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
                     //if has operation, wait a moment.
                     if (checkNotExecuteOperation()) {
+                        try {
+                            Thread.sleep(3000);
+                        } catch (Throwable e) {
+                            //ignored
+                        }
                         masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                         return;
                     }
