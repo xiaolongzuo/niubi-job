@@ -249,6 +249,21 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                     masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                     return;
                 }
+                if (hasLeadership) {
+                    //check weigher node path
+                    List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                    boolean nodeIsLive = false;
+                    for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
+                        if (masterSlaveNodeData.getPath().equals(data.getNodePath())) {
+                            nodeIsLive = true;
+                            break;
+                        }
+                    }
+                    if (!nodeIsLive) {
+                        data.clearNodePath();
+                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    }
+                }
                 //if the job has been assigned to this node, then execute.
                 if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
                     MasterSlaveNodeData.Data nodeData;
