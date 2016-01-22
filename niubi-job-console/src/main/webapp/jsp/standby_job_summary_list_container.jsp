@@ -24,7 +24,7 @@
 <div id="content">
     <!--breadcrumbs-->
     <div id="content-header">
-        <div id="breadcrumb"><a href="/standbyDashboard/index" title="Go to Home" class="tip-bottom"><i
+        <div id="breadcrumb"><a href="${pageContext.request.contextPath}/standbyDashboard/index" title="Go to Home" class="tip-bottom"><i
                 class="icon-home"></i> Home</a></div>
     </div>
     <div class="container-fluid">
@@ -52,7 +52,7 @@
                             <tr class="gradeA">
                                 <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.state}</span></td>
                                 <c:if test="${jobSummary.state != 'Executing'}">
-                                    <td><a href="/standbyJobSummaries/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
+                                    <td><a href="${pageContext.request.contextPath}/standbyJobSummaries/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
                                 </c:if>
                                 <c:if test="${jobSummary.state == 'Executing'}">
                                     <td>${jobSummary.groupName}.${jobSummary.jobName}</td>
@@ -61,7 +61,7 @@
                                 <td>${jobSummary.cron}</td>
                                 <td>${jobSummary.jarFileName}</td>
                                 <td>${jobSummary.modifyDateString}</td>
-                                <td><a href="/standbyJobSummaries/${jobSummary.id}/synchronize" class="btn btn-primary btn-mini">Synchronize</a></td>
+                                <td><a href="${pageContext.request.contextPath}/standbyJobSummaries/${jobSummary.id}/synchronize" class="btn btn-primary btn-mini">Synchronize</a></td>
                             </tr>
                         </c:forEach>
                         </tbody>

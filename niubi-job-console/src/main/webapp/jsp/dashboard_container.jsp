@@ -24,7 +24,7 @@
 <div id="content">
     <!--breadcrumbs-->
     <div id="content-header">
-        <div id="breadcrumb"> <a href="/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
+        <div id="breadcrumb"> <a href="${pageContext.request.contextPath}/" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a></div>
     </div>
     <!--End-breadcrumbs-->
 
@@ -32,8 +32,8 @@
     <div class="container-fluid">
         <div class="quick-actions_homepage">
             <ul class="quick-actions">
-                <li class="bg_lb span4"> <a href="/masterSlaveDashboard/index"> <i class="icon-dashboard"></i> Master-Slave </a> </li>
-                <li class="bg_lb span4"> <a href="/standbyDashboard/index"> <i class="icon-dashboard"></i> Standby </a> </li>
+                <li class="bg_lb span4"> <a href="${pageContext.request.contextPath}/masterSlaveDashboard/index"> <i class="icon-dashboard"></i> Master-Slave </a> </li>
+                <li class="bg_lb span4"> <a href="${pageContext.request.contextPath}/standbyDashboard/index"> <i class="icon-dashboard"></i> Standby </a> </li>
                 <!--
                 <li class="bg_lo span3"> <a href="form-common.html"> <i class="icon-th-list"></i> Forms</a> </li>
                 <li class="bg_ls"> <a href="buttons.html"> <i class="icon-tint"></i> Buttons</a> </li>

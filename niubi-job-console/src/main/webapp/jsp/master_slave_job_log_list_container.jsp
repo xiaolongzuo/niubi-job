@@ -24,7 +24,7 @@
 <div id="content">
     <!--breadcrumbs-->
     <div id="content-header">
-        <div id="breadcrumb"><a href="/masterSlaveDashboard/index" title="Go to Home" class="tip-bottom"><i
+        <div id="breadcrumb"><a href="${pageContext.request.contextPath}/masterSlaveDashboard/index" title="Go to Home" class="tip-bottom"><i
                 class="icon-home"></i> Home</a></div>
     </div>
     <div class="container-fluid">

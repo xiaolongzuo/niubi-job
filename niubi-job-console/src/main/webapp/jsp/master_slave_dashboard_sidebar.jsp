@@ -24,12 +24,12 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="${param.masterSlaveDashboardIndex}"> <a href="/masterSlaveDashboard/index"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
-        <li class="${param.masterSlaveNodes}"> <a href="/masterSlaveNodes"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
-        <li class="${param.masterSlaveJobSummaries}"> <a href="/masterSlaveJobSummaries"><i class="icon icon-inbox"></i> <span>Job runtime manager</span></a> </li>
-        <li class="${param.masterSlaveJobLogs}"><a href="/masterSlaveJobLogs"><i class="icon icon-th"></i> <span>Operation log</span></a></li>
-        <li class="${param.masterSlaveJobsUpload}"> <a href="/masterSlaveJobs/upload"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
-        <li class="${param.masterSlaveJobs}"> <a href="/masterSlaveJobs"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
+        <li class="${param.masterSlaveDashboardIndex}"> <a href="${pageContext.request.contextPath}/masterSlaveDashboard/index"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
+        <li class="${param.masterSlaveNodes}"> <a href="${pageContext.request.contextPath}/masterSlaveNodes"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li class="${param.masterSlaveJobSummaries}"> <a href="${pageContext.request.contextPath}/masterSlaveJobSummaries"><i class="icon icon-inbox"></i> <span>Job runtime manager</span></a> </li>
+        <li class="${param.masterSlaveJobLogs}"><a href="${pageContext.request.contextPath}/masterSlaveJobLogs"><i class="icon icon-th"></i> <span>Operation log</span></a></li>
+        <li class="${param.masterSlaveJobsUpload}"> <a href="${pageContext.request.contextPath}/masterSlaveJobs/upload"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>
+        <li class="${param.masterSlaveJobs}"> <a href="${pageContext.request.contextPath}/masterSlaveJobs"><i class="icon icon-signal"></i> <span>Job manager</span></a> </li>
 
 
         <!--

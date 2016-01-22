@@ -23,7 +23,7 @@
 
 <div id="content">
     <div id="content-header">
-        <div id="breadcrumb"><a href="/masterSlaveJobSummaries" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Job runtime manager</a></div>
+        <div id="breadcrumb"><a href="${pageContext.request.contextPath}/masterSlaveJobSummaries" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Job runtime manager</a></div>
     </div>
     <div class="container-fluid">
         <hr>
@@ -35,7 +35,7 @@
                         <h5>Edit Job : [${jobSummary.groupName}.${jobSummary.jobName}-->(${jobSummary.state})]</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="/masterSlaveJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form action="${pageContext.request.contextPath}/masterSlaveJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <input name="groupName" type="hidden" value="${jobSummary.groupName}" />
                             <input name="jobName" type="hidden" value="${jobSummary.jobName}" />
                             <input name="originalJarFileName" type="hidden" value="${jobSummary.originalJarFileName}" />

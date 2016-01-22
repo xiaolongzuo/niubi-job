@@ -24,8 +24,8 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li> <a href="/masterSlaveDashboard/index"><i class="icon icon-home"></i> <span>Master-Slave</span></a> </li>
-        <li> <a href="/standbyDashboard/index"><i class="icon icon-home"></i> <span>Standby</span></a> </li>
+        <li> <a href="${pageContext.request.contextPath}/masterSlaveDashboard/index"><i class="icon icon-home"></i> <span>Master-Slave</span></a> </li>
+        <li> <a href="${pageContext.request.contextPath}/standbyDashboard/index"><i class="icon icon-home"></i> <span>Standby</span></a> </li>
 
         <!--
         <li><a href="grid.html"><i class="icon icon-fullscreen"></i> <span>Full width</span></a></li>
