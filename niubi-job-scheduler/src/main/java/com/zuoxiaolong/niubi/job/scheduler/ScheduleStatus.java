@@ -17,8 +17,6 @@
 package com.zuoxiaolong.niubi.job.scheduler;
 
 /**
- * 容器的状态
- *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:04
  */

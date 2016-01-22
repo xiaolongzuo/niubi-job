@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 该注解可以关闭job
+ * disable the job.
  *
  * @author Xiaolong Zuo
  * @since 16/1/10 06:46

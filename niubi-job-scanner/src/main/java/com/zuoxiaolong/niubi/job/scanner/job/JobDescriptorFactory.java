@@ -22,7 +22,6 @@ import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 import java.lang.reflect.Method;
 
 /**
- * 触发器工厂
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 01:10

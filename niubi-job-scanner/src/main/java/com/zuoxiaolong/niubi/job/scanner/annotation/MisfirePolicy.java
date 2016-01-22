@@ -17,7 +17,6 @@
 package com.zuoxiaolong.niubi.job.scanner.annotation;
 
 /**
- * 当容器处于暂停时,对于错过的任务的执行策略.
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 04:24

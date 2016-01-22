@@ -19,8 +19,6 @@ package com.zuoxiaolong.niubi.job.scheduler.container;
 import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 
 /**
- * niubi-job运行的容器
- *
  * @author Xiaolong Zuo
  * @since 16/1/9 01:16
  */

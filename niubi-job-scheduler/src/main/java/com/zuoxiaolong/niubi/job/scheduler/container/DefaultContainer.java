@@ -24,7 +24,6 @@ import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import java.util.Properties;
 
 /**
- * 默认的容器实现类
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 01:18

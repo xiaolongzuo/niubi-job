@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 该注解可以用作方法上,代表该方法是一个需要调度的job
+ * annotation that indicates method is a job.
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 00:28

@@ -20,8 +20,6 @@ import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 
 /**
- * 单机版实现
- *
  * @author Xiaolong Zuo
  * @since 16/1/12 01:17
  */

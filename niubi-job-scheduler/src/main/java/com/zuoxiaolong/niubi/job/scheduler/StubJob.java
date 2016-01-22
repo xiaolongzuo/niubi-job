@@ -27,7 +27,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 /**
- * quartz中Job接口的占位类
  *
  * @author Xiaolong Zuo
  * @since 16/1/9 01:58

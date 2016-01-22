@@ -17,8 +17,6 @@
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
 /**
- * 该接口代表一个集群中的节点,一般对应一个JVM
- *
  * @author Xiaolong Zuo
  * @since 16/1/9 14:41
  */
