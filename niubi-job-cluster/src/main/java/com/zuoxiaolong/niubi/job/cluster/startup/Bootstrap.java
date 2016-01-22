@@ -106,8 +106,10 @@ public class Bootstrap {
 
     static {
         rootDir = System.getProperty("user.dir");
-        File binDir = new File(rootDir + "/bin");
+        //for test env
+        File binDir = new File(rootDir + "/niubi-job-cluster/target/bin");
         if (!binDir.exists()) {
+            //for production env
             rootDir = rootDir.substring(0, rootDir.lastIndexOf("/"));
             binDir = new File(rootDir + "/bin");
             if (!binDir.exists()) {
