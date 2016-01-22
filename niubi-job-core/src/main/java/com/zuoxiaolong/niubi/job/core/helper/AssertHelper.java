@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.core.helper;
 
 /**
+ * Assert util.
+ *
  * @author Xiaolong Zuo
  * @since 16/1/13 02:43
  */

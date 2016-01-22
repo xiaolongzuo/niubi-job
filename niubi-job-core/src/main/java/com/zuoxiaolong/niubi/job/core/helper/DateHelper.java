@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
+ * Date util.
+ *
  * @author Xiaolong Zuo
  * @since 16/1/16 17:40
  */

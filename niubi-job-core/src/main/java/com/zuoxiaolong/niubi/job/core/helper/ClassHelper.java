@@ -17,6 +17,9 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 
 /**
+ * Class util.
+ * Contains class loader util method.
+ *
  * @author Xiaolong Zuo
  * @since 1/11/2016 20:17
  */

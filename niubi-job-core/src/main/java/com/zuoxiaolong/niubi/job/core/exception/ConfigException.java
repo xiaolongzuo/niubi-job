@@ -17,6 +17,8 @@ package com.zuoxiaolong.niubi.job.core.exception;
  */
 
 /**
+ * Represent a config exception
+ *
  * @author Xiaolong Zuo
  * @since 1/11/2016 20:07
  */
