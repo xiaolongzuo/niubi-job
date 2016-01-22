@@ -157,18 +157,18 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
                 if (jobDescriptor.isManualTrigger()) {
                     LoggerHelper.error("job need to trigger manual : " + JsonHelper.toJson(jobDescriptor));
-                    return;
+                    throw new NiubiException(new IllegalArgumentException("job need to trigger manual : " + JsonHelper.toJson(jobDescriptor)));
                 }
             } catch (SchedulerException e) {
                 LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
             try {
                 scheduler.scheduleJob(jobDescriptor.trigger());
                 LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("startup [" + group + "," + name + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
         } else if (scheduleStatus == ScheduleStatus.PAUSE) {
             try {
@@ -176,7 +176,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 LoggerHelper.info("job [" + group + "," + name + "] has been resumed.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("resume [" + group + "," + name + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
         } else {
             LoggerHelper.warn("job [" + group + "," + name + "] has been started, skip.");
@@ -211,7 +211,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
         } catch (SchedulerException e) {
             LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
-            return;
+            throw new NiubiException(e);
         }
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
@@ -220,7 +220,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 LoggerHelper.info("job [" + group + "," + name + "] has been started successfully.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("startup [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
         } else {
             try {
@@ -233,7 +233,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 LoggerHelper.info("job [" + group + "," + name + "] has been rescheduled.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("reschedule [" + group + "," + name + "," + scheduleStatus + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
         }
         jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
@@ -261,7 +261,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
             } catch (SchedulerException e) {
                 LoggerHelper.error("pause [" + group + "," + name + "] job failed.", e);
-                return;
+                throw new NiubiException(e);
             }
             jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
             checkIsEmpty();
