@@ -167,7 +167,7 @@ public class Bootstrap {
     }
 
     public static String getJarRepertoryUrl() {
-        return StringHelper.appendSlant(properties.getProperty("jar.repertory.url", "http://localhost:8080")) + "job";
+        return StringHelper.appendSlant(properties.getProperty("jar.repertory.url", "http://localhost:8080")) + "job/";
     }
 
     public static Integer getShutdownPort() {
