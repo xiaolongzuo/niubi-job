@@ -134,6 +134,12 @@
                                 <include name="niubi-job-cluster.jar"/>
                             </fileset>
                         </copy>
+                        <copy todir="${cluster.build.dir}" overwrite="true">
+                            <fileset dir="${user.dir}">
+                                <include name="LICENSE"/>
+                                <include name="README.md"/>
+                            </fileset>
+                        </copy>
                         <delete file="${user.dir}/niubi-job-cluster.zip"/>
                         <delete file="${user.dir}/niubi-job-cluster.tar.gz"/>
                         <zip destfile="${user.dir}/niubi-job-cluster.zip"
