@@ -5,7 +5,7 @@
     <groupId>com.zuoxiaolong</groupId>
     <artifactId>niubi-job</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.0-beta1</version>
+    <version>0.9.1-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>This is a distributed job scheduling framework.</description>
     <url>https://github.com/xiaolongzuo/niubi-job</url>
@@ -27,7 +27,7 @@
         <connection>scm:git:git@github.com:xiaolongzuo/niubi-job.git</connection>
         <developerConnection>scm:git:git@github.com:xiaolongzuo/niubi-job.git</developerConnection>
         <url>git@github.com:xiaolongzuo/niubi-job.git</url>
-        <tag>niubi-job-0.9.0-beta1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <modules>
