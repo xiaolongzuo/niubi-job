@@ -9,4 +9,4 @@ set "JAVA_COMMAND=java"
 cd "%LIB_DIR%"
 %JAVA_COMMAND% -jar niubi-job-cluster.jar %1
 
-pause
+exit
