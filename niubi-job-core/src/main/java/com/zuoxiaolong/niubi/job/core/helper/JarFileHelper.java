@@ -28,6 +28,12 @@ import java.util.List;
 public abstract class JarFileHelper {
 
     public static String getJarFileName(String jarFilePath) {
+        if (jarFilePath == null) {
+            return null;
+        }
+        if (jarFilePath.indexOf("/") < 0 && jarFilePath.indexOf("\\") < 0) {
+            return jarFilePath;
+        }
         String jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1);
         return jarFileName.substring(jarFileName.lastIndexOf("\\") + 1);
     }

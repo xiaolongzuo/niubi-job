@@ -94,7 +94,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         Class<?>[] parameterTypes = new Class[]{ClassLoader.class, Properties.class, String.class, String.class};
         Constructor<? extends Container> containerConstructor = containerClass.getConstructor(parameterTypes);
         Properties properties = Bootstrap.properties();
-        properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, jarFilePath);
+        properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, JarFileHelper.getJarFileName(jarFilePath));
         return containerConstructor.newInstance(jarApplicationClassLoader, properties, packagesToScan, jarFilePath);
     }
 
