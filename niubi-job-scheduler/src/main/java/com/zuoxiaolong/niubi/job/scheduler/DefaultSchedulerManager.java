@@ -204,6 +204,9 @@ public class DefaultSchedulerManager implements SchedulerManager {
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         SchedulerJobDescriptor jobDescriptor;
         try {
+            if (!scheduler.isStarted()) {
+                scheduler.start();
+            }
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
         } catch (SchedulerException e) {
