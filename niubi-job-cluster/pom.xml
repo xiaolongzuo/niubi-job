@@ -114,6 +114,8 @@
                         <copy todir="${cluster.build.dir}/bin" overwrite="true">
                             <fileset dir="${user.dir}/niubi-job-cluster/src/main/resources">
                                 <include name="startup.bat"/>
+                                <include name="bootstrap.bat"/>
+                                <include name="shutdown.bat"/>
                                 <include name="startup.sh"/>
                                 <include name="bootstrap.sh"/>
                                 <include name="shutdown.sh"/>
