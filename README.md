@@ -1,6 +1,20 @@
 # niubi-job
 This is a distributed job scheduling framework.
 
+### Via Maven Central
+```xml
+<dependency>
+    <groupId>com.zuoxiaolong</groupId>
+    <artifactId>niubi-job-scheduler</artifactId>
+    <version>0.9.2</version>
+</dependency>
+<dependency>
+    <groupId>com.zuoxiaolong</groupId>
+    <artifactId>niubi-job-spring</artifactId>
+    <version>0.9.2</version>
+</dependency>
+```xml
+
 ### Download the newest version
 ***
 #### Current version:0.9.0-beta1
