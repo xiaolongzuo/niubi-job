@@ -19,11 +19,11 @@
   User: Xiaolong Zuo
   Time: 1/15/2016 11:42
 --%>
-<script src="${pageContext.request.contextPath}/jsp/js/jquery.min.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/jquery.ui.custom.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/bootstrap.min.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/jquery.uniform.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/select2.min.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/jquery.dataTables.min.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/matrix.js"></script>
-<script src="${pageContext.request.contextPath}/jsp/js/matrix.tables.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.ui.custom.js"></script>
+<script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.uniform.js"></script>
+<script src="${pageContext.request.contextPath}/js/select2.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/matrix.js"></script>
+<script src="${pageContext.request.contextPath}/js/matrix.tables.js"></script>

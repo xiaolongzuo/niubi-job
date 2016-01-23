@@ -22,13 +22,13 @@
 <title>Niubi-Job-Console</title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/bootstrap.min.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/bootstrap-responsive.min.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/fullcalendar.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/uniform.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/select2.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/matrix-style.css" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/matrix-media.css" />
-<link href="${pageContext.request.contextPath}/jsp/font-awesome/css/font-awesome.css" rel="stylesheet" />
-<link rel="stylesheet" href="${pageContext.request.contextPath}/jsp/css/jquery.gritter.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap.min.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/fullcalendar.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/uniform.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/select2.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/matrix-style.css" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/matrix-media.css" />
+<link href="${pageContext.request.contextPath}/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery.gritter.css" />
 <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>

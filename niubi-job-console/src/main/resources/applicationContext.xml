@@ -9,6 +9,8 @@
     <!-- Annotation Config -->
     <context:annotation-config/>
 
+    <import resource="applicationContext-shiro.xml"/>
+
     <import resource="applicationContext-service.xml"/>
 
     <import resource="applicationContext-transaction.xml"/>

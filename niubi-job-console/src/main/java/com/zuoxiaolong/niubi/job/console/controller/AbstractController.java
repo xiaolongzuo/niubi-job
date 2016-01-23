@@ -45,6 +45,10 @@ public abstract class AbstractController {
         return "forward:" + url;
     }
 
+    protected void failed(String message) {
+        getRequest().setAttribute("message", message);
+    }
+
     protected String getDirectoryRealPath(String path) {
         String dirPath = getRequest().getServletContext().getRealPath(path);
         if (dirPath.endsWith("/")) {
