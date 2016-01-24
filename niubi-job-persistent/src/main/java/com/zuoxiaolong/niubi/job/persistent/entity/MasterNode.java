@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -25,12 +26,22 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 23:33
+ * @since 1/15/2016 12:02
  */
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB_SUMMARY", columnNames = {"group_name","job_name"})})
-public class MasterSlaveJobSummary extends AbstractJobSummary {
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_NODE", columnNames = {"identifier"})})
+public class MasterNode extends AbstractNode {
+
+    public String getStateLabelClass() {
+        if ("Master".equals(getState())) {
+            return "label-important";
+        }
+        if ("Slave".equals(getState())) {
+            return "label-info";
+        }
+        return "";
+    }
 
 }

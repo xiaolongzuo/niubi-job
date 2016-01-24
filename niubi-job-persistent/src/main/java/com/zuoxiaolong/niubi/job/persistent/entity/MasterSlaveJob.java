@@ -30,7 +30,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"jar_file_name","group_name","job_name"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB", columnNames = {"jar_file_name","group_name","job_name"})})
 public class MasterSlaveJob extends AbstractJob {
 
 }
