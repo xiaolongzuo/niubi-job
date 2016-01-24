@@ -51,7 +51,7 @@
                 </div>
             </div>
         </div>
-        <span class="offset1 text-error">${message}</span>
+        <span class="offset1 text-warning">${message}</span>
         <div class="form-actions">
             <!--
             <span class="pull-left"><a href="#" class="flip-link btn btn-info" id="to-recover">Lost password?</a></span>
