@@ -15,13 +15,24 @@
  */
 
 
-package com.zuoxiaolong.niubi.job.service.view;
+package com.zuoxiaolong.niubi.job.persistent.entity;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
  * @since 1/15/2016 12:02
  */
-public class MasterNodeView extends AbstractNodeView {
+@Entity
+@DynamicInsert
+@DynamicUpdate
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_NODE", columnNames = {"identifier"})})
+public class MasterSlaveNode extends AbstractNode {
 
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {

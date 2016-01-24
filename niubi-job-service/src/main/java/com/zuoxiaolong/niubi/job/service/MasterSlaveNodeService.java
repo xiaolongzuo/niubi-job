@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.service;
 
 
-import com.zuoxiaolong.niubi.job.service.view.MasterNodeView;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveNode;
 
 import java.util.List;
 
@@ -27,6 +27,6 @@ import java.util.List;
  */
 public interface MasterSlaveNodeService {
 
-    List<MasterNodeView> getAllNodes();
+    List<MasterSlaveNode> getAllNodes();
 
 }

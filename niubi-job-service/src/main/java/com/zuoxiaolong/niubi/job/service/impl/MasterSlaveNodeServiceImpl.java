@@ -20,8 +20,8 @@ package com.zuoxiaolong.niubi.job.service.impl;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveNode;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveNodeService;
-import com.zuoxiaolong.niubi.job.service.view.MasterNodeView;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,9 +35,9 @@ import java.util.List;
 public class MasterSlaveNodeServiceImpl extends AbstractService implements MasterSlaveNodeService {
 
     @Override
-    public List<MasterNodeView> getAllNodes() {
+    public List<MasterSlaveNode> getAllNodes() {
         List<MasterSlaveNodeData> masterSlaveNodeDataList;
-        List<MasterNodeView> masterNodeViewList = new ArrayList<>();
+        List<MasterSlaveNode> masterNodeViewList = new ArrayList<>();
         try {
             masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
         } catch (Exception e) {
@@ -45,8 +45,8 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
             return masterNodeViewList;
         }
         for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
-            MasterNodeView masterNodeView = new MasterNodeView();
-            masterNodeView.setId(masterSlaveNodeData.getId());
+            MasterSlaveNode masterNodeView = new MasterSlaveNode();
+            masterNodeView.setIdentifier(masterSlaveNodeData.getId());
             if (masterSlaveNodeData.getData() != null) {
                 ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
             }

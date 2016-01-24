@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.service;
 
 
-import com.zuoxiaolong.niubi.job.service.view.StandbyNodeView;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyNode;
 
 import java.util.List;
 
@@ -27,6 +27,6 @@ import java.util.List;
  */
 public interface StandbyNodeService {
 
-    List<StandbyNodeView> getAllNodes();
+    List<StandbyNode> getAllNodes();
 
 }
