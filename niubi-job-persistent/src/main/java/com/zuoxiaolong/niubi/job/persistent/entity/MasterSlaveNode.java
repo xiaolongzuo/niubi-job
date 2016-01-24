@@ -23,6 +23,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
@@ -33,6 +34,16 @@ import javax.persistence.UniqueConstraint;
 @DynamicUpdate
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_NODE", columnNames = {"identifier"})})
 public class MasterSlaveNode extends AbstractNode {
+
+    private List<MasterSlaveJobSummary> masterSlaveJobSummaries;
+
+    public List<MasterSlaveJobSummary> getMasterSlaveJobSummaries() {
+        return masterSlaveJobSummaries;
+    }
+
+    public void setMasterSlaveJobSummaries(List<MasterSlaveJobSummary> masterSlaveJobSummaries) {
+        this.masterSlaveJobSummaries = masterSlaveJobSummaries;
+    }
 
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {

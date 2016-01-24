@@ -33,4 +33,14 @@ import javax.persistence.UniqueConstraint;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB_SUMMARY", columnNames = {"group_name","job_name"})})
 public class MasterSlaveJobSummary extends AbstractJobSummary {
 
+    private MasterSlaveNode masterSlaveNode;
+
+    public MasterSlaveNode getMasterSlaveNode() {
+        return masterSlaveNode;
+    }
+
+    public void setMasterSlaveNode(MasterSlaveNode masterSlaveNode) {
+        this.masterSlaveNode = masterSlaveNode;
+    }
+
 }
