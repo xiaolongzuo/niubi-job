@@ -30,6 +30,8 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author Xiaolong Zuo
  * @since 16/1/17 03:55
@@ -46,6 +48,7 @@ public class StandbyJobSummaryListener {
     @Autowired
     private CuratorFramework client;
 
+    @PostConstruct
     public void listen() throws Exception {
         StandbyApiFactory standbyApiFactory = new StandbyApiFactoryImpl(client);
         PathChildrenCache pathChildrenCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
