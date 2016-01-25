@@ -35,7 +35,7 @@ public class StandbyNode extends AbstractNode {
 
     private List<StandbyJobSummary> jobSummaries;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "node")
     public List<StandbyJobSummary> getJobSummaries() {
         return jobSummaries;
     }
@@ -44,6 +44,7 @@ public class StandbyNode extends AbstractNode {
         this.jobSummaries = jobSummaries;
     }
 
+    @Transient
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {
             return "label-important";

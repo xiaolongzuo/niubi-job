@@ -30,12 +30,12 @@ import java.util.List;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_NODE", columnNames = {"identifier"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_NODE", columnNames = {"path"})})
 public class MasterSlaveNode extends AbstractNode {
 
     private List<MasterSlaveJobSummary> jobSummaries;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "node")
     public List<MasterSlaveJobSummary> getJobSummaries() {
         return jobSummaries;
     }
@@ -44,6 +44,7 @@ public class MasterSlaveNode extends AbstractNode {
         this.jobSummaries = jobSummaries;
     }
 
+    @Transient
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {
             return "label-important";
