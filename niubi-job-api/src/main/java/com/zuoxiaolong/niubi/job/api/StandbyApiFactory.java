@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:57
+ * @since 0.9.2
  */
 public interface StandbyApiFactory {
 

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 01:15
+ * @since 0.9.2
  */
 public class MasterSlaveJobApiImpl extends AbstractCurdApiImpl implements MasterSlaveJobApi {
 

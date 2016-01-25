@@ -23,7 +23,7 @@ import org.apache.curator.framework.recipes.cache.ChildData;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:46
+ * @since 0.9.2
  */
 @Setter
 @Getter

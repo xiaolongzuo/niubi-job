@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:45
+ * @since 0.9.2
  */
 public interface MasterSlaveJobApi {
 

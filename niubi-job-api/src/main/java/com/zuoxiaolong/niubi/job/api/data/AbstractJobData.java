@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:46
+ * @since 0.9.2
  */
 public abstract class AbstractJobData<T extends AbstractJobData> implements Comparable<T> {
 

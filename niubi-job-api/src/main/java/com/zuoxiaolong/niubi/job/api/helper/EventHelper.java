@@ -20,7 +20,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:22
+ * @since 0.9.2
  */
 public abstract class EventHelper {
 

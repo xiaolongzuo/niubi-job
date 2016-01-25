@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/19 00:43
+ * @since 0.9.2
  */
 public abstract class PathHelper {
 

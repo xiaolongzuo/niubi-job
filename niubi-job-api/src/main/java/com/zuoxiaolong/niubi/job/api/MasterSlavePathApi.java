@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/18 23:26
+ * @since 0.9.2
  */
 public interface MasterSlavePathApi extends PathApi {
 

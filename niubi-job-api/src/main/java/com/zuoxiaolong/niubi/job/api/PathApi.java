@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/19 00:56
+ * @since 0.9.2
  */
 public interface PathApi {
 

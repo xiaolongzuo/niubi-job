@@ -24,7 +24,7 @@ import org.apache.curator.framework.CuratorFramework;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 01:04
+ * @since 0.9.2
  */
 public class MasterSlaveApiFactoryImpl implements MasterSlaveApiFactory {
 

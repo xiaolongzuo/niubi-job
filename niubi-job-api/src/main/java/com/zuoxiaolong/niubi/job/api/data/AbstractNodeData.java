@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.api.data;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 22:11
+ * @since 0.9.2
  */
 public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<T> {
 

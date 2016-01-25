@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 01:02
+ * @since 0.9.2
  */
 public interface StandbyPathApi extends PathApi {
 

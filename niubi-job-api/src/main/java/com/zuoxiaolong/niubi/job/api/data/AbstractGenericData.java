@@ -26,7 +26,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/13 23:23
+ * @since 0.9.2
  */
 public abstract class AbstractGenericData<E extends AbstractGenericData, T extends Comparable<T>> extends AbstractData implements Comparable<E> {
 

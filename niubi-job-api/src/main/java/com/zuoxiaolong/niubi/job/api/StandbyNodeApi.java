@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 12:56
+ * @since 0.9.2
  */
 public interface StandbyNodeApi {
 
