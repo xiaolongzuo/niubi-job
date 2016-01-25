@@ -46,7 +46,7 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
         }
         for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
             MasterSlaveNode masterNodeView = new MasterSlaveNode();
-            masterNodeView.setIdentifier(masterSlaveNodeData.getId());
+            masterNodeView.setPath(masterSlaveNodeData.getPath());
             if (masterSlaveNodeData.getData() != null) {
                 ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
             }
@@ -58,7 +58,7 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
     @Override
     public void saveNode(MasterSlaveNodeData masterSlaveNodeData) {
         MasterSlaveNode masterNodeView = new MasterSlaveNode();
-        masterNodeView.setIdentifier(masterSlaveNodeData.getId());
+        masterNodeView.setPath(masterSlaveNodeData.getPath());
         if (masterSlaveNodeData.getData() != null) {
             ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
         }

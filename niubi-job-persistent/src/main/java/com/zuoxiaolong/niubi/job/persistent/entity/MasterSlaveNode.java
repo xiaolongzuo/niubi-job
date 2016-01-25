@@ -20,9 +20,7 @@ package com.zuoxiaolong.niubi.job.persistent.entity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -35,14 +33,15 @@ import java.util.List;
 @Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_NODE", columnNames = {"identifier"})})
 public class MasterSlaveNode extends AbstractNode {
 
-    private List<MasterSlaveJobSummary> masterSlaveJobSummaries;
+    private List<MasterSlaveJobSummary> jobSummaries;
 
-    public List<MasterSlaveJobSummary> getMasterSlaveJobSummaries() {
-        return masterSlaveJobSummaries;
+    @OneToMany(fetch = FetchType.EAGER)
+    public List<MasterSlaveJobSummary> getJobSummaries() {
+        return jobSummaries;
     }
 
-    public void setMasterSlaveJobSummaries(List<MasterSlaveJobSummary> masterSlaveJobSummaries) {
-        this.masterSlaveJobSummaries = masterSlaveJobSummaries;
+    public void setJobSummaries(List<MasterSlaveJobSummary> jobSummaries) {
+        this.jobSummaries = jobSummaries;
     }
 
     public String getStateLabelClass() {

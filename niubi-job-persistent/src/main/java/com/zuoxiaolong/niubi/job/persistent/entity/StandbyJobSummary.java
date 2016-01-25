@@ -20,6 +20,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -30,7 +31,19 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_STANDBY_JOB_SUMMARY", columnNames = {"group_name","job_name"})})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQUE_STANDBY_JOB_SUMMARY_GJ", columnNames = {"group_name","job_name"})
+        ,@UniqueConstraint(name = "UNIQUE_STANDBY_JOB_SUMMARY_P", columnNames = {"path"})})
 public class StandbyJobSummary extends AbstractJobSummary {
 
+    private StandbyNode node;
+
+    @ManyToOne(targetEntity = StandbyNode.class)
+    public StandbyNode getNode() {
+        return node;
+    }
+
+    public void setNode(StandbyNode node) {
+        this.node = node;
+    }
 }

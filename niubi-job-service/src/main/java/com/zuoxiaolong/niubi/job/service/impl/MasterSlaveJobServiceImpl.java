@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
+import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
@@ -96,6 +97,7 @@ public class MasterSlaveJobServiceImpl extends AbstractService implements Master
             MasterSlaveJobSummary masterSlaveJobSummary = new MasterSlaveJobSummary();
             masterSlaveJobSummary.setGroupName(jobDescriptor.group());
             masterSlaveJobSummary.setJobName(jobDescriptor.name());
+            masterSlaveJobSummary.setPath(PathHelper.getJobPath(masterSlaveApiFactory.pathApi().getJobPath(), jobDescriptor.group(), jobDescriptor.name()));
             MasterSlaveJobSummary masterSlaveJobSummaryInDb = baseDao.getUnique(MasterSlaveJobSummary.class, masterSlaveJobSummary);
             if (masterSlaveJobSummaryInDb == null) {
                 masterSlaveJobSummary.setDefaultState();

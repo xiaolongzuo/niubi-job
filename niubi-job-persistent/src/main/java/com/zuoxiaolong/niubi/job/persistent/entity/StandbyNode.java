@@ -20,9 +20,8 @@ package com.zuoxiaolong.niubi.job.persistent.entity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Xiaolong Zuo
@@ -31,8 +30,19 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_STANDBY_NODE", columnNames = {"identifier"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_STANDBY_NODE", columnNames = {"path"})})
 public class StandbyNode extends AbstractNode {
+
+    private List<StandbyJobSummary> jobSummaries;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    public List<StandbyJobSummary> getJobSummaries() {
+        return jobSummaries;
+    }
+
+    public void setJobSummaries(List<StandbyJobSummary> jobSummaries) {
+        this.jobSummaries = jobSummaries;
+    }
 
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {

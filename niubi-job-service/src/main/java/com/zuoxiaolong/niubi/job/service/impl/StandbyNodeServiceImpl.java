@@ -46,7 +46,7 @@ public class StandbyNodeServiceImpl extends AbstractService implements StandbyNo
         }
         for (StandbyNodeData standbyNodeData : standbyNodeDataList) {
             StandbyNode standbyNodeView = new StandbyNode();
-            standbyNodeView.setIdentifier(standbyNodeData.getId());
+            standbyNodeView.setPath(standbyNodeData.getPath());
             if (standbyNodeData.getData() != null) {
                 ReflectHelper.copyFieldValues(standbyNodeData.getData(), standbyNodeView);
             }

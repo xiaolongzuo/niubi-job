@@ -20,6 +20,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -30,17 +31,19 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB_SUMMARY", columnNames = {"group_name","job_name"})})
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB_SUMMARY_GJ", columnNames = {"group_name","job_name"})
+        ,@UniqueConstraint(name = "UNIQUE_MASTER_SLAVE_JOB_SUMMARY_P", columnNames = {"path"})})
 public class MasterSlaveJobSummary extends AbstractJobSummary {
 
-    private MasterSlaveNode masterSlaveNode;
+    private MasterSlaveNode node;
 
-    public MasterSlaveNode getMasterSlaveNode() {
-        return masterSlaveNode;
+    @ManyToOne(targetEntity = MasterSlaveNode.class)
+    public MasterSlaveNode getNode() {
+        return node;
     }
 
-    public void setMasterSlaveNode(MasterSlaveNode masterSlaveNode) {
-        this.masterSlaveNode = masterSlaveNode;
+    public void setNode(MasterSlaveNode node) {
+        this.node = node;
     }
-
 }

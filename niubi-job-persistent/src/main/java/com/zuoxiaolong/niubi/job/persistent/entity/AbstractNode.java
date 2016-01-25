@@ -25,7 +25,7 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class AbstractNode extends AbstractEntity {
 
-    private String identifier;
+    private String path;
 
     private String ip;
 
@@ -33,12 +33,12 @@ public class AbstractNode extends AbstractEntity {
 
     private Integer runningJobCount;
 
-    public String getIdentifier() {
-        return identifier;
+    public String getPath() {
+        return path;
     }
 
-    public void setIdentifier(String identifier) {
-        this.identifier = identifier;
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public String getIp() {

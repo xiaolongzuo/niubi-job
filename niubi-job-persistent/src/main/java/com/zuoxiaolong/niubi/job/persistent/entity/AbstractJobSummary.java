@@ -27,6 +27,8 @@ import javax.persistence.Transient;
 @MappedSuperclass
 public class AbstractJobSummary extends AbstractEntity {
 
+    private String path;
+
     private String groupName;
 
     private String jobName;
@@ -46,6 +48,14 @@ public class AbstractJobSummary extends AbstractEntity {
     private String originalJarFileName;
 
     private String operation;
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
