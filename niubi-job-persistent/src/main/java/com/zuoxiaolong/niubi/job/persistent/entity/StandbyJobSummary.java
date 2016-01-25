@@ -30,7 +30,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_JOB_RUNTIME_DETAIL", columnNames = {"group_name","job_name"})})
+@Table(uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_STANDBY_JOB_SUMMARY", columnNames = {"group_name","job_name"})})
 public class StandbyJobSummary extends AbstractJobSummary {
 
 }
