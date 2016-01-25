@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.api.data;
 
 import com.zuoxiaolong.niubi.job.core.exception.UnknownGenericTypeException;
 import com.zuoxiaolong.niubi.job.core.helper.JsonHelper;
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
 import java.lang.reflect.ParameterizedType;
@@ -37,13 +38,13 @@ public abstract class AbstractGenericData<E extends AbstractGenericData, T exten
 
     public AbstractGenericData(String path, byte[] bytes) {
         this.path = path;
-        this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
+        this.id = StringHelper.getEndPath(this.path);
         this.data = JsonHelper.fromJson(bytes, getGenericType());
     }
 
     public AbstractGenericData(String path, T data) {
         this.path = path;
-        this.id = this.path.substring(this.path.lastIndexOf("/") + 1);
+        this.id = StringHelper.getEndPath(this.path);
         this.data = data;
     }
 

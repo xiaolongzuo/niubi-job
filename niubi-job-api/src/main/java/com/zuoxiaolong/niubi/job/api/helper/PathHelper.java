@@ -16,6 +16,8 @@
 
 package com.zuoxiaolong.niubi.job.api.helper;
 
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+
 /**
  * @author Xiaolong Zuo
  * @since 16/1/19 00:43
@@ -23,10 +25,14 @@ package com.zuoxiaolong.niubi.job.api.helper;
 public abstract class PathHelper {
 
     public static String getParentPath(String path) {
+        AssertHelper.notNull(path, "path can't be null.");
         return path.substring(0, path.lastIndexOf("/"));
     }
 
     public static String getJobPath(String jobParentPath, String group , String name) {
+        AssertHelper.notNull(jobParentPath, "jobParentPath can't be null.");
+        AssertHelper.notNull(group, "group can't be null.");
+        AssertHelper.notNull(name, "name can't be null.");
         return jobParentPath + "/" + group + "." + name;
     }
 
