@@ -18,7 +18,6 @@
 package com.zuoxiaolong.niubi.job.service.impl;
 
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
@@ -42,23 +41,7 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
 
     @Override
     public List<MasterSlaveNode> getAllNodes() {
-        List<MasterSlaveNodeData> masterSlaveNodeDataList;
-        List<MasterSlaveNode> masterNodeViewList = new ArrayList<>();
-        try {
-            masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
-        } catch (Exception e) {
-            LoggerHelper.warn("select all standby nodes failed, has been ignored [" + e.getClass().getName() + ", " + e.getMessage() + "]");
-            return masterNodeViewList;
-        }
-        for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
-            MasterSlaveNode masterNodeView = new MasterSlaveNode();
-            masterNodeView.setPath(masterSlaveNodeData.getPath());
-            if (masterSlaveNodeData.getData() != null) {
-                ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
-            }
-            masterNodeViewList.add(masterNodeView);
-        }
-        return masterNodeViewList;
+        return baseDao.getAll(MasterSlaveNode.class);
     }
 
     @Override

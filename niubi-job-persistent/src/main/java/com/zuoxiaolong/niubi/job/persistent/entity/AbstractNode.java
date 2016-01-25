@@ -16,7 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.persistent.entity;
 
+import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * @author Xiaolong Zuo
@@ -63,6 +66,11 @@ public class AbstractNode extends AbstractEntity {
 
     public void setRunningJobCount(Integer runningJobCount) {
         this.runningJobCount = runningJobCount;
+    }
+
+    @Transient
+    public String getDataId() {
+        return StringHelper.getEndPath(path);
     }
 
 }
