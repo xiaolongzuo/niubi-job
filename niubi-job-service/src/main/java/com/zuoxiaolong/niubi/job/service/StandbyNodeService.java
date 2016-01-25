@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.service;
 
 
+import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.persistent.entity.StandbyNode;
 
 import java.util.List;
@@ -28,5 +29,7 @@ import java.util.List;
 public interface StandbyNodeService {
 
     List<StandbyNode> getAllNodes();
+
+    void saveNode(StandbyNodeData standbyNodeData);
 
 }

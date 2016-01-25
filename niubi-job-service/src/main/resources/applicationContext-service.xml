@@ -19,5 +19,9 @@
 
     <bean class="com.zuoxiaolong.niubi.job.service.spring.MasterSlaveJobSummaryListener" init-method="listen"/>
 
+    <bean class="com.zuoxiaolong.niubi.job.service.spring.MasterSlaveNodeListener" init-method="listen"/>
+
+    <bean class="com.zuoxiaolong.niubi.job.service.spring.StandbyNodeListener" init-method="listen"/>
+
 </beans>
 

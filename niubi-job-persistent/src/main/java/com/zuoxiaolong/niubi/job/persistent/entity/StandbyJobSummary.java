@@ -19,7 +19,9 @@ package com.zuoxiaolong.niubi.job.persistent.entity;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
@@ -33,15 +35,4 @@ import javax.persistence.*;
         ,@UniqueConstraint(name = "UNIQUE_STANDBY_JOB_SUMMARY_P", columnNames = {"path"})})
 public class StandbyJobSummary extends AbstractJobSummary {
 
-    private StandbyNode node;
-
-    @ManyToOne(targetEntity = StandbyNode.class)
-    @JoinColumn(name = "node_id")
-    public StandbyNode getNode() {
-        return node;
-    }
-
-    public void setNode(StandbyNode node) {
-        this.node = node;
-    }
 }

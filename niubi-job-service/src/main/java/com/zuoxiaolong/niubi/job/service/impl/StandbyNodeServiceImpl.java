@@ -20,8 +20,10 @@ package com.zuoxiaolong.niubi.job.service.impl;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
+import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.StandbyNode;
 import com.zuoxiaolong.niubi.job.service.StandbyNodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ import java.util.List;
  */
 @Service
 public class StandbyNodeServiceImpl extends AbstractService implements StandbyNodeService {
+
+    @Autowired
+    private BaseDao baseDao;
 
     @Override
     public List<StandbyNode> getAllNodes() {
@@ -53,6 +58,25 @@ public class StandbyNodeServiceImpl extends AbstractService implements StandbyNo
             standbyNodeViewList.add(standbyNodeView);
         }
         return standbyNodeViewList;
+    }
+
+    @Override
+    public void saveNode(StandbyNodeData standbyNodeData) {
+        StandbyNode param = new StandbyNode();
+        param.setPath(standbyNodeData.getPath());
+        StandbyNode standbyNodeInDb = baseDao.getUnique(StandbyNode.class, param);
+        boolean exists = true;
+        if (standbyNodeInDb == null) {
+            standbyNodeInDb = new StandbyNode();
+            standbyNodeInDb.setPath(standbyNodeData.getPath());
+            exists = false;
+        }
+        ReflectHelper.copyFieldValues(standbyNodeData.getData(), standbyNodeInDb);
+        if (exists) {
+            baseDao.update(standbyNodeInDb);
+        } else {
+            baseDao.save(standbyNodeInDb);
+        }
     }
 
 }

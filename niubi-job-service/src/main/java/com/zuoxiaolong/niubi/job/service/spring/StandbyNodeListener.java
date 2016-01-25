@@ -18,11 +18,11 @@ package com.zuoxiaolong.niubi.job.service.spring;
 
 import com.zuoxiaolong.niubi.job.api.MasterSlaveApiFactory;
 import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
+import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.service.MasterSlaveNodeService;
+import com.zuoxiaolong.niubi.job.service.StandbyNodeService;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
@@ -35,10 +35,10 @@ import org.springframework.stereotype.Component;
  * @since 16/1/17 03:55
  */
 @Component
-public class MasterSlaveNodeListener {
+public class StandbyNodeListener {
 
     @Autowired
-    private MasterSlaveNodeService masterSlaveNodeService;
+    private StandbyNodeService standbyNodeService;
 
     @Autowired
     private CuratorFramework client;
@@ -53,10 +53,10 @@ public class MasterSlaveNodeListener {
                 if (!EventHelper.isChildModifyEvent(event)) {
                     return;
                 }
-                MasterSlaveNodeData masterSlaveNodeData = new MasterSlaveNodeData(event.getData());
-                LoggerHelper.info("begin update master-slave node data " + masterSlaveNodeData.getData());
-                masterSlaveNodeService.saveNode(masterSlaveNodeData);
-                LoggerHelper.info("update master-slave node data successfully " + masterSlaveNodeData.getData());
+                StandbyNodeData standbyNodeData = new StandbyNodeData(event.getData());
+                LoggerHelper.info("begin update master-slave node data " + standbyNodeData.getData());
+                standbyNodeService.saveNode(standbyNodeData);
+                LoggerHelper.info("update master-slave node data successfully " + standbyNodeData.getData());
             }
         });
         pathChildrenCache.start(PathChildrenCache.StartMode.POST_INITIALIZED_EVENT);

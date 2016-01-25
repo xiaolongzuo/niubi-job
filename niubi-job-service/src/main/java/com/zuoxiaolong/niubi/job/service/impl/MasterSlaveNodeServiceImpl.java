@@ -20,8 +20,11 @@ package com.zuoxiaolong.niubi.job.service.impl;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ReflectHelper;
+import com.zuoxiaolong.niubi.job.persistent.BaseDao;
+import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveNode;
 import com.zuoxiaolong.niubi.job.service.MasterSlaveNodeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -33,6 +36,9 @@ import java.util.List;
  */
 @Service
 public class MasterSlaveNodeServiceImpl extends AbstractService implements MasterSlaveNodeService {
+
+    @Autowired
+    private BaseDao baseDao;
 
     @Override
     public List<MasterSlaveNode> getAllNodes() {
@@ -57,10 +63,28 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
 
     @Override
     public void saveNode(MasterSlaveNodeData masterSlaveNodeData) {
-        MasterSlaveNode masterNodeView = new MasterSlaveNode();
-        masterNodeView.setPath(masterSlaveNodeData.getPath());
-        if (masterSlaveNodeData.getData() != null) {
-            ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterNodeView);
+        MasterSlaveNode param = new MasterSlaveNode();
+        param.setPath(masterSlaveNodeData.getPath());
+        MasterSlaveNode masterSlaveNodeInDb = baseDao.getUnique(MasterSlaveNode.class, param);
+        boolean exists = true;
+        if (masterSlaveNodeInDb == null) {
+            masterSlaveNodeInDb = new MasterSlaveNode();
+            masterSlaveNodeInDb.setPath(masterSlaveNodeData.getPath());
+            exists = false;
+        }
+        ReflectHelper.copyFieldValues(masterSlaveNodeData.getData(), masterSlaveNodeInDb);
+        List<String> jobPaths = masterSlaveNodeData.getData().getJobPaths();
+        List<MasterSlaveJobSummary> jobSummaries = new ArrayList<>();
+        for (String jobPath : jobPaths) {
+            MasterSlaveJobSummary jobSummaryParam = new MasterSlaveJobSummary();
+            jobSummaryParam.setPath(jobPath);
+            jobSummaries.add(baseDao.getUnique(MasterSlaveJobSummary.class, jobSummaryParam));
+        }
+        masterSlaveNodeInDb.setJobSummaries(jobSummaries);
+        if (exists) {
+            baseDao.update(masterSlaveNodeInDb);
+        } else {
+            baseDao.save(masterSlaveNodeInDb);
         }
     }
 
