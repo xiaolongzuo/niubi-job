@@ -24,6 +24,13 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 public abstract class AssertHelper {
 
+    /**
+     * Assert that the object is not {@code null}
+     *
+     * @param o the object to check
+     * @param message the exception message to use if the assertion fails
+     * @throws IllegalArgumentException if the object is {@code null}
+     */
     public static void notNull(Object o, String message) {
         if (o == null) {
             throw new IllegalArgumentException(message);
