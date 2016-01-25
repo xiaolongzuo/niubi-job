@@ -32,7 +32,6 @@
     <div class="container-fluid">
         <div class="quick-actions_homepage">
             <ul class="quick-actions">
-                <li class="bg_lb span4"> <a href="${pageContext.request.contextPath}/"> <i class="icon-dashboard"></i> Home </a> </li>
                 <li class="bg_lb span4"> <a href="${pageContext.request.contextPath}/masterSlaveJobs"> <i class="icon-dashboard"></i> Job manager </a> </li>
                 <li class="bg_lg span4"> <a href="${pageContext.request.contextPath}/masterSlaveNodes"> <i class="icon-signal"></i> Node manager</a> </li>
                 <li class="bg_ly span4"> <a href="${pageContext.request.contextPath}/masterSlaveJobSummaries"> <i class="icon-inbox"></i> <!-- <span class="label label-success">101</span>--> Job runtime manager </a> </li>

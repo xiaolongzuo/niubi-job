@@ -18,6 +18,7 @@
 package com.zuoxiaolong.niubi.job.console.controller;
 
 import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
@@ -49,6 +50,7 @@ public class ShiroController extends AbstractController {
         } else if (IncorrectCredentialsException.class.getName().equals(exception)) {
             failed("Incorrect password.");
         } else {
+            LoggerHelper.error("unknown error : " + exception);
             failed("Unknown error.");
         }
         return "shiro_login";

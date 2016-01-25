@@ -24,8 +24,9 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="${param.standbyDashboardIndex}"> <a href="${pageContext.request.contextPath}/standbyDashboard/index"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
-        <li class="${param.standbyNodes}"> <a href="${pageContext.request.contextPath}/standbyNodes"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li> <a href="${pageContext.request.contextPath}/dashboard/index"><i class="icon icon-home"></i> <span>Switch Mode</span></a> </li>
+        <li class="${param.standbyDashboardIndex}"> <a href="${pageContext.request.contextPath}/standbyDashboard/index"><i class="icon icon-dashboard"></i> <span>Dashboard</span></a> </li>
+        <li class="${param.standbyNodes}"> <a href="${pageContext.request.contextPath}/standbyNodes"><i class="icon icon-cog"></i> <span>Node manager</span></a> </li>
         <li class="${param.standbyJobSummaries}"> <a href="${pageContext.request.contextPath}/standbyJobSummaries"><i class="icon icon-inbox"></i> <span>Job runtime manager</span></a> </li>
         <li class="${param.standbyJobLogs}"><a href="${pageContext.request.contextPath}/standbyJobLogs"><i class="icon icon-th"></i> <span>Operation log</span></a></li>
         <li class="${param.standbyJobsUpload}"> <a href="${pageContext.request.contextPath}/standbyJobs/upload"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>

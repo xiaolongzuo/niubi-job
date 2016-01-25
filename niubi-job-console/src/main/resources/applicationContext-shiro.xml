@@ -16,17 +16,26 @@
                 /img/** = anon
                 /job/** = anon
                 /js/** = anon
-                /shiro/login = authc
+                /shiro/login = sessionAuth
+                /shiro/logout = logout
                 /** = user
             </value>
         </property>
     </bean>
 
+    <bean id="sessionAuth" class="com.zuoxiaolong.niubi.job.console.shiro.SessionFormAuthenticationFilter"/>
+
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="hibernateRealm" />
     </bean>
 
-    <bean id="hibernateRealm" class="com.zuoxiaolong.niubi.job.persistent.shiro.HibernateRealm"/>
+    <bean id="hibernateRealm" class="com.zuoxiaolong.niubi.job.persistent.shiro.HibernateRealm">
+        <property name="credentialsMatcher">
+            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+                <property name="hashAlgorithmName" value="MD5"/>
+            </bean>
+        </property>
+    </bean>
 
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 

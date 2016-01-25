@@ -24,8 +24,9 @@
 <!--sidebar-menu-->
 <div id="sidebar"><a href="#" class="visible-phone"><i class="icon icon-home"></i> Dashboard</a>
     <ul>
-        <li class="${param.masterSlaveDashboardIndex}"> <a href="${pageContext.request.contextPath}/masterSlaveDashboard/index"><i class="icon icon-home"></i> <span>Dashboard</span></a> </li>
-        <li class="${param.masterSlaveNodes}"> <a href="${pageContext.request.contextPath}/masterSlaveNodes"><i class="icon icon-home"></i> <span>Node manager</span></a> </li>
+        <li> <a href="${pageContext.request.contextPath}/dashboard/index"><i class="icon icon-home"></i> <span>Switch Mode</span></a> </li>
+        <li class="${param.masterSlaveDashboardIndex}"> <a href="${pageContext.request.contextPath}/masterSlaveDashboard/index"><i class="icon icon-dashboard"></i> <span>Dashboard</span></a> </li>
+        <li class="${param.masterSlaveNodes}"> <a href="${pageContext.request.contextPath}/masterSlaveNodes"><i class="icon icon-cog"></i> <span>Node manager</span></a> </li>
         <li class="${param.masterSlaveJobSummaries}"> <a href="${pageContext.request.contextPath}/masterSlaveJobSummaries"><i class="icon icon-inbox"></i> <span>Job runtime manager</span></a> </li>
         <li class="${param.masterSlaveJobLogs}"><a href="${pageContext.request.contextPath}/masterSlaveJobLogs"><i class="icon icon-th"></i> <span>Operation log</span></a></li>
         <li class="${param.masterSlaveJobsUpload}"> <a href="${pageContext.request.contextPath}/masterSlaveJobs/upload"><i class="icon icon-inbox"></i> <span>Upload jar</span></a> </li>

@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import lombok.Setter;
 import org.apache.shiro.authc.SaltedAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.crypto.hash.Sha512Hash;
+import org.apache.shiro.crypto.hash.Hash;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
@@ -104,7 +104,7 @@ public class User extends AbstractEntity implements SaltedAuthenticationInfo, Au
     @Transient
     @Override
     public ByteSource getCredentialsSalt() {
-        return new Sha512Hash(password, passwordSalt);
+        return Hash.Util.bytes(passwordSalt);
     }
 
     @Transient
