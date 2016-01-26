@@ -39,10 +39,9 @@
                         <thead>
                         <tr>
                             <th>State</th>
-                            <th>Method</th>
+                            <th>Job id</th>
                             <th>Mode</th>
                             <th>Cron</th>
-                            <th>Jar file name</th>
                             <th>Modify time</th>
                             <th>Operation</th>
                         </tr>
@@ -51,17 +50,20 @@
                         <c:forEach items="${jobSummaries}" var="jobSummary">
                             <tr class="gradeA">
                                 <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.state}</span></td>
-                                <c:if test="${jobSummary.state != 'Executing'}">
-                                    <td><a href="${pageContext.request.contextPath}/masterSlaveJobSummaries/${jobSummary.id}">${jobSummary.groupName}.${jobSummary.jobName}</a></td>
-                                </c:if>
-                                <c:if test="${jobSummary.state == 'Executing'}">
-                                    <td>${jobSummary.groupName}.${jobSummary.jobName}</td>
-                                </c:if>
+                                <td>
+                                    <a data-content="${jobSummary.jarFileName}" data-placement="right" data-toggle="popover" class="btn btn-mini btn-info popoverElement" href="#" data-original-title="Current jar file name">
+                                        ${jobSummary.groupName}.${jobSummary.jobName}
+                                    </a>
+                                </td>
                                 <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.mode}</span></td>
                                 <td>${jobSummary.cron}</td>
-                                <td>${jobSummary.jarFileName}</td>
                                 <td>${jobSummary.modifyDateString}</td>
-                                <td><a href="${pageContext.request.contextPath}/masterSlaveJobSummaries/${jobSummary.id}/synchronize" class="btn btn-primary btn-mini">Synchronize</a></td>
+                                <td>
+                                    <c:if test="${jobSummary.state != 'Executing'}">
+                                        <a href="${pageContext.request.contextPath}/masterSlaveJobSummaries/${jobSummary.id}" class="btn btn-danger btn-mini">Schedule</a>
+                                    </c:if>
+                                    <a href="${pageContext.request.contextPath}/masterSlaveJobSummaries/${jobSummary.id}/synchronize" class="btn btn-inverse btn-mini">Synchronize</a>
+                                </td>
                             </tr>
                         </c:forEach>
                         </tbody>

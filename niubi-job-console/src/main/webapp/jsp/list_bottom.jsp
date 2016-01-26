@@ -27,3 +27,4 @@
 <script src="${pageContext.request.contextPath}/js/jquery.dataTables.min.js"></script>
 <script src="${pageContext.request.contextPath}/js/matrix.js"></script>
 <script src="${pageContext.request.contextPath}/js/matrix.tables.js"></script>
+<script src="${pageContext.request.contextPath}/js/matrix.popover.js"></script>

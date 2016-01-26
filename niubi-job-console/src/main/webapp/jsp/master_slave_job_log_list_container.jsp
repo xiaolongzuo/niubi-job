@@ -38,37 +38,27 @@
                         <thead>
                         <tr>
                             <th>Result</th>
-                            <th>Job id</th>
                             <th>Operation</th>
+                            <th>Job id</th>
                             <th>Cron</th>
                             <th>Create time</th>
                             <th>Response time</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${jobLogs}" var="jobLog" varStatus="status">
+                        <c:forEach items="${jobLogs}" var="jobLog">
                             <tr class="gradeA">
                                 <td><span class="label ${jobLog.operationResultLabelClass}">${jobLog.operationResult}</span></td>
-                                <td>${jobLog.groupName}.${jobLog.jobName}</td>
                                 <td><span class="label ${jobLog.operationLabelClass}">${jobLog.operation}</span></td>
+                                <td>
+                                    <a data-content="${jobLog.errorMessage}" data-placement="right" data-toggle="popover" class="btn btn-mini btn-info popoverElement" href="#" data-original-title="Error message">
+                                            ${jobLog.groupName}.${jobLog.jobName}
+                                    </a>
+                                </td>
                                 <td>${jobLog.cron}</td>
                                 <td>${jobLog.createDateString}</td>
                                 <td>${jobLog.modifyDateString}</td>
-                                <!-- <a href="#detailModal${status.index}" data-toggle="modal" class="btn btn-warning">Alert</a> -->
                             </tr>
-                            <div id="detailModal${status.index}" class="modal hide">
-                                <div class="modal-header">
-                                    <button data-dismiss="modal" class="close" type="button">×</button>
-                                    <h3>Log detail</h3>
-                                </div>
-                                <div class="modal-body">
-                                    <p>${jobLog.errorMessage}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
-                                    <a data-dismiss="modal" class="btn" href="#">Cancel</a>
-                                </div>
-                            </div>
                         </c:forEach>
                         </tbody>
                     </table>
