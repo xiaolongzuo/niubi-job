@@ -38,7 +38,7 @@ public abstract class PathHelper {
 
     public static String getEndPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");
-        return path.indexOf("/") > 0 ? path.substring(path.lastIndexOf("/") + 1) : path;
+        return path.indexOf("/") >= 0 ? path.substring(path.lastIndexOf("/") + 1) : path;
     }
 
 }
