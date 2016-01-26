@@ -24,6 +24,7 @@ import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.ExceptionHelper;
 import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
@@ -332,7 +333,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
         } catch (Throwable e) {
             LoggerHelper.error("handle operation failed. " + data, e);
-            data.operateFailed(e.getClass().getName() + ":" + e.getMessage());
+            data.operateFailed(ExceptionHelper.getStackTrace(e));
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }

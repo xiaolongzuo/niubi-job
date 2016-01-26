@@ -16,6 +16,8 @@ package com.zuoxiaolong.niubi.job.core.helper;
  * limitations under the License.
  */
 
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -24,10 +26,13 @@ public abstract class ExceptionHelper {
 
     private static final int MAX_STACK_TRACE_DEEP = 20;
 
-    public static String getStackTrace() {
+    public static String getStackTrace(Throwable throwable) {
+        AssertHelper.notNull(throwable, "throwable can't be null.");
+        while (throwable instanceof NiubiException) {
+            throwable = throwable.getCause();
+        }
         StringBuffer stringBuffer = new StringBuffer();
         try {
-            Throwable throwable = new Throwable();
             StackTraceElement[] stackElements = throwable.getStackTrace();
             if (stackElements != null) {
                 for (int i = 0; i < stackElements.length && i < MAX_STACK_TRACE_DEEP; i++) {
@@ -45,6 +50,10 @@ public abstract class ExceptionHelper {
             //ignored
         }
         return stringBuffer.toString();
+    }
+
+    public static String getStackTrace() {
+        return getStackTrace(new Throwable());
     }
 
 }

@@ -128,7 +128,7 @@ public class AbstractJobLog extends AbstractEntity {
         return operationResult;
     }
 
-    @Column(length = 1000)
+    @Column(length = 5000)
     public String getErrorMessage() {
         return errorMessage;
     }
