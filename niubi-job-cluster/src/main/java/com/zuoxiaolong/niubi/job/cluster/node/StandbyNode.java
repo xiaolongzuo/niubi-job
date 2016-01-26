@@ -223,7 +223,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
             standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
         } catch (Throwable e) {
             LoggerHelper.error("handle operation failed. " + data, e);
-            data.operateFailed(ExceptionHelper.getStackTrace(e));
+            data.operateFailed(ExceptionHelper.getStackTrace(e, true));
             standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }

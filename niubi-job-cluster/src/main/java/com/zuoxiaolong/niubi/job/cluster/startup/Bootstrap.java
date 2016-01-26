@@ -81,7 +81,7 @@ public class Bootstrap {
         socket.close();
     }
 
-    private static void await() throws IOException {
+    public static void await() throws IOException {
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(getShutdownPort(), 1, InetAddress.getByName("localhost"));

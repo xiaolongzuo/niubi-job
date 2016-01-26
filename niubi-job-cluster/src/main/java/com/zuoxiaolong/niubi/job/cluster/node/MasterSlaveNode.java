@@ -333,7 +333,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
         } catch (Throwable e) {
             LoggerHelper.error("handle operation failed. " + data, e);
-            data.operateFailed(ExceptionHelper.getStackTrace(e));
+            data.operateFailed(ExceptionHelper.getStackTrace(e, true));
             masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
         }
     }

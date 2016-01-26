@@ -63,19 +63,19 @@
                                 <td>${jobLog.modifyDateString}</td>
                             </tr>
                             <c:if test="${jobLog.operationResult == 'Failed'}">
-                            <div id="detailModal${status.index}" class="modal hide">
-                                <div class="modal-header">
-                                    <button data-dismiss="modal" class="close" type="button">x</button>
-                                    <h3>Error message</h3>
+                                <div id="detailModal${status.index}" class="modal hide" style="width: 800px">
+                                    <div class="modal-header">
+                                        <button data-dismiss="modal" class="close" type="button">x</button>
+                                        <h3>Error message</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        ${jobLog.errorMessage}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
+                                        <a data-dismiss="modal" class="btn" href="#">Cancel</a>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <p>${jobLog.errorMessage}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
-                                    <a data-dismiss="modal" class="btn" href="#">Cancel</a>
-                                </div>
-                            </div>
                             </c:if>
                         </c:forEach>
                         </tbody>

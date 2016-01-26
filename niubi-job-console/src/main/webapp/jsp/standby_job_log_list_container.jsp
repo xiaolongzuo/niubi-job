@@ -63,13 +63,13 @@
                                 <td>${jobLog.modifyDateString}</td>
                             </tr>
                             <c:if test="${jobLog.operationResult == 'Failed'}">
-                                <div id="detailModal${status.index}" class="modal hide">
+                                <div id="detailModal${status.index}" class="modal hide" style="width: 800px">
                                     <div class="modal-header">
                                         <button data-dismiss="modal" class="close" type="button">x</button>
                                         <h3>Error message</h3>
                                     </div>
                                     <div class="modal-body">
-                                        <p>${jobLog.errorMessage}</p>
+                                        ${jobLog.errorMessage}
                                     </div>
                                     <div class="modal-footer">
                                         <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
