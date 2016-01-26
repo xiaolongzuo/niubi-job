@@ -6,6 +6,7 @@ target/
 .idea/
 conf/
 bin/
+logs/
 
 # Package Files #
 *.jar
