@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.core.helper;
 
 /**
  * @author Xiaolong Zuo
- * @since 9/29/2015 16:00
+ * @since 0.9.3
  */
 public abstract class ExceptionHelper {
 

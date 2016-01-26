@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * log util class.
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:54
+ * @since 0.9.3
  */
 public abstract class LoggerHelper {
 

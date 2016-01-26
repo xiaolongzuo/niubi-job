@@ -22,7 +22,7 @@ import java.net.URL;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 18:49
+ * @since 0.9.3
  */
 public abstract class HttpHelper {
 

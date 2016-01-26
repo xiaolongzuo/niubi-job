@@ -23,7 +23,7 @@ import java.util.Date;
  * Date util.
  *
  * @author Xiaolong Zuo
- * @since 16/1/16 17:40
+ * @since 0.9.3
  */
 public abstract class DateHelper {
 

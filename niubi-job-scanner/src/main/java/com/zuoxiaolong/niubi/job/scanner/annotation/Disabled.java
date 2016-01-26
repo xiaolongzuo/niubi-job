@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * disable the job.
  *
  * @author Xiaolong Zuo
- * @since 16/1/10 06:46
+ * @since 0.9.3
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

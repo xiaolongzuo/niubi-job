@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 02:18
+ * @since 0.9.3
  */
 public class ClassHelperTest {
 

@@ -52,7 +52,7 @@ import java.util.stream.Collectors;
  * master-slave mode.
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 14:43
+ * @since 0.9.3
  */
 public class MasterSlaveNode extends AbstractRemoteJobNode {
 

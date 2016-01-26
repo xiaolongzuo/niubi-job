@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:23
+ * @since 0.9.3
  */
 @Controller
 @RequestMapping("/masterSlaveJobLogs")

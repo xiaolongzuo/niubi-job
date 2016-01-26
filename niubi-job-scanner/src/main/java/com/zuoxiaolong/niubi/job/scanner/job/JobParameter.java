@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 16:58
+ * @since 0.9.3
  */
 public class JobParameter extends HashMap<String, Object> {
 

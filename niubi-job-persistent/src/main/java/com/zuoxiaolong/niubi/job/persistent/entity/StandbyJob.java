@@ -25,7 +25,7 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 23:30
+ * @since 0.9.3
  */
 @Entity
 @DynamicInsert

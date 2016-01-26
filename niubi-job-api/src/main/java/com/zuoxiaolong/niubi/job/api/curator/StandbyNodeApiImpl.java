@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author Xiaolong Zuo
- * @since 0.9.2
+ * @since 0.9.3
  */
 public class StandbyNodeApiImpl extends AbstractCurdApiImpl implements StandbyNodeApi {
 

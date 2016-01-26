@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 17:38
+ * @since 0.9.3
  */
 public interface JobDescriptor {
 

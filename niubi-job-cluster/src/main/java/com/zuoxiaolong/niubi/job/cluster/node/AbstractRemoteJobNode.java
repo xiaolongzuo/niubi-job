@@ -35,7 +35,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 01:19
+ * @since 0.9.3
  */
 public abstract class AbstractRemoteJobNode extends AbstractNode implements RemoteJobNode {
 

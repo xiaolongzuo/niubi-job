@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 15:08
+ * @since 0.9.3
  */
 public class DefaultHandlerExceptionResolver implements HandlerExceptionResolver {
 

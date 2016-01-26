@@ -29,7 +29,7 @@ import java.util.jar.JarFile;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 18:47
+ * @since 0.9.3
  */
 public class LocalAndRemoteJobScanner extends AbstractJobScanner {
 

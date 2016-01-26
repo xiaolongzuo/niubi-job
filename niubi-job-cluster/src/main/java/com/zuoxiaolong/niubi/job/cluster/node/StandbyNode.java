@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * standby mode.
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 14:43
+ * @since 0.9.3
  */
 public class StandbyNode extends AbstractRemoteJobNode {
 

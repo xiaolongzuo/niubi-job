@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 04:47
+ * @since 0.9.3
  */
 @Component
 public class HibernateNamingStrategy extends PhysicalNamingStrategyStandardImpl {

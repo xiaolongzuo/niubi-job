@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 00:31
+ * @since 0.9.3
  */
 public interface JobScanner {
 

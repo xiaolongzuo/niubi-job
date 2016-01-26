@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/18 00:28
+ * @since 0.9.3
  */
 public class JobScannerFactory {
 

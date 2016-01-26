@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 /**
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 01:10
+ * @since 0.9.3
  */
 public class JobDescriptorFactory {
 

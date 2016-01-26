@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * annotation that indicates method is a job.
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 00:28
+ * @since 0.9.3
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

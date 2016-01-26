@@ -20,7 +20,7 @@ package com.zuoxiaolong.niubi.job.core.exception;
  * Represent a unknown generic type exception
  *
  * @author Xiaolong Zuo
- * @since 16/1/13 23:27
+ * @since 0.9.3
  */
 public class UnknownGenericTypeException extends RuntimeException {
 

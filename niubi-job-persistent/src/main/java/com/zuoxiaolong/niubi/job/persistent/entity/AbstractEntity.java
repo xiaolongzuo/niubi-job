@@ -25,7 +25,7 @@ import java.util.Date;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 04:47
+ * @since 0.9.3
  */
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {

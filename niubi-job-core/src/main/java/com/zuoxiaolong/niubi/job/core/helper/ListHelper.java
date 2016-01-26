@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/11/2016 14:31
+ * @since 0.9.3
  */
 public abstract class ListHelper {
 

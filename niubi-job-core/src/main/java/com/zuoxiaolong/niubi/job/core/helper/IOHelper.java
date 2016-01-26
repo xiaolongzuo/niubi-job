@@ -24,7 +24,7 @@ import java.net.HttpURLConnection;
 
 /**
  * @author Xiaolong Zuo
- * @since 10/26/2015 19:20
+ * @since 0.9.3
  */
 public abstract class IOHelper {
 

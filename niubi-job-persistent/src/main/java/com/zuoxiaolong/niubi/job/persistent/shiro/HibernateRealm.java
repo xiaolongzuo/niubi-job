@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/23 20:21
+ * @since 0.9.3
  */
 public class HibernateRealm extends AuthorizingRealm {
 

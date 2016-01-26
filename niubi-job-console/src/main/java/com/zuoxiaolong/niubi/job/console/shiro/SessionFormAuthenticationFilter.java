@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 01:47
+ * @since 0.9.3
  */
 public class SessionFormAuthenticationFilter extends FormAuthenticationFilter {
 

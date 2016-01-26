@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/12/2016 12:19
+ * @since 0.9.3
  */
 public abstract class StringHelper {
 

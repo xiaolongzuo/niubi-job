@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 02:24
+ * @since 0.9.3
  */
 public class DateHelperTest {
 

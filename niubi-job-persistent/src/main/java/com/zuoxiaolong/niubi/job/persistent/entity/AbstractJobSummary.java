@@ -22,7 +22,7 @@ import javax.persistence.Transient;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/19 01:28
+ * @since 0.9.3
  */
 @MappedSuperclass
 public class AbstractJobSummary extends AbstractEntity {

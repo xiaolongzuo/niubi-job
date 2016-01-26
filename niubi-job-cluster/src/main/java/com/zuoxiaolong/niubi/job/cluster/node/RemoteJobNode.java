@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 23:45
+ * @since 0.9.3
  */
 public interface RemoteJobNode extends Node {
 

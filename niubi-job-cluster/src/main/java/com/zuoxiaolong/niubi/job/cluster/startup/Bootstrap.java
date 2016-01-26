@@ -39,7 +39,7 @@ import java.util.Properties;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/20 23:24
+ * @since 0.9.3
  */
 public class Bootstrap {
 

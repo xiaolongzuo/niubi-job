@@ -20,7 +20,7 @@ package com.zuoxiaolong.niubi.job.core.exception;
  * Represent a framework exception
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 01:21
+ * @since 0.9.3
  */
 public class NiubiException extends RuntimeException {
 

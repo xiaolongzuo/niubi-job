@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.scanner.annotation;
 /**
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 04:24
+ * @since 0.9.3
  */
 public enum MisfirePolicy {
 

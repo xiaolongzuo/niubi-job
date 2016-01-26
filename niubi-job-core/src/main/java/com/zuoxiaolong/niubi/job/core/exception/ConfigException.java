@@ -20,7 +20,7 @@ package com.zuoxiaolong.niubi.job.core.exception;
  * Represent a config exception
  *
  * @author Xiaolong Zuo
- * @since 1/11/2016 20:07
+ * @since 0.9.3
  */
 public class ConfigException extends RuntimeException {
 

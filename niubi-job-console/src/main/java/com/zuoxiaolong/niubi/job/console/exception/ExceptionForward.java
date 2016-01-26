@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 15:05
+ * @since 0.9.3
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

@@ -22,7 +22,7 @@ import java.lang.reflect.Type;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/11 01:25
+ * @since 0.9.3
  */
 public abstract class JsonHelper {
 

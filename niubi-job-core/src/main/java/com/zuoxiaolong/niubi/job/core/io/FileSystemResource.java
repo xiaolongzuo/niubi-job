@@ -24,7 +24,7 @@ import java.io.InputStream;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/14 22:44
+ * @since 0.9.3
  */
 public class FileSystemResource implements Resource {
 
