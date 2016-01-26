@@ -35,7 +35,7 @@
                         <h5>Edit Job : [${jobSummary.groupName}.${jobSummary.jobName}-->(${jobSummary.state})]</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="${pageContext.request.contextPath}/standbyJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form id="job_summary_update" action="${pageContext.request.contextPath}/standbyJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <input name="groupName" type="hidden" value="${jobSummary.groupName}" />
                             <input name="jobName" type="hidden" value="${jobSummary.jobName}" />
                             <input name="originalJarFileName" type="hidden" value="${jobSummary.originalJarFileName}" />

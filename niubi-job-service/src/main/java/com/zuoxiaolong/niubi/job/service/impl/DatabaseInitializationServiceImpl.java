@@ -20,9 +20,8 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
 import com.zuoxiaolong.niubi.job.persistent.entity.Role;
 import com.zuoxiaolong.niubi.job.persistent.entity.User;
+import com.zuoxiaolong.niubi.job.persistent.shiro.HashHelper;
 import com.zuoxiaolong.niubi.job.service.DatabaseInitializationService;
-import org.apache.shiro.crypto.hash.Hash;
-import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +41,6 @@ public class DatabaseInitializationServiceImpl implements DatabaseInitialization
     public void initialize() {
         String adminUsername = "admin";
         String adminPassword = "123456";
-        String hashAlgorithm = "MD5";
 
         User param = new User();
         param.setUsername(adminUsername);
@@ -54,8 +52,7 @@ public class DatabaseInitializationServiceImpl implements DatabaseInitialization
         LoggerHelper.info("begin init database.");
         admin = new User();
         admin.setUsername(adminUsername);
-        Hash hash = new SimpleHash(hashAlgorithm, adminPassword, adminUsername);
-        admin.setPassword(hash.toHex());
+        admin.setPassword(HashHelper.getHashedPassword(adminPassword, adminUsername));
         admin.setPasswordSalt(adminUsername);
 
         Role role = new Role();

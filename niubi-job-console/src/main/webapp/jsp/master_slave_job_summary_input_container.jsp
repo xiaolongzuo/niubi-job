@@ -29,20 +29,20 @@
         <hr>
         <div class="row-fluid">
             ${message}
-            <div class="span9">
+            <div class="span12">
                 <div class="widget-box">
                     <div class="widget-title"><span class="icon"> <i class="icon-align-justify"></i> </span>
                         <h5>Edit Job : [${jobSummary.groupName}.${jobSummary.jobName}-->(${jobSummary.state})]</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="${pageContext.request.contextPath}/masterSlaveJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form id="job_summary_update" name="job_summary_update" action="${pageContext.request.contextPath}/masterSlaveJobSummaries/update" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <input name="groupName" type="hidden" value="${jobSummary.groupName}" />
                             <input name="jobName" type="hidden" value="${jobSummary.jobName}" />
                             <input name="originalJarFileName" type="hidden" value="${jobSummary.originalJarFileName}" />
                             <div class="control-group">
                                 <label class="control-label">Cron :</label>
                                 <div class="controls">
-                                    <input name="cron" type="text" class="span6" value="${jobSummary.cron}"/>
+                                    <input id="cron" name="cron" type="text" class="span6" value="${jobSummary.cron}"/>
                                 </div>
                             </div>
                             <div class="control-group">

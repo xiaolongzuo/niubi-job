@@ -28,6 +28,7 @@
 <script src="${pageContext.request.contextPath}/js/masked.js"></script>
 <script src="${pageContext.request.contextPath}/js/jquery.uniform.js"></script>
 <script src="${pageContext.request.contextPath}/js/select2.min.js"></script>
+<script src="${pageContext.request.contextPath}/js/jquery.validate.js"></script>
 <script src="${pageContext.request.contextPath}/js/matrix.js"></script>
 <script src="${pageContext.request.contextPath}/js/matrix.form_common.js"></script>
 <script src="${pageContext.request.contextPath}/js/wysihtml5-0.3.0.js"></script>
@@ -35,4 +36,23 @@
 <script src="${pageContext.request.contextPath}/js/bootstrap-wysihtml5.js"></script>
 <script>
     $('.textarea_editor').wysihtml5();
+    $(document).ready(function(){
+        $('#job_summary_update').validate({
+            rules:{
+                cron:{
+                    required: true,
+                    minlength:11
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            }
+        });
+    });
 </script>

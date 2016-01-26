@@ -19,9 +19,11 @@ package com.zuoxiaolong.niubi.job.console.controller;
 
 import com.zuoxiaolong.niubi.job.console.exception.ExceptionForward;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
+import com.zuoxiaolong.niubi.job.service.UserService;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,9 +38,24 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/shiro")
 public class ShiroController extends AbstractController {
 
+    @Autowired
+    private UserService userService;
+
     @RequestMapping(value = "/login")
     public String login() {
         return "shiro_login";
+    }
+
+    @RequestMapping(value = "/password")
+    public String password() {
+        return "shiro_password";
+    }
+
+    @RequestMapping(value = "/password", method = RequestMethod.POST)
+    public String changePassword(String password) {
+        String username = getUsernameAndCheck();
+        userService.updatePassword(username, password);
+        return success("/dashboard/index");
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)

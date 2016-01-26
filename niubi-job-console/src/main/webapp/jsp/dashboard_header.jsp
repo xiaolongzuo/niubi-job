@@ -35,9 +35,9 @@
                 <!--
                 <li><a href="#"><i class="icon-user"></i> My Profile</a></li>
                 <li class="divider"></li>
-                <li><a href="#"><i class="icon-check"></i> My Tasks</a></li>
-                <li class="divider"></li>
                 -->
+                <li><a href="${pageContext.request.contextPath}/shiro/password"><i class="icon-check"></i> Change password</a></li>
+                <li class="divider"></li>
                 <li><a href="${pageContext.request.contextPath}/shiro/logout"><i class="icon-key"></i> Logout</a></li>
             </ul>
         </li>
