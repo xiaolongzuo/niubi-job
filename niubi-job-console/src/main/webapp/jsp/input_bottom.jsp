@@ -37,11 +37,53 @@
 <script>
     $('.textarea_editor').wysihtml5();
     $(document).ready(function(){
+        $("#password_validate").validate({
+            rules:{
+                password:{
+                    required: true,
+                    minlength:6,
+                    maxlength:20
+                },
+                repeatPassword:{
+                    required:true,
+                    minlength:6,
+                    maxlength:20,
+                    equalTo:"#password"
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            }
+        });
+
         $('#job_summary_update').validate({
             rules:{
                 cron:{
                     required: true,
                     minlength:11
+                }
+            },
+            errorClass: "help-inline",
+            errorElement: "span",
+            highlight:function(element, errorClass, validClass) {
+                $(element).parents('.control-group').addClass('error');
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).parents('.control-group').removeClass('error');
+                $(element).parents('.control-group').addClass('success');
+            }
+        });
+
+        $('#jar_upload').validate({
+            rules:{
+                packagesToScan:{
+                    required: true
                 }
             },
             errorClass: "help-inline",

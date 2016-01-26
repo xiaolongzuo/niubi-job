@@ -23,7 +23,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <jsp:include page="validate_head.jsp"/>
+    <jsp:include page="input_head.jsp"/>
 </head>
 <body>
 <jsp:include page="dashboard_header.jsp"/>
@@ -31,6 +31,6 @@
 <jsp:include page="dashboard_sidebar.jsp"/>
 <jsp:include page="shiro_password_container.jsp"/>
 <jsp:include page="dashboard_footer.jsp"/>
-<jsp:include page="validate_bottom.jsp"/>
+<jsp:include page="input_bottom.jsp"/>
 </body>
 </html>

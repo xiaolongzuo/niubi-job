@@ -27,13 +27,13 @@
         <hr>
         <div class="row-fluid">
             ${message}
-            <div class="span6">
+            <div class="span12">
                 <div class="widget-box">
                     <div class="widget-title"><span class="icon"> <i class="icon-align-justify"></i> </span>
                         <h5>Upload jar</h5>
                     </div>
                     <div class="widget-content nopadding">
-                        <form action="${pageContext.request.contextPath}/masterSlaveJobs/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
+                        <form id="jar_upload" action="${pageContext.request.contextPath}/masterSlaveJobs/upload" method="POST" class="form-horizontal" enctype="multipart/form-data">
                             <div class="control-group">
                                 <label class="control-label">File upload input</label>
                                 <div class="controls">
@@ -43,7 +43,7 @@
                             <div class="control-group">
                                 <label class="control-label">Packages to scan :</label>
                                 <div class="controls">
-                                    <input name="packagesToScan" type="text" class="span11" placeholder="This is important!" />
+                                    <input name="packagesToScan" type="text" class="span6" placeholder="This is important!" />
                                 </div>
                             </div>
                             <div class="form-actions">
