@@ -105,9 +105,9 @@ public class Bootstrap {
     }
 
     static {
-        rootDir = System.getProperty("user.dir").replace("\\", "/");
+        rootDir = System.getProperty("user.dir").replace("\\", "/")  + "/target";
         //for test env
-        File binDir = new File(rootDir + "/niubi-job-cluster/target/bin");
+        File binDir = new File(rootDir + "/bin");
         if (!binDir.exists()) {
             //for production env
             rootDir = rootDir.substring(0, rootDir.lastIndexOf("/"));
@@ -136,7 +136,7 @@ public class Bootstrap {
     private static void initApplicationClassLoader() {
         File libFile = new File(libDir);
         if (!libFile.exists()) {
-            throw new NiubiException(new IllegalArgumentException("can't find lib path."));
+            throw new NiubiException(new IllegalArgumentException("can't find lib path. [" + libDir + "]"));
         }
         List<String> filePathList = new ArrayList<>();
 

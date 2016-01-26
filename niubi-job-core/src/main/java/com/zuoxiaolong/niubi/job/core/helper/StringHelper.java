@@ -105,7 +105,7 @@ public abstract class StringHelper {
     }
 
     public static String[] split(String s) {
-        if (s == null || s.trim().length() == 0) {
+        if (isEmpty(s)) {
             return new String[0];
         }
         return s.split(",|;|:");
