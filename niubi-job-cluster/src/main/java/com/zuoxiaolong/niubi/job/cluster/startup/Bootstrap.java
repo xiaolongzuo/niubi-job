@@ -105,12 +105,13 @@ public class Bootstrap {
     }
 
     static {
-        rootDir = System.getProperty("user.dir").replace("\\", "/")  + "/target";
+        String userDir = System.getProperty("user.dir").replace("\\", "/");
         //for test env
+        rootDir = userDir + "/target";
         File binDir = new File(rootDir + "/bin");
         if (!binDir.exists()) {
             //for production env
-            rootDir = rootDir.substring(0, rootDir.lastIndexOf("/"));
+            rootDir = userDir.substring(0, userDir.lastIndexOf("/"));
             binDir = new File(rootDir + "/bin");
             if (!binDir.exists()) {
                 throw new NiubiException(new IllegalArgumentException("can't find bin path."));
