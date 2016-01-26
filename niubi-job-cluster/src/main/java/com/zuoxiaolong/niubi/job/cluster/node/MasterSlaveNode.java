@@ -40,6 +40,7 @@ import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -115,7 +116,19 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         if (!nodePath.equals(masterSlaveNodeData.getPath())) {
             return;
         }
-        List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+        List<MasterSlaveJobData> masterSlaveJobDataList = new ArrayList<>();
+        try {
+            masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+        } catch (Throwable e) {
+            if (e instanceof NiubiException) {
+                e = e.getCause();
+            }
+            if (e instanceof KeeperException.NoNodeException) {
+                LoggerHelper.info("job path not found. skip init jobs.");
+            } else {
+                LoggerHelper.warn("get jobs failed. ", e);
+            }
+        }
         for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
             MasterSlaveJobData.Data data = masterSlaveJobData.getData();
             data.init();

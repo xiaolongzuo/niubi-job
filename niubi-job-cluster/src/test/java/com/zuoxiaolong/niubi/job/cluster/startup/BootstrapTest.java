@@ -17,6 +17,7 @@
 
 package com.zuoxiaolong.niubi.job.cluster.startup;
 
+import org.apache.curator.test.TestingServer;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,16 @@ public class BootstrapTest {
 
     @Test
     public void start() throws Exception {
+        TestingServer testingServer1 = new TestingServer(2181);
+        TestingServer testingServer2 = new TestingServer(3181);
+        TestingServer testingServer3 = new TestingServer(4181);
+        testingServer1.start();
+        testingServer2.start();
+        testingServer3.start();
+
         Bootstrap.start();
+        Thread.sleep(2000);
+        Bootstrap.stop();
     }
 
 }
