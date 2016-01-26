@@ -28,7 +28,7 @@ import java.util.Properties;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 23:42
+ * @since 0.9.3
  */
 public abstract class AbstractNode implements Node {
 

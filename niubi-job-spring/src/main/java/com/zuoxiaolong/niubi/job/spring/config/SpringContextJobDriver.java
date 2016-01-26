@@ -24,7 +24,7 @@ import org.springframework.context.ApplicationContextAware;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 15:58
+ * @since 0.9.3
  */
 public class SpringContextJobDriver implements ApplicationContextAware {
 

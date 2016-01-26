@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.service.view;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/19 01:31
+ * @since 0.9.3
  */
 public class AbstractNodeView {
 

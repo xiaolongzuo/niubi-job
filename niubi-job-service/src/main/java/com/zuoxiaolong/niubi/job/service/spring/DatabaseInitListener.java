@@ -24,7 +24,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 00:27
+ * @since 0.9.3
  */
 @Component
 public class DatabaseInitListener {

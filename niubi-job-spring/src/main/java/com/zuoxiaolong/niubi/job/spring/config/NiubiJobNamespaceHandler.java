@@ -20,7 +20,7 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 15:52
+ * @since 0.9.3
  */
 public class NiubiJobNamespaceHandler extends NamespaceHandlerSupport {
 

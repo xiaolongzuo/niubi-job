@@ -29,7 +29,7 @@ import org.quartz.JobExecutionException;
 /**
  *
  * @author Xiaolong Zuo
- * @since 16/1/9 01:58
+ * @since 0.9.3
  */
 public class StubJob implements Job {
 

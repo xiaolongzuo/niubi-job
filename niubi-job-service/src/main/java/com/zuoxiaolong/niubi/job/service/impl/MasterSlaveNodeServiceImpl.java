@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:04
+ * @since 0.9.3
  */
 @Service
 public class MasterSlaveNodeServiceImpl extends AbstractService implements MasterSlaveNodeService {

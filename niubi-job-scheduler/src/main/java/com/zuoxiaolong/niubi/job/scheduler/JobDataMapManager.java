@@ -25,7 +25,7 @@ import org.quartz.SchedulerException;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 23:51
+ * @since 0.9.3
  */
 public abstract class JobDataMapManager {
 

@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/10 01:09
+ * @since 0.9.3
  */
 public class DefaultSchedulerManager implements SchedulerManager {
 

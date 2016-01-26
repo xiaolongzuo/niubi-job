@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 16:04
+ * @since 0.9.3
  */
 public class JobDrivenBeanDefinitionParser implements BeanDefinitionParser {
 

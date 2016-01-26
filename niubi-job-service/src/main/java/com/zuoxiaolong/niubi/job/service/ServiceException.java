@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.service;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 00:05
+ * @since 0.9.3
  */
 public class ServiceException extends RuntimeException {
 

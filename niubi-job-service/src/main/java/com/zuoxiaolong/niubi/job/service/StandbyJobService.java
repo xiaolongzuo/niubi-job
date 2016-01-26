@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 14:44
+ * @since 0.9.3
  */
 public interface StandbyJobService {
 

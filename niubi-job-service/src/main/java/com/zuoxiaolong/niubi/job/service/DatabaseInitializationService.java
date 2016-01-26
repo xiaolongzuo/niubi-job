@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.service;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 00:40
+ * @since 0.9.3
  */
 public interface DatabaseInitializationService {
 

@@ -24,7 +24,7 @@ import org.quartz.TriggerKey;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/16 01:30
+ * @since 0.9.3
  */
 public interface SchedulerJobDescriptor extends JobDescriptor {
 

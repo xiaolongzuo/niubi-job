@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.bean;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:45
+ * @since 0.9.3
  */
 public interface JobBeanFactory {
 

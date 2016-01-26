@@ -21,7 +21,7 @@ import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 01:17
+ * @since 0.9.3
  */
 public class SimpleLocalJobNode extends AbstractLocalJobNode {
 

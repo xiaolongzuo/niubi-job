@@ -26,7 +26,7 @@ import org.springframework.context.ApplicationContext;
  * For local spring application.
  *
  * @author Xiaolong Zuo
- * @since 16/1/16 17:01
+ * @since 0.9.3
  */
 public class SimpleSpringLocalJobNode extends AbstractLocalJobNode {
 

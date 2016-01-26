@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 15:41
+ * @since 0.9.3
  */
 public class DefaultJobBeanFactory implements JobBeanFactory {
 

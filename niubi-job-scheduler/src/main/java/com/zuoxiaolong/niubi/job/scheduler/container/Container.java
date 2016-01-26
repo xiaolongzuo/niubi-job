@@ -20,7 +20,7 @@ import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 01:16
+ * @since 0.9.3
  */
 public interface Container {
 

@@ -23,7 +23,7 @@ import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 22:20
+ * @since 0.9.3
  */
 public abstract class AbstractContainer implements Container {
 

@@ -27,7 +27,7 @@ import org.springframework.util.ClassUtils;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/13/2016 14:25
+ * @since 0.9.3
  */
 public class SpringJobBeanFactory implements JobBeanFactory {
 

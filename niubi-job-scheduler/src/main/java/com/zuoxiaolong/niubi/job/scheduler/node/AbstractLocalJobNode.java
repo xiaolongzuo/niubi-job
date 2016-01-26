@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/12 01:19
+ * @since 0.9.3
  */
 public abstract class AbstractLocalJobNode extends AbstractNode implements LocalJobNode {
 

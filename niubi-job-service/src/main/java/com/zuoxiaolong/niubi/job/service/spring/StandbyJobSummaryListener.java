@@ -34,7 +34,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 03:55
+ * @since 0.9.3
  */
 @Component
 public class StandbyJobSummaryListener {

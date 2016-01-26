@@ -28,7 +28,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:36
+ * @since 0.9.3
  */
 public class CuratorFrameworkFactoryBean implements FactoryBean<CuratorFramework>, InitializingBean {
 

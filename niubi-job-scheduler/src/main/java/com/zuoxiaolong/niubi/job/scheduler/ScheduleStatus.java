@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 14:04
+ * @since 0.9.3
  */
 public enum ScheduleStatus {
 

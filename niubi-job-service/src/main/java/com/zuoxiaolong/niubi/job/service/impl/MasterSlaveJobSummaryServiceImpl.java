@@ -33,7 +33,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/17 00:10
+ * @since 0.9.3
  */
 @Service
 public class MasterSlaveJobSummaryServiceImpl extends AbstractService implements MasterSlaveJobSummaryService {

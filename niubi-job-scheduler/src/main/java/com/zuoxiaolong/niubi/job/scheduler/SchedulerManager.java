@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/10 00:59
+ * @since 0.9.3
  */
 public interface SchedulerManager {
 

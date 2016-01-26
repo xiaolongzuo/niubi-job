@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.service.view;
 
 /**
  * @author Xiaolong Zuo
- * @since 1/15/2016 12:02
+ * @since 0.9.3
  */
 public class StandbyNodeView extends AbstractNodeView {
 

@@ -30,7 +30,7 @@ import java.util.Arrays;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/26 00:41
+ * @since 0.9.3
  */
 @Component
 public class DatabaseInitializationServiceImpl implements DatabaseInitializationService {

@@ -18,7 +18,7 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 
 /**
  * @author Xiaolong Zuo
- * @since 16/1/9 14:41
+ * @since 0.9.3
  */
 public interface Node {
 
