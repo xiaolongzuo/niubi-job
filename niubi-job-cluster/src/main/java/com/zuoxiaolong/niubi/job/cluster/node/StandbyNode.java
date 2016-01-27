@@ -148,7 +148,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         mutex.wait();
                     }
                 } catch (Exception e) {
-                    LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
+                    LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
                 } finally {
                     LoggerHelper.info(getIp() + " relinquishing leadership.");
                 }
