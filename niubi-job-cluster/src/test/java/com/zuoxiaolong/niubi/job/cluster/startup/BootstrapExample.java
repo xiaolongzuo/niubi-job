@@ -29,6 +29,12 @@ public class BootstrapExample {
     public void start() throws Exception {
         Bootstrap.start();
         Bootstrap.await();
+        Bootstrap.stop();
+    }
+
+    @Test
+    public void stop() throws Exception {
+        Bootstrap.sendCommand("Shutdown");
     }
 
 }

@@ -74,7 +74,7 @@ public class Bootstrap {
         }
     }
 
-    private static void sendCommand(String command) throws IOException {
+    public static void sendCommand(String command) throws IOException {
         Socket socket = new Socket("localhost", getShutdownPort());
         socket.getOutputStream().write(StringHelper.getBytes(command));
         socket.getOutputStream().flush();
