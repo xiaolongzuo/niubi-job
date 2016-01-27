@@ -90,7 +90,7 @@
                 <artifactId>tomcat7-maven-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <path>/</path>
+                    <path>/niubi-job-console</path>
                     <port>8080</port>
                     <uriEncoding>UTF-8</uriEncoding>
                     <contextReloadable>true</contextReloadable>
