@@ -147,6 +147,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
                         mutex.wait();
                     }
+                    //TODO handle InterruptedException
                 } catch (Exception e) {
                     LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
                 } finally {

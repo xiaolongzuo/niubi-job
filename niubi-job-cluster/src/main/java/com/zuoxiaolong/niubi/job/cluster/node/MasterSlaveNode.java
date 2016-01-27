@@ -181,6 +181,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                         LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
                         mutex.wait();
                     }
+                    //TODO handle InterruptedException
                 } catch (Exception e) {
                     LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
                 } finally {
