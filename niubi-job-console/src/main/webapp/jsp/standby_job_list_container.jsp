@@ -37,6 +37,7 @@
                     <table class="table table-bordered data-table">
                         <thead>
                             <tr>
+                                <th>Mode</th>
                                 <th>Method</th>
                                 <th>Jar file name</th>
                                 <th>Upload time</th>
@@ -45,8 +46,9 @@
                         <tbody>
                         <c:forEach items="${jobs}" var="job">
                             <tr class="gradeA">
-                                <td>${job.groupName}.${job.jobName}</td>
-                                <td>${job.jarFileName}</td>
+                                <td><span class="label ${job.modeLabelClass}">${job.mode}</span></td>
+                                <td><a href="#" class="btn btn-mini btn-info">${job.groupName}.${job.jobName}</a></td>
+                                <td><a href="#" class="btn btn-mini btn-inverse">${job.jarFileName}</a></td>
                                 <td>${job.createDateString}</td>
                             </tr>
                         </c:forEach>

@@ -41,8 +41,10 @@ import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.KeeperException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -74,39 +76,48 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
         this.standbyApiFactory = new StandbyApiFactoryImpl(client);
 
-        this.nodePath = this.standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
-
-        this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
-        this.jobCache.getListenable().addListener(createPathChildrenCacheListener());
-
-        this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
-        leaderSelector.autoRequeue();
-
-        initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getInitLockPath());
+        this.initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getInitLockPath());
         try {
-            initLock.acquire();
+            this.initLock.acquire();
             initJobs();
         } catch (Exception e) {
             throw new NiubiException(e);
         } finally {
             try {
-                initLock.release();
+                this.initLock.release();
             } catch (Exception e) {
                 throw new NiubiException(e);
             }
         }
+
+        this.nodePath = standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
+
+        this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
+        this.jobCache.getListenable().addListener(createPathChildrenCacheListener());
+
+        this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
+        this.leaderSelector.autoRequeue();
+
     }
 
     private void initJobs() {
         List<StandbyNodeData> standbyNodeDataList = standbyApiFactory.nodeApi().getAllNodes();
-        if (ListHelper.isEmpty(standbyNodeDataList) || standbyNodeDataList.size() > 1) {
+        if (!ListHelper.isEmpty(standbyNodeDataList)) {
             return;
         }
-        StandbyNodeData standbyNodeData = standbyNodeDataList.get(0);
-        if (!nodePath.equals(standbyNodeData.getPath())) {
-            return;
+        List<StandbyJobData> standbyJobDataList = new ArrayList<>();
+        try {
+            standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
+        } catch (Throwable e) {
+            if (e instanceof NiubiException) {
+                e = e.getCause();
+            }
+            if (e instanceof KeeperException.NoNodeException) {
+                LoggerHelper.info("job path not found. skip init jobs.");
+            } else {
+                LoggerHelper.warn("get jobs failed. ", e);
+            }
         }
-        List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
         for (StandbyJobData standbyJobData : standbyJobDataList) {
             StandbyJobData.Data data = standbyJobData.getData();
             data.init();

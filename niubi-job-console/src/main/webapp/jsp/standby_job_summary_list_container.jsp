@@ -42,7 +42,6 @@
                             <th>Method</th>
                             <th>Mode</th>
                             <th>Cron</th>
-                            <th>Jar file name</th>
                             <th>Modify time</th>
                             <th>Operation</th>
                         </tr>
@@ -58,7 +57,6 @@
                                 </td>
                                 <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.mode}</span></td>
                                 <td>${jobSummary.cron}</td>
-                                <td>${jobSummary.jarFileName}</td>
                                 <td>${jobSummary.modifyDateString}</td>
                                 <td>
                                     <c:if test="${jobSummary.state != 'Executing'}">

@@ -78,9 +78,25 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
 
+        this.initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getInitLockPath());
+        try {
+            this.initLock.acquire();
+            LoggerHelper.info("get init lock... begin init jobs.");
+            initJobs();
+            LoggerHelper.info("init jobs successfully.");
+        } catch (Exception e) {
+            throw new NiubiException(e);
+        } finally {
+            try {
+                this.initLock.release();
+            } catch (Exception e) {
+                throw new NiubiException(e);
+            }
+        }
+
         this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
 
-        this.nodePath = this.masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
+        this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
 
         this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
         this.nodeCache.getListenable().addListener(createNodeCacheListener());
@@ -89,32 +105,13 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.jobCache.getListenable().addListener(createJobCacheListener());
 
         this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
-        leaderSelector.autoRequeue();
+        this.leaderSelector.autoRequeue();
 
-        initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getInitLockPath());
-        try {
-            initLock.acquire();
-            LoggerHelper.info("get init lock... begin init jobs.");
-            initJobs();
-            LoggerHelper.info("init jobs successfully.");
-        } catch (Exception e) {
-            throw new NiubiException(e);
-        } finally {
-            try {
-                initLock.release();
-            } catch (Exception e) {
-                throw new NiubiException(e);
-            }
-        }
     }
 
     private void initJobs() {
         List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
-        if (ListHelper.isEmpty(masterSlaveNodeDataList) || masterSlaveNodeDataList.size() > 1) {
-            return;
-        }
-        MasterSlaveNodeData masterSlaveNodeData = masterSlaveNodeDataList.get(0);
-        if (!nodePath.equals(masterSlaveNodeData.getPath())) {
+        if (!ListHelper.isEmpty(masterSlaveNodeDataList)) {
             return;
         }
         List<MasterSlaveJobData> masterSlaveJobDataList = new ArrayList<>();

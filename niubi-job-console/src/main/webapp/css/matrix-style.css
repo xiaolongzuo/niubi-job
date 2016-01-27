@@ -1039,6 +1039,9 @@ div.dataTables_wrapper .ui-widget-header {
 	text-align: center;
 	color: #666666;
 }
+.table td {
+    text-align: center;
+}
 .table.with-check tr th:first-child, .table.with-check tr td:first-child {
 	width: 10px;
 }

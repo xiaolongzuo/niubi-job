@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.persistent.entity;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * @author Xiaolong Zuo
@@ -77,6 +78,17 @@ public class AbstractJob extends AbstractEntity {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    @Transient
+    public String getModeLabelClass() {
+        if ("Common".equals(mode)) {
+            return "label-Info";
+        }
+        if ("Spring".equals(mode)) {
+            return "label-success";
+        }
+        return "";
     }
 
 }
