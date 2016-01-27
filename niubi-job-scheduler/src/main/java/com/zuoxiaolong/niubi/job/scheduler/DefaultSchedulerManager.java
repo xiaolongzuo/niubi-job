@@ -96,6 +96,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
             LoggerHelper.error("shutdown scheduler failed.", e);
             throw new NiubiException(e);
         }
+        this.scheduler = null;
         this.groupNameListMap = null;
         this.jobStatusMap = null;
         this.groupList = null;
