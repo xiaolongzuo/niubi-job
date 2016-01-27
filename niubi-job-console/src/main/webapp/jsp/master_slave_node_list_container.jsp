@@ -52,10 +52,10 @@
                                 <td><span class="badge badge-info">${node.runningJobCount}</span></td>
                                 <td>
                                     <c:if test="${node.runningJobCount <= 0}">
-                                        ${node.id}
+                                        <a href="#" class="btn btn-mini btn-info">${node.id}</a>
                                     </c:if>
                                     <c:if test="${node.runningJobCount > 0}">
-                                        <a data-content="Click to view running job list" class="btn btn-mini btn-info popoverElement" href="#detailModal${status.index}" data-toggle="modal" data-placement="left" data-toggle="popover">
+                                        <a data-content="Click to view running job list" class="btn btn-mini btn-danger popoverElement" href="#detailModal${status.index}" data-toggle="modal" data-placement="left" data-toggle="popover">
                                             ${node.id}
                                         </a>
                                     </c:if>
