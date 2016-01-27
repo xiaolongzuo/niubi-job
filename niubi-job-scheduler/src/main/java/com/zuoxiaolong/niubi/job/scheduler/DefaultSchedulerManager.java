@@ -37,6 +37,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultSchedulerManager implements SchedulerManager {
 
+    private Properties properties;
+
+    private JobBeanFactory jobBeanFactory;
+
+    private List<JobDescriptor> jobDescriptorList;
+
     private Scheduler scheduler;
 
     private Map<String, List<String>> groupNameListMap;
@@ -60,19 +66,53 @@ public class DefaultSchedulerManager implements SchedulerManager {
         AssertHelper.notNull(properties, "configuration can't be null.");
         AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
         AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
-        initScheduler(properties);
-        initJobDetails(jobBeanFactory, jobDescriptorList);
+        this.properties = new Properties(properties);
+        this.jobBeanFactory = jobBeanFactory;
+        this.jobDescriptorList = Collections.unmodifiableList(jobDescriptorList);
+        startScheduler();
     }
 
     public DefaultSchedulerManager(Properties properties, JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
         AssertHelper.notNull(properties, "configuration can't be null.");
         AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
         AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
-        initScheduler(properties);
-        initJobDetails(jobBeanFactory, jobDescriptorList);
+        this.properties = new Properties(properties);
+        this.jobBeanFactory = jobBeanFactory;
+        this.jobDescriptorList = Collections.unmodifiableList(jobDescriptorList);
+        startScheduler();
     }
 
-    protected void initScheduler(Properties properties) {
+    private void startScheduler() {
+        initScheduler();
+        initJobDetails();
+    }
+
+    private void stopScheduler() {
+        try {
+            if (scheduler != null) {
+                scheduler.shutdown(true);
+            }
+        } catch (SchedulerException e) {
+            LoggerHelper.error("shutdown scheduler failed.", e);
+            throw new NiubiException(e);
+        }
+        this.groupNameListMap = null;
+        this.jobStatusMap = null;
+        this.groupList = null;
+    }
+
+    private void checkScheduler() {
+        try {
+            if (scheduler == null || !scheduler.isStarted()) {
+                startScheduler();
+            }
+        } catch (SchedulerException e) {
+            LoggerHelper.error("check scheduler state failed.", e);
+            throw new NiubiException(e);
+        }
+    }
+
+    protected void initScheduler() {
         this.groupNameListMap = new ConcurrentHashMap<>();
         this.groupList = new ArrayList<>();
         this.jobStatusMap = new ConcurrentHashMap<>();
@@ -87,7 +127,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
         }
     }
 
-    protected void initJobDetails(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+    protected void initJobDetails() {
         for (JobDescriptor descriptor : jobDescriptorList) {
             addJobDetail(new DefaultSchedulerJobDescriptor(descriptor));
         }
@@ -149,14 +189,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
     public synchronized void startup(String group, String name) {
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-        try {
-            if (!scheduler.isStarted()) {
-                scheduler.start();
-            }
-        } catch (Throwable e) {
-            LoggerHelper.error("start scheduler failed.", e);
-            throw new NiubiException(e);
-        }
+        checkScheduler();
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             SchedulerJobDescriptor jobDescriptor;
@@ -211,10 +244,8 @@ public class DefaultSchedulerManager implements SchedulerManager {
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         SchedulerJobDescriptor jobDescriptor;
+        checkScheduler();
         try {
-            if (!scheduler.isStarted()) {
-                scheduler.start();
-            }
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
         } catch (SchedulerException e) {
@@ -286,14 +317,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
                 break;
             }
         }
-        try {
-            if (scheduler != null) {
-                scheduler.shutdown(true);
-            }
-        } catch (SchedulerException e) {
-            LoggerHelper.error("shutdown scheduler failed.", e);
-            throw new NiubiException(e);
-        }
+        stopScheduler();
     }
 
 }

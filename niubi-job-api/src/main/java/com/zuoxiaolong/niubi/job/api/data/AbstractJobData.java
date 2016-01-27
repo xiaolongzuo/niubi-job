@@ -45,13 +45,13 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     private String operationResult;
 
-    private String errorMessage;
-
     private String originalJarFileName;
 
     private String operation;
 
     private Long version;
+
+    private String errorMessage;
 
     public void incrementVersion() {
         if (version == null || version == Long.MAX_VALUE) {
@@ -232,18 +232,21 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     @Override
     public String toString() {
-        return "Data{" +
+        return "JobData {" +
                 "groupName='" + groupName + '\'' +
                 ", jobName='" + jobName + '\'' +
-                ", originalJarFileName='" + originalJarFileName + '\'' +
                 ", jarFileName='" + jarFileName + '\'' +
                 ", packagesToScan='" + packagesToScan + '\'' +
-                ", operation='" + operation + '\'' +
                 ", cron='" + cron + '\'' +
                 ", mode='" + mode + '\'' +
                 ", state='" + state + '\'' +
                 ", misfirePolicy='" + misfirePolicy + '\'' +
+                ", jobOperationLogId='" + jobOperationLogId + '\'' +
+                ", operationResult='" + operationResult + '\'' +
+                ", originalJarFileName='" + originalJarFileName + '\'' +
+                ", operation='" + operation + '\'' +
+                ", version=" + version +
+                ", errorMessage='" + errorMessage + '\'' +
                 '}';
     }
-
 }
