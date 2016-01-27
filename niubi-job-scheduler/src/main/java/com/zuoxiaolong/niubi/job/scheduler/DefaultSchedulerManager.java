@@ -82,12 +82,12 @@ public class DefaultSchedulerManager implements SchedulerManager {
         startScheduler();
     }
 
-    private void startScheduler() {
+    private synchronized void startScheduler() {
         initScheduler();
         initJobDetails();
     }
 
-    private void stopScheduler() {
+    private synchronized void stopScheduler() {
         try {
             if (scheduler != null) {
                 scheduler.shutdown(true);
@@ -101,7 +101,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
         this.groupList = null;
     }
 
-    private void checkScheduler() {
+    private synchronized void checkScheduler() {
         try {
             if (scheduler == null || !scheduler.isStarted()) {
                 startScheduler();
@@ -162,24 +162,39 @@ public class DefaultSchedulerManager implements SchedulerManager {
         return jobKey.getGroup() + "." + jobKey.getName();
     }
 
-    public List<String> getNameList(String group) {
-        return Collections.unmodifiableList(groupNameListMap.get(group));
-    }
-
     @Override
-    public synchronized ScheduleStatus getScheduleStatus(String group, String name) {
+    public ScheduleStatus getScheduleStatus(String group, String name) {
+        if (jobStatusMap == null) {
+            return ScheduleStatus.SHUTDOWN;
+        }
         return jobStatusMap.get(getUniqueId(JobKey.jobKey(name, group)));
     }
 
     public List<String> getGroupList() {
+        if (groupList == null) {
+            return Collections.emptyList();
+        }
         return Collections.unmodifiableList(groupList);
     }
 
+    public List<String> getNameList(String group) {
+        if (groupNameListMap == null) {
+            return Collections.emptyList();
+        }
+        List<String> nameList = groupNameListMap.get(group);
+        if (nameList == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(nameList);
+    }
+
     public synchronized void startup() {
+        checkScheduler();
         getGroupList().forEach(this::startup);
     }
 
     public synchronized void startup(String group) {
+        checkScheduler();
         for (String name : getNameList(group)) {
             startup(group, name);
         }
@@ -187,9 +202,9 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startup(String group, String name) {
+        checkScheduler();
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-        checkScheduler();
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             SchedulerJobDescriptor jobDescriptor;
@@ -227,6 +242,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String cron, String misfirePolicy) {
+        checkScheduler();
         for (String group : getGroupList()) {
             startupManual(group, cron, misfirePolicy);
         }
@@ -234,6 +250,7 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String group, String cron, String misfirePolicy) {
+        checkScheduler();
         for (String name : getNameList(group)) {
             startupManual(group, name, cron, misfirePolicy);
         }
@@ -241,10 +258,10 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String group, String name, String cron, String misfirePolicy) {
+        checkScheduler();
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         SchedulerJobDescriptor jobDescriptor;
-        checkScheduler();
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
@@ -294,24 +311,24 @@ public class DefaultSchedulerManager implements SchedulerManager {
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus != ScheduleStatus.STARTUP) {
             LoggerHelper.warn("group [" + group + "," + name + "] has been paused.");
-        } else {
-            try {
-                if (scheduler.isStarted()) {
-                    scheduler.pauseJob(jobKey);
-                    LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
-                } else {
-                    LoggerHelper.info("scheduler has been shutdown ,ignore the pause operation for [" + group + "," + name + "]");
-                }
-            } catch (SchedulerException e) {
-                LoggerHelper.error("pause [" + group + "," + name + "] job failed.", e);
-                throw new NiubiException(e);
-            }
-            jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
-            checkIsEmpty();
+            return;
         }
+        try {
+            if (scheduler != null && scheduler.isStarted()) {
+                scheduler.pauseJob(jobKey);
+                LoggerHelper.info("group [" + group + "," + name + "] has been paused successfully.");
+            } else {
+                LoggerHelper.info("scheduler has been shutdown ,ignore the pause operation for [" + group + "," + name + "]");
+            }
+        } catch (SchedulerException e) {
+            LoggerHelper.error("pause [" + group + "," + name + "] job failed.", e);
+            throw new NiubiException(e);
+        }
+        jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.PAUSE);
+        checkSchedulerIsIdle();
     }
 
-    private synchronized void checkIsEmpty() {
+    private synchronized void checkSchedulerIsIdle() {
         for (String key : jobStatusMap.keySet()) {
             if (jobStatusMap.get(key).equals("Startup")) {
                 break;
