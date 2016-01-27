@@ -79,7 +79,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.initLock = new InterProcessMutex(client, standbyApiFactory.pathApi().getInitLockPath());
         try {
             this.initLock.acquire();
+            LoggerHelper.info("get init lock... begin init jobs.");
             initJobs();
+            LoggerHelper.info("init jobs successfully.");
         } catch (Exception e) {
             throw new NiubiException(e);
         } finally {

@@ -78,6 +78,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
 
+        this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
+
         this.initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getInitLockPath());
         try {
             this.initLock.acquire();
@@ -93,8 +95,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 throw new NiubiException(e);
             }
         }
-
-        this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
 
         this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
 
