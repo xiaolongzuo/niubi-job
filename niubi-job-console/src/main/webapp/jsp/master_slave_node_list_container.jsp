@@ -45,13 +45,37 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <c:forEach items="${nodes}" var="node">
+                        <c:forEach items="${nodes}" var="node" varStatus="status">
                             <tr class="gradeA">
                                 <td><span class="label ${node.stateLabelClass}">${node.state}</span></td>
-                                <td>${node.ip}</td>
+                                <td><a href="#" class="btn btn-mini btn-info">${node.ip}</a></td>
                                 <td><span class="badge badge-info">${node.runningJobCount}</span></td>
-                                <td>${node.id}</td>
+                                <td>
+                                    <c:if test="${node.runningJobCount <= 0}">
+                                        ${node.id}
+                                    </c:if>
+                                    <c:if test="${node.runningJobCount > 0}">
+                                        <a data-content="Click to view running job list" class="btn btn-mini btn-info popoverElement" href="#detailModal${status.index}" data-toggle="modal" data-placement="left" data-toggle="popover">
+                                            ${node.id}
+                                        </a>
+                                    </c:if>
+                                </td>
                             </tr>
+                            <c:if test="${node.runningJobCount > 0}">
+                                <div id="detailModal${status.index}" class="modal hide">
+                                    <div class="modal-header">
+                                        <button data-dismiss="modal" class="close" type="button">x</button>
+                                        <h3>Running job list</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        ${node.jobPathsHtmlString}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a data-dismiss="modal" class="btn btn-primary" href="#">Confirm</a>
+                                        <a data-dismiss="modal" class="btn" href="#">Cancel</a>
+                                    </div>
+                                </div>
+                            </c:if>
                         </c:forEach>
                         </tbody>
                     </table>

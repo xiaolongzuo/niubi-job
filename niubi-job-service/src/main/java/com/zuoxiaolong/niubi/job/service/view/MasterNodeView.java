@@ -17,11 +17,33 @@
 
 package com.zuoxiaolong.niubi.job.service.view;
 
+import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
+@Setter
+@Getter
 public class MasterNodeView extends AbstractNodeView {
+
+    private List<String> jobPaths;
+
+    public String getJobPathsHtmlString() {
+        if (ListHelper.isEmpty(jobPaths)) {
+            return null;
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        for (String jobPath : jobPaths) {
+            stringBuffer.append(PathHelper.getEndPath(jobPath)).append("<br/>");
+        }
+        return stringBuffer.substring(0, stringBuffer.lastIndexOf("<br/>"));
+    }
 
     public String getStateLabelClass() {
         if ("Master".equals(getState())) {
