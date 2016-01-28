@@ -43,7 +43,6 @@ import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.KeeperException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -145,12 +144,13 @@ public class StandbyNode extends AbstractRemoteJobNode {
                         nodeData.setState("Master");
                         standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
                         LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
+                        jobCache.start();
                         mutex.wait();
                     }
-                    //TODO handle InterruptedException
                 } catch (Exception e) {
                     LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
                 } finally {
+                    stopJobs();
                     LoggerHelper.info(getIp() + " relinquishing leadership.");
                 }
             }
@@ -158,6 +158,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
             private Integer startupJobs() {
                 List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
                 int runningJobCount = 0;
+                if (ListHelper.isEmpty(standbyJobDataList)) {
+                    return runningJobCount;
+                }
                 for (StandbyJobData standbyJobData : standbyJobDataList) {
                     try {
                         StandbyJobData.Data data = standbyJobData.getData();
@@ -173,14 +176,26 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 return runningJobCount;
             }
 
+            private void stopJobs() {
+                if (jobCache != null) {
+                    try {
+                        jobCache.close();
+                    } catch (Throwable e) {
+                        LoggerHelper.warn("stop job cache failed.", e);
+                    }
+                    jobCache = null;
+                }
+                for (Container container : getContainerCache().values()) {
+                    container.schedulerManager().shutdown();
+                }
+            }
+
             public void stateChanged(CuratorFramework client, ConnectionState newState) {
                 LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
                 if (!newState.isConnected()) {
                     synchronized (mutex) {
                         LoggerHelper.info(getIp() + "'s connection has been un-connected");
-                        for (Container container : getContainerCache().values()) {
-                            container.schedulerManager().shutdown();
-                        }
+                        stopJobs();
                         StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
                         standbyApiFactory.nodeApi().updateNode(nodePath, data);
                         LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
@@ -244,21 +259,10 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     public synchronized void join() {
         leaderSelector.start();
-        try {
-            this.jobCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
     }
 
     public synchronized void exit() {
         leaderSelector.close();
-        try {
-            jobCache.close();
-        } catch (IOException e) {
-            throw new NiubiException(e);
-        }
         client.close();
     }
 
