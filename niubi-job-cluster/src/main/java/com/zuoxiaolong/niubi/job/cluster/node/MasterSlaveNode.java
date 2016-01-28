@@ -132,7 +132,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     @Override
-    public void doJoin() {
+    protected synchronized void doJoin() {
         leaderSelector.start();
         try {
             this.jobCache.start();
@@ -143,7 +143,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     @Override
-    public void doExit() {
+    protected synchronized void doExit() {
         try {
             if (nodeCache != null) {
                 nodeCache.close();

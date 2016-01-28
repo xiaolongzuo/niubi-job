@@ -120,11 +120,11 @@ public class StandbyNode extends AbstractRemoteJobNode {
         }
     }
 
-    public synchronized void doJoin() {
+    protected synchronized void doJoin() {
         leaderSelector.start();
     }
 
-    public synchronized void doExit() {
+    protected synchronized void doExit() {
         try {
             if (jobCache != null) {
                 jobCache.close();

@@ -72,9 +72,9 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         doExit();
     }
 
-    public abstract void doJoin();
+    protected abstract void doJoin();
 
-    public abstract void doExit();
+    protected abstract void doExit();
 
     protected Map<String, Container> getContainerCache() {
         return Collections.unmodifiableMap(containerCache);
