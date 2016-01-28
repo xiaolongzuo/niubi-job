@@ -99,12 +99,12 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
 
         this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
-        this.nodeCache.getListenable().addListener(createNodeCacheListener());
+        this.nodeCache.getListenable().addListener(new NodeCacheListener());
 
         this.jobCache = new PathChildrenCache(client, masterSlaveApiFactory.pathApi().getJobPath(), true);
-        this.jobCache.getListenable().addListener(createJobCacheListener());
+        this.jobCache.getListenable().addListener(new JobCacheListener());
 
-        this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
+        this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), new MasterSlaveLeadershipSelectorListener());
         this.leaderSelector.autoRequeue();
 
     }
@@ -134,21 +134,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
-    private PathChildrenCacheListener createNodeCacheListener() {
-        return new PathChildrenCacheListener() {
-            @Override
-            public synchronized void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
-                if (!leaderSelector.hasLeadership()) {
-                    return;
-                }
-                if (EventHelper.isChildRemoveEvent(event)) {
-                    MasterSlaveNodeData masterSlaveNodeData = new MasterSlaveNodeData(event.getData().getPath(), event.getData().getData());
-                    releaseJobs(masterSlaveNodeData.getPath(), masterSlaveNodeData.getData());
-                }
-            }
-        };
-    }
-
     private void releaseJobs(String nodePath, MasterSlaveNodeData.Data nodeData) {
         if (ListHelper.isEmpty(nodeData.getJobPaths())) {
             return;
@@ -163,225 +148,233 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
-    private LeaderSelectorListener createLeaderSelectorListener() {
-        return new LeaderSelectorListener() {
-
-            private final AtomicInteger leaderCount = new AtomicInteger();
-
-            private Object mutex = new Object();
-
-            public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
-                LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
-                try {
-                    synchronized (mutex) {
-                        checkUnavailableNode();
-                        MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-                        masterSlaveNodeData.getData().setState("Master");
-                        masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
-                        LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
-                        mutex.wait();
-                    }
-                    //TODO handle InterruptedException
-                } catch (Exception e) {
-                    LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
-                } finally {
-                    LoggerHelper.info(getIp() + " relinquishing leadership.");
-                }
-            }
-
-            private void checkUnavailableNode() {
-                List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
-                List<String> availableNodes = new ArrayList<>();
-                if (!ListHelper.isEmpty(masterSlaveNodeDataList)) {
-                    availableNodes.addAll(masterSlaveNodeDataList.stream().map(MasterSlaveNodeData::getPath).collect(Collectors.toList()));
-                }
-                List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
-                if (!ListHelper.isEmpty(masterSlaveJobDataList)) {
-                    for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
-                        MasterSlaveJobData.Data data = masterSlaveJobData.getData();
-                        if (!availableNodes.contains(data.getNodePath())) {
-                            data.release();
-                            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                        }
-                    }
-                }
-            }
-
-            public void stateChanged(CuratorFramework client, ConnectionState newState) {
-                LoggerHelper.info(getIp() + " state change [" + newState + "]");
-                if (!newState.isConnected()) {
-                    synchronized (mutex) {
-                        MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
-                        releaseJobs(nodePath, nodeData);
-                        nodeData.setState("Slave");
-                        masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
-                        mutex.notify();
-                    }
-                }
-            }
-
-        };
-    }
-
-    private PathChildrenCacheListener createJobCacheListener() {
-        return new PathChildrenCacheListener() {
-            @Override
-            public synchronized void childEvent(CuratorFramework clientInner, PathChildrenCacheEvent event) throws Exception {
-                if (!EventHelper.isChildModifyEvent(event)) {
-                    return;
-                }
-                MasterSlaveJobData jobData = new MasterSlaveJobData(event.getData());
-                if (StringHelper.isEmpty(jobData.getData().getOperation())) {
-                    return;
-                }
-                MasterSlaveJobData.Data data = jobData.getData();
-                if (data.isUnknownOperation()) {
-                    return;
-                }
-                boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
-                if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
-                    //if has operation, wait a moment.
-                    if (checkNotExecuteOperation()) {
-                        try {
-                            Thread.sleep(3000);
-                        } catch (Throwable e) {
-                            //ignored
-                        }
-                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                        return;
-                    }
-                    List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
-                    if (ListHelper.isEmpty(masterSlaveNodeDataList)) {
-                        data.operateFailed("there is not any one node live.");
-                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                        return;
-                    }
-                    Collections.sort(masterSlaveNodeDataList);
-                    data.setNodePath(masterSlaveNodeDataList.get(0).getPath());
-                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                    return;
-                }
-                if (hasLeadership) {
-                    //check weigher node path
-                    List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
-                    boolean nodeIsLive = false;
-                    for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
-                        if (masterSlaveNodeData.getPath().equals(data.getNodePath())) {
-                            nodeIsLive = true;
-                            break;
-                        }
-                    }
-                    if (!nodeIsLive) {
-                        data.clearNodePath();
-                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                    }
-                }
-                //if the job has been assigned to this node, then execute.
-                if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
-                    MasterSlaveNodeData.Data nodeData;
-                    try {
-                        nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath).getData();
-                    } catch (Throwable e) {
-                        LoggerHelper.error("node [" + nodePath + "] not exists.");
-                        data.clearNodePath();
-                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-                        return;
-                    }
-                    executeOperation(nodeData, jobData);
-                    return;
-                }
-            }
-        };
-    }
-
-    private boolean checkNotExecuteOperation() {
-        List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
-        if (ListHelper.isEmpty(masterSlaveJobDataList)) {
-            return false;
-        }
-        for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
-            boolean hasOperation = !StringHelper.isEmpty(masterSlaveJobData.getData().getOperation());
-            boolean assigned = !StringHelper.isEmpty(masterSlaveJobData.getData().getNodePath());
-            if (hasOperation && assigned) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void executeOperation(MasterSlaveNodeData.Data nodeData, MasterSlaveJobData jobData) {
-        MasterSlaveJobData.Data data = jobData.getData();
-        try {
-            if (data.isStart() || data.isRestart()) {
-                Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                if (data.isStart()) {
-                    nodeData.addJobPath(jobData.getPath());
-                }
-                data.setState("Startup");
-            } else {
-                Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
-                nodeData.removeJobPath(jobData.getPath());
-                data.clearNodePath();
-                data.setState("Pause");
-            }
-            data.operateSuccess();
-            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-            masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
-        } catch (Throwable e) {
-            LoggerHelper.error("handle operation failed. " + data, e);
-            data.operateFailed(ExceptionHelper.getStackTrace(e, true));
-            masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-        }
-    }
-
     @Override
     public void join() {
-        synchronized (getContainerCache()) {
-            leaderSelector.start();
-            try {
-                this.jobCache.start();
-            } catch (Exception e) {
-                LoggerHelper.error("path children path start failed.", e);
-                throw new NiubiException(e);
-            }
-            try {
-                this.nodeCache.start();
-            } catch (Exception e) {
-                LoggerHelper.error("path children path start failed.", e);
-                throw new NiubiException(e);
-            }
+        leaderSelector.start();
+        try {
+            this.jobCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
+        }
+        try {
+            this.nodeCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
         }
     }
 
     @Override
     public void exit() {
-        synchronized (getContainerCache()) {
-            leaderSelector.close();
-            try {
-                jobCache.close();
-            } catch (IOException e) {
-                LoggerHelper.error("path children path close failed.", e);
-                throw new NiubiException(e);
-            }
-            try {
-                nodeCache.close();
-            } catch (IOException e) {
-                LoggerHelper.error("path children path close failed.", e);
-                throw new NiubiException(e);
-            }
-            LoggerHelper.info("selector and cache has been closed.");
-            for (String key : getContainerCache().keySet()) {
-                getContainerCache().get(key).schedulerManager().shutdown();
-            }
-            LoggerHelper.info("containers has been shutdown.");
-            MasterSlaveNodeData nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-            releaseJobs(nodePath, nodeData.getData());
-            LoggerHelper.info("jobs has been released.");
-            client.close();
-            LoggerHelper.info("zk client has been closed.");
+        leaderSelector.close();
+        try {
+            jobCache.close();
+        } catch (IOException e) {
+            LoggerHelper.error("path children path close failed.", e);
+            throw new NiubiException(e);
         }
+        try {
+            nodeCache.close();
+        } catch (IOException e) {
+            LoggerHelper.error("path children path close failed.", e);
+            throw new NiubiException(e);
+        }
+        LoggerHelper.info("selector and cache has been closed.");
+        for (Container container : getContainerCache().values()) {
+            container.schedulerManager().shutdown();
+        }
+        LoggerHelper.info("containers has been shutdown.");
+        MasterSlaveNodeData nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+        releaseJobs(nodePath, nodeData.getData());
+        LoggerHelper.info("jobs has been released.");
+        client.close();
+        LoggerHelper.info("zk client has been closed.");
+    }
+
+    private class MasterSlaveLeadershipSelectorListener implements LeaderSelectorListener {
+
+        private final AtomicInteger leaderCount = new AtomicInteger();
+
+        private Object mutex = new Object();
+
+        public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
+            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
+            try {
+                synchronized (mutex) {
+                    checkUnavailableNode();
+                    MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+                    masterSlaveNodeData.getData().setState("Master");
+                    masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
+                    LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
+                    mutex.wait();
+                }
+            } catch (Exception e) {
+                LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
+            } finally {
+                LoggerHelper.info(getIp() + " relinquishing leadership.");
+            }
+        }
+
+        private void checkUnavailableNode() {
+            List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+            List<String> availableNodes = new ArrayList<>();
+            if (!ListHelper.isEmpty(masterSlaveNodeDataList)) {
+                availableNodes.addAll(masterSlaveNodeDataList.stream().map(MasterSlaveNodeData::getPath).collect(Collectors.toList()));
+            }
+            List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+            if (!ListHelper.isEmpty(masterSlaveJobDataList)) {
+                for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
+                    MasterSlaveJobData.Data data = masterSlaveJobData.getData();
+                    if (!availableNodes.contains(data.getNodePath())) {
+                        data.release();
+                        masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    }
+                }
+            }
+        }
+
+        public void stateChanged(CuratorFramework client, ConnectionState newState) {
+            LoggerHelper.info(getIp() + " state change [" + newState + "]");
+            if (!newState.isConnected()) {
+                synchronized (mutex) {
+                    MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                    releaseJobs(nodePath, nodeData);
+                    nodeData.setState("Slave");
+                    masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
+                    mutex.notify();
+                }
+            }
+        }
+
+    }
+
+    private class NodeCacheListener implements PathChildrenCacheListener {
+
+        @Override
+        public synchronized void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+            if (!leaderSelector.hasLeadership()) {
+                return;
+            }
+            if (EventHelper.isChildRemoveEvent(event)) {
+                MasterSlaveNodeData masterSlaveNodeData = new MasterSlaveNodeData(event.getData().getPath(), event.getData().getData());
+                releaseJobs(masterSlaveNodeData.getPath(), masterSlaveNodeData.getData());
+            }
+        }
+
+    }
+
+    private class JobCacheListener implements PathChildrenCacheListener {
+
+        @Override
+        public synchronized void childEvent(CuratorFramework clientInner, PathChildrenCacheEvent event) throws Exception {
+            if (!EventHelper.isChildModifyEvent(event)) {
+                return;
+            }
+            MasterSlaveJobData jobData = new MasterSlaveJobData(event.getData());
+            if (StringHelper.isEmpty(jobData.getData().getOperation())) {
+                return;
+            }
+            MasterSlaveJobData.Data data = jobData.getData();
+            if (data.isUnknownOperation()) {
+                return;
+            }
+            boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
+            if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
+                //if has operation, wait a moment.
+                if (checkNotExecuteOperation()) {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Throwable e) {
+                        //ignored
+                    }
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    return;
+                }
+                List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                if (ListHelper.isEmpty(masterSlaveNodeDataList)) {
+                    data.operateFailed("there is not any one node live.");
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    return;
+                }
+                Collections.sort(masterSlaveNodeDataList);
+                data.setNodePath(masterSlaveNodeDataList.get(0).getPath());
+                masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                return;
+            }
+            if (hasLeadership) {
+                //check weigher node path
+                List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
+                boolean nodeIsLive = false;
+                for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
+                    if (masterSlaveNodeData.getPath().equals(data.getNodePath())) {
+                        nodeIsLive = true;
+                        break;
+                    }
+                }
+                if (!nodeIsLive) {
+                    data.clearNodePath();
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                }
+            }
+            //if the job has been assigned to this node, then execute.
+            if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
+                MasterSlaveNodeData.Data nodeData;
+                try {
+                    nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath).getData();
+                } catch (Throwable e) {
+                    LoggerHelper.error("node [" + nodePath + "] not exists.");
+                    data.clearNodePath();
+                    masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                    return;
+                }
+                executeOperation(nodeData, jobData);
+                return;
+            }
+        }
+
+        private boolean checkNotExecuteOperation() {
+            List<MasterSlaveJobData> masterSlaveJobDataList = masterSlaveApiFactory.jobApi().getAllJobs();
+            if (ListHelper.isEmpty(masterSlaveJobDataList)) {
+                return false;
+            }
+            for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
+                boolean hasOperation = !StringHelper.isEmpty(masterSlaveJobData.getData().getOperation());
+                boolean assigned = !StringHelper.isEmpty(masterSlaveJobData.getData().getNodePath());
+                if (hasOperation && assigned) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private void executeOperation(MasterSlaveNodeData.Data nodeData, MasterSlaveJobData jobData) {
+            MasterSlaveJobData.Data data = jobData.getData();
+            try {
+                if (data.isStart() || data.isRestart()) {
+                    Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    if (data.isStart()) {
+                        nodeData.addJobPath(jobData.getPath());
+                    }
+                    data.setState("Startup");
+                } else {
+                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
+                    nodeData.removeJobPath(jobData.getPath());
+                    data.clearNodePath();
+                    data.setState("Pause");
+                }
+                data.operateSuccess();
+                masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
+            } catch (Throwable e) {
+                LoggerHelper.error("handle operation failed. " + data, e);
+                data.operateFailed(ExceptionHelper.getStackTrace(e, true));
+                masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+            }
+        }
+
     }
 
 }

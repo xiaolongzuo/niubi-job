@@ -31,12 +31,12 @@ import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
-import org.apache.curator.framework.recipes.leader.LeaderSelectorListenerAdapter;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.framework.state.ConnectionState;
@@ -69,6 +69,8 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
     private String nodePath;
 
+    private Object mutex = new Object();
+
     public StandbyNode() {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
@@ -94,9 +96,9 @@ public class StandbyNode extends AbstractRemoteJobNode {
         this.nodePath = standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
 
         this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
-        this.jobCache.getListenable().addListener(createPathChildrenCacheListener());
+        this.jobCache.getListenable().addListener(new JobCacheListener());
 
-        this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), createLeaderSelectorListener());
+        this.leaderSelector = new LeaderSelector(client, standbyApiFactory.pathApi().getSelectorPath(), new StandbyLeadershipSelectorListener());
         this.leaderSelector.autoRequeue();
 
     }
@@ -126,134 +128,15 @@ public class StandbyNode extends AbstractRemoteJobNode {
         }
     }
 
-    private LeaderSelectorListener createLeaderSelectorListener() {
-
-        return new LeaderSelectorListenerAdapter() {
-
-            private final AtomicInteger leaderCount = new AtomicInteger();
-
-            private Object mutex = new Object();
-
-            public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
-                LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
-                try {
-                    synchronized (mutex) {
-                        StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
-                        int runningJobCount = startupJobs();
-                        nodeData.setRunningJobCount(runningJobCount);
-                        nodeData.setState("Master");
-                        standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
-                        LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
-                        jobCache.start();
-                        mutex.wait();
-                    }
-                } catch (Exception e) {
-                    LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
-                } finally {
-                    stopJobs();
-                    LoggerHelper.info(getIp() + " relinquishing leadership.");
-                }
-            }
-
-            private Integer startupJobs() {
-                List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
-                int runningJobCount = 0;
-                if (ListHelper.isEmpty(standbyJobDataList)) {
-                    return runningJobCount;
-                }
-                for (StandbyJobData standbyJobData : standbyJobDataList) {
-                    try {
-                        StandbyJobData.Data data = standbyJobData.getData();
-                        if ("Startup".equals(data.getState())) {
-                            Container container = getContainer(standbyJobData.getData().getJarFileName(), standbyJobData.getData().getPackagesToScan(), standbyJobData.getData().isSpring());
-                            container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                            runningJobCount++;
-                        }
-                    } catch (Exception e) {
-                        LoggerHelper.error("start jar failed [" + standbyJobData.getPath() + "]", e);
-                    }
-                }
-                return runningJobCount;
-            }
-
-            private void stopJobs() {
-                if (jobCache != null) {
-                    try {
-                        jobCache.close();
-                    } catch (Throwable e) {
-                        LoggerHelper.warn("stop job cache failed.", e);
-                    }
-                    jobCache = null;
-                }
-                for (Container container : getContainerCache().values()) {
-                    container.schedulerManager().shutdown();
-                }
-            }
-
-            public void stateChanged(CuratorFramework client, ConnectionState newState) {
-                LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
-                if (!newState.isConnected()) {
-                    synchronized (mutex) {
-                        LoggerHelper.info(getIp() + "'s connection has been un-connected");
-                        stopJobs();
-                        StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
-                        standbyApiFactory.nodeApi().updateNode(nodePath, data);
-                        LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
-                        mutex.notify();
-                    }
-                }
-            }
-
-        };
+    private void await() throws InterruptedException {
+        synchronized (mutex) {
+            mutex.wait();
+        }
     }
 
-    public PathChildrenCacheListener createPathChildrenCacheListener() {
-        return new PathChildrenCacheListener() {
-            @Override
-            public synchronized void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent event) throws Exception {
-                boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
-                if (!hasLeadership) {
-                    return;
-                }
-                if (!EventHelper.isChildModifyEvent(event)) {
-                    return;
-                }
-                StandbyJobData standbyJobData = new StandbyJobData(event.getData());
-                if (StringHelper.isEmpty(standbyJobData.getData().getOperation())) {
-                    return;
-                }
-                StandbyJobData.Data data = standbyJobData.getData();
-                if (data.isUnknownOperation()) {
-                    return;
-                }
-                StandbyNodeData.Data nodeData = standbyApiFactory.nodeApi().getNode(nodePath).getData();
-                executeOperation(nodeData, data);
-            }
-        };
-    }
-
-    private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
-        try {
-            if (data.isStart() || data.isRestart()) {
-                Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
-                if (data.isStart()) {
-                    nodeData.increment();
-                }
-                data.setState("Startup");
-            } else {
-                Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
-                nodeData.decrement();
-                data.setState("Pause");
-            }
-            data.operateSuccess();
-            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
-            standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
-        } catch (Throwable e) {
-            LoggerHelper.error("handle operation failed. " + data, e);
-            data.operateFailed(ExceptionHelper.getStackTrace(e, true));
-            standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+    private void release() {
+        synchronized (mutex) {
+            mutex.notify();
         }
     }
 
@@ -262,8 +145,135 @@ public class StandbyNode extends AbstractRemoteJobNode {
     }
 
     public synchronized void exit() {
+        release();
         leaderSelector.close();
         client.close();
+    }
+
+    private class StandbyLeadershipSelectorListener implements LeaderSelectorListener {
+
+        private final AtomicInteger leaderCount = new AtomicInteger();
+
+        public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
+            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
+            try {
+                StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
+                int runningJobCount = startupJobs();
+                nodeData.setRunningJobCount(runningJobCount);
+                nodeData.setState("Master");
+                standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
+                LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
+                jobCache.start();
+                await();
+            } catch (Exception e) {
+                LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
+            } finally {
+                relinquishLeadership();
+                LoggerHelper.info(getIp() + " relinquishing leadership.");
+            }
+        }
+
+        private Integer startupJobs() {
+            List<StandbyJobData> standbyJobDataList = standbyApiFactory.jobApi().getAllJobs();
+            int runningJobCount = 0;
+            if (ListHelper.isEmpty(standbyJobDataList)) {
+                return runningJobCount;
+            }
+            for (StandbyJobData standbyJobData : standbyJobDataList) {
+                try {
+                    StandbyJobData.Data data = standbyJobData.getData();
+                    if ("Startup".equals(data.getState())) {
+                        Container container = getContainer(standbyJobData.getData().getJarFileName(), standbyJobData.getData().getPackagesToScan(), standbyJobData.getData().isSpring());
+                        container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                        runningJobCount++;
+                    }
+                } catch (Exception e) {
+                    LoggerHelper.error("start jar failed [" + standbyJobData.getPath() + "]", e);
+                }
+            }
+            return runningJobCount;
+        }
+
+        private void relinquishLeadership() {
+            LoggerHelper.info("begin stop job cache.");
+            if (jobCache != null) {
+                try {
+                    jobCache.close();
+                } catch (Throwable e) {
+                    LoggerHelper.warn("stop job cache failed.", e);
+                }
+                jobCache = null;
+            }
+            LoggerHelper.info("begin stop scheduler manager.");
+            for (Container container : getContainerCache().values()) {
+                container.schedulerManager().shutdown();
+            }
+            if (client.getState() == CuratorFrameworkState.STARTED) {
+                StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
+                standbyApiFactory.nodeApi().updateNode(nodePath, data);
+                LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
+            }
+            LoggerHelper.info("clear node successfully.");
+        }
+
+        public void stateChanged(CuratorFramework client, ConnectionState newState) {
+            LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
+            if (!newState.isConnected()) {
+                relinquishLeadership();
+                release();
+            }
+        }
+
+    }
+
+    private class JobCacheListener implements PathChildrenCacheListener {
+
+        @Override
+        public synchronized void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent event) throws Exception {
+            boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
+            if (!hasLeadership) {
+                return;
+            }
+            if (!EventHelper.isChildModifyEvent(event)) {
+                return;
+            }
+            StandbyJobData standbyJobData = new StandbyJobData(event.getData());
+            if (StringHelper.isEmpty(standbyJobData.getData().getOperation())) {
+                return;
+            }
+            StandbyJobData.Data data = standbyJobData.getData();
+            if (data.isUnknownOperation()) {
+                return;
+            }
+            StandbyNodeData.Data nodeData = standbyApiFactory.nodeApi().getNode(nodePath).getData();
+            executeOperation(nodeData, data);
+        }
+
+        private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
+            try {
+                if (data.isStart() || data.isRestart()) {
+                    Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    if (data.isStart()) {
+                        nodeData.increment();
+                    }
+                    data.setState("Startup");
+                } else {
+                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
+                    container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
+                    nodeData.decrement();
+                    data.setState("Pause");
+                }
+                data.operateSuccess();
+                standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+                standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
+            } catch (Throwable e) {
+                LoggerHelper.error("handle operation failed. " + data, e);
+                data.operateFailed(ExceptionHelper.getStackTrace(e, true));
+                standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
+            }
+        }
+
     }
 
 }

@@ -31,15 +31,12 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public abstract class AbstractRemoteJobNode extends AbstractNode implements RemoteJobNode {
-
-    private ReentrantLock lock = new ReentrantLock();
 
     private Map<String, Container> containerCache;
 
@@ -64,8 +61,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         if (container != null) {
             return container;
         }
-        lock.lock();
-        try {
+        synchronized (containerCache) {
             container = containerCache.get(jarFileName);
             if (container == null) {
                 try {
@@ -77,8 +73,6 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
                 containerCache.put(jarFileName, container);
             }
             return container;
-        } finally {
-            lock.unlock();
         }
     }
 
