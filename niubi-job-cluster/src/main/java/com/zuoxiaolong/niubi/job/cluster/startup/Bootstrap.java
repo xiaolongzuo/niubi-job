@@ -18,10 +18,7 @@ package com.zuoxiaolong.niubi.job.cluster.startup;
 
 import com.zuoxiaolong.niubi.job.core.exception.ConfigException;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.IOHelper;
-import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.helper.*;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 
@@ -219,7 +216,7 @@ public class Bootstrap {
         Class<?> nodeClass = applicationClassLoader.loadClass(nodeClassName);
         Constructor<?> nodeConstructor = nodeClass.getConstructor();
         nodeInstance = nodeConstructor.newInstance();
-        Method joinMethod = nodeClass.getDeclaredMethod("join");
+        Method joinMethod = ReflectHelper.getInheritMethod(nodeClass, "join");
         joinMethod.invoke(nodeInstance);
     }
 
@@ -234,7 +231,7 @@ public class Bootstrap {
         }
         if (nodeInstance != null ) {
             Class<?> nodeClass = applicationClassLoader.loadClass(nodeClassName);
-            Method exitMethod = nodeClass.getDeclaredMethod("exit");
+            Method exitMethod = ReflectHelper.getInheritMethod(nodeClass, "exit");
             exitMethod.invoke(nodeInstance);
         }
     }
