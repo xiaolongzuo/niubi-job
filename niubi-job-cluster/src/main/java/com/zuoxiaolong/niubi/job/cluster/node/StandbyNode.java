@@ -21,6 +21,7 @@ import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
+import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ExceptionHelper;
@@ -36,16 +37,13 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
-import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.KeeperException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * standby mode.
@@ -68,8 +66,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
     private StandbyApiFactory standbyApiFactory;
 
     private String nodePath;
-
-    private Object mutex = new Object();
 
     public StandbyNode() {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
@@ -128,49 +124,44 @@ public class StandbyNode extends AbstractRemoteJobNode {
         }
     }
 
-    private void await() throws InterruptedException {
-        synchronized (mutex) {
-            mutex.wait();
-        }
-    }
-
-    private void release() {
-        synchronized (mutex) {
-            mutex.notify();
-        }
-    }
-
     public synchronized void join() {
         leaderSelector.start();
     }
 
     public synchronized void exit() {
-        release();
+        try {
+            if (jobCache != null) {
+                jobCache.close();
+            }
+            LoggerHelper.info("job cache has been closed.");
+        } catch (Throwable e) {
+            LoggerHelper.error("job cache close failed.", e);
+        }
+        shutdownAllScheduler();
+        LoggerHelper.info("all scheduler has been shutdown.");
+        standbyApiFactory.nodeApi().deleteNode(nodePath);
+        LoggerHelper.info(getIp() + " has been deleted.");
         leaderSelector.close();
+        LoggerHelper.info("leaderSelector has been closed.");
         client.close();
     }
 
-    private class StandbyLeadershipSelectorListener implements LeaderSelectorListener {
+    private class StandbyLeadershipSelectorListener extends AbstractLeadershipSelectorListener {
 
-        private final AtomicInteger leaderCount = new AtomicInteger();
+        @Override
+        public String getIdentifier() {
+            return getIp();
+        }
 
-        public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
-            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
-            try {
-                StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
-                int runningJobCount = startupJobs();
-                nodeData.setRunningJobCount(runningJobCount);
-                nodeData.setState("Master");
-                standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
-                LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
-                jobCache.start();
-                await();
-            } catch (Exception e) {
-                LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
-            } finally {
-                relinquishLeadership();
-                LoggerHelper.info(getIp() + " relinquishing leadership.");
-            }
+        @Override
+        public void acquireLeadership() throws Exception {
+            StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
+            int runningJobCount = startupJobs();
+            nodeData.setRunningJobCount(runningJobCount);
+            nodeData.setState("Master");
+            standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
+            LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
+            jobCache.start();
         }
 
         private Integer startupJobs() {
@@ -194,33 +185,24 @@ public class StandbyNode extends AbstractRemoteJobNode {
             return runningJobCount;
         }
 
-        private void relinquishLeadership() {
-            LoggerHelper.info("begin stop job cache.");
-            if (jobCache != null) {
-                try {
+        @Override
+        public void relinquishLeadership() {
+            try {
+                if (jobCache != null) {
                     jobCache.close();
-                } catch (Throwable e) {
-                    LoggerHelper.warn("stop job cache failed.", e);
                 }
-                jobCache = null;
+                LoggerHelper.info("job cache has been closed.");
+            } catch (Throwable e) {
+                LoggerHelper.warn("job cache close failed.", e);
             }
             LoggerHelper.info("begin stop scheduler manager.");
-            for (Container container : getContainerCache().values()) {
-                container.schedulerManager().shutdown();
-            }
+            shutdownAllScheduler();
             if (client.getState() == CuratorFrameworkState.STARTED) {
                 StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
                 standbyApiFactory.nodeApi().updateNode(nodePath, data);
                 LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
             }
             LoggerHelper.info("clear node successfully.");
-        }
-
-        public void stateChanged(CuratorFramework client, ConnectionState newState) {
-            LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
-            if (!newState.isConnected()) {
-                release();
-            }
         }
 
     }

@@ -49,6 +49,12 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         return Collections.unmodifiableMap(containerCache);
     }
 
+    protected void shutdownAllScheduler() {
+        for (Container container : getContainerCache().values()) {
+            container.schedulerManager().shutdown();
+        }
+    }
+
     public Container getContainer(String jarFileName, String packagesToScan, boolean isSpring) {
         String jarFilePath;
         try {

@@ -60,4 +60,9 @@ public class MasterSlaveNodeApiImpl extends AbstractCurdApiImpl implements Maste
     }
 
 
+    @Override
+    public void deleteNode(String path) {
+        delete(path);
+    }
+
 }

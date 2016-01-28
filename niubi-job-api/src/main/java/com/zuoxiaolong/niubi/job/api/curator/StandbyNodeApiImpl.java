@@ -60,4 +60,9 @@ public class StandbyNodeApiImpl extends AbstractCurdApiImpl implements StandbyNo
     }
 
 
+    @Override
+    public void deleteNode(String path) {
+        delete(path);
+    }
+
 }

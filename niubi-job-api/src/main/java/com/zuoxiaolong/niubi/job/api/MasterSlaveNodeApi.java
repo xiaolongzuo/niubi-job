@@ -24,7 +24,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public interface MasterSlaveNodeApi {
+public interface MasterSlaveNodeApi extends NodeApi {
 
     List<MasterSlaveNodeData> getAllNodes();
 

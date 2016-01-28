@@ -1,7 +1,5 @@
-package com.zuoxiaolong.niubi.job.api;
-
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +14,13 @@ package com.zuoxiaolong.niubi.job.api;
  * limitations under the License.
  */
 
-import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
-
-import java.util.List;
+package com.zuoxiaolong.niubi.job.api;
 
 /**
  * @author Xiaolong Zuo
- * @since 0.9.3
  */
-public interface StandbyNodeApi extends NodeApi {
+public interface NodeApi {
 
-    List<StandbyNodeData> getAllNodes();
-
-    String saveNode(StandbyNodeData.Data data);
-
-    void updateNode(String path, StandbyNodeData.Data data);
-
-    StandbyNodeData getNode(String path);
+    void deleteNode(String path);
 
 }

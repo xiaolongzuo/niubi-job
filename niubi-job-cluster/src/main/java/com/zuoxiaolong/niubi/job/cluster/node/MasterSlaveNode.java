@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
+import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.ExceptionHelper;
@@ -37,18 +38,14 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.curator.framework.recipes.leader.LeaderSelector;
-import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.recipes.locks.InterProcessLock;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
-import org.apache.curator.framework.state.ConnectionState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.KeeperException;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -74,8 +71,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     private PathChildrenCache jobCache;
 
     private PathChildrenCache nodeCache;
-
-    private Object mutex = new Object();
 
     public MasterSlaveNode() {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
@@ -140,6 +135,45 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
+    @Override
+    public void join() {
+        leaderSelector.start();
+        try {
+            this.jobCache.start();
+        } catch (Exception e) {
+            LoggerHelper.error("path children path start failed.", e);
+            throw new NiubiException(e);
+        }
+    }
+
+    @Override
+    public void exit() {
+        try {
+            if (nodeCache != null) {
+                nodeCache.close();
+            }
+            LoggerHelper.info("node cache has been closed.");
+        } catch (Throwable e) {
+            LoggerHelper.warn("node cache close failed.", e);
+        }
+        shutdownAllScheduler();
+        LoggerHelper.info("all scheduler has been shutdown.");
+        masterSlaveApiFactory.nodeApi().deleteNode(nodePath);
+        LoggerHelper.info(getIp() + " has been deleted.");
+        leaderSelector.close();
+        LoggerHelper.info("leaderSelector has been closed.");
+        try {
+            if (jobCache != null) {
+                jobCache.close();
+            }
+            LoggerHelper.info("job cache has been closed.");
+        } catch (Throwable e) {
+            LoggerHelper.error("job cache close failed.", e);
+        }
+        client.close();
+        LoggerHelper.info("zk client has been closed.");
+    }
+
     /**
      * Release jobs on the node.
      *
@@ -160,71 +194,21 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
-    private void await() throws InterruptedException {
-        synchronized (mutex) {
-            mutex.wait();
+    private class MasterSlaveLeadershipSelectorListener extends AbstractLeadershipSelectorListener {
+
+        @Override
+        public String getIdentifier() {
+            return getIp();
         }
-    }
 
-    private void release() {
-        synchronized (mutex) {
-            mutex.notify();
-        }
-    }
-
-    @Override
-    public void join() {
-        leaderSelector.start();
-        try {
-            this.jobCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
-    }
-
-    @Override
-    public void exit() {
-        release();
-        leaderSelector.close();
-        try {
-            jobCache.close();
-        } catch (IOException e) {
-            LoggerHelper.error("path children path close failed.", e);
-            throw new NiubiException(e);
-        }
-        LoggerHelper.info("selector and cache has been closed.");
-        for (Container container : getContainerCache().values()) {
-            container.schedulerManager().shutdown();
-        }
-        LoggerHelper.info("containers has been shutdown.");
-        MasterSlaveNodeData nodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-        releaseJobs(nodePath, nodeData.getData());
-        LoggerHelper.info("jobs has been released.");
-        client.close();
-        LoggerHelper.info("zk client has been closed.");
-    }
-
-    private class MasterSlaveLeadershipSelectorListener implements LeaderSelectorListener {
-
-        private final AtomicInteger leaderCount = new AtomicInteger();
-
-        public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
-            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
-            try {
-                checkUnavailableNode();
-                MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-                masterSlaveNodeData.getData().setState("Master");
-                masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
-                LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
-                nodeCache.start();
-                await();
-            } catch (Exception e) {
-                LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
-            } finally {
-                relinquishLeadership();
-                LoggerHelper.info(getIp() + " relinquishing leadership.");
-            }
+        @Override
+        public void acquireLeadership() throws Exception {
+            checkUnavailableNode();
+            MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+            masterSlaveNodeData.getData().setState("Master");
+            masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
+            LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
+            nodeCache.start();
         }
 
         /**
@@ -248,15 +232,15 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             }
         }
 
-        private void relinquishLeadership() {
-            LoggerHelper.info("begin stop job cache.");
-            if (nodeCache != null) {
-                try {
+        @Override
+        public void relinquishLeadership() {
+            try {
+                if (nodeCache != null) {
                     nodeCache.close();
-                } catch (Throwable e) {
-                    LoggerHelper.warn("stop node cache failed.", e);
                 }
-                nodeCache = null;
+                LoggerHelper.info("node cache has been closed.");
+            } catch (Throwable e) {
+                LoggerHelper.warn("node cache close failed.", e);
             }
             if (client.getState() == CuratorFrameworkState.STARTED) {
                 MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
@@ -265,13 +249,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
             }
             LoggerHelper.info("clear node successfully.");
-        }
-
-        public void stateChanged(CuratorFramework client, ConnectionState newState) {
-            LoggerHelper.info(getIp() + " state change [" + newState + "]");
-            if (!newState.isConnected()) {
-                release();
-            }
         }
 
     }
