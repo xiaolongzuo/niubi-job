@@ -32,6 +32,7 @@ import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
@@ -74,6 +75,8 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
     private PathChildrenCache nodeCache;
 
+    private Object mutex = new Object();
+
     public MasterSlaveNode() {
         this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
         this.client.start();
@@ -109,6 +112,9 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
     }
 
+    /**
+     * If there has not anyone node alive, change state of all jobs to shutdown.
+     */
     private void initJobs() {
         List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
         if (!ListHelper.isEmpty(masterSlaveNodeDataList)) {
@@ -134,6 +140,12 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
+    /**
+     * Release jobs on the node.
+     *
+     * @param nodePath the zk path of node.
+     * @param nodeData the data of node.
+     */
     private void releaseJobs(String nodePath, MasterSlaveNodeData.Data nodeData) {
         if (ListHelper.isEmpty(nodeData.getJobPaths())) {
             return;
@@ -148,6 +160,18 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
         }
     }
 
+    private void await() throws InterruptedException {
+        synchronized (mutex) {
+            mutex.wait();
+        }
+    }
+
+    private void release() {
+        synchronized (mutex) {
+            mutex.notify();
+        }
+    }
+
     @Override
     public void join() {
         leaderSelector.start();
@@ -157,25 +181,14 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             LoggerHelper.error("path children path start failed.", e);
             throw new NiubiException(e);
         }
-        try {
-            this.nodeCache.start();
-        } catch (Exception e) {
-            LoggerHelper.error("path children path start failed.", e);
-            throw new NiubiException(e);
-        }
     }
 
     @Override
     public void exit() {
+        release();
         leaderSelector.close();
         try {
             jobCache.close();
-        } catch (IOException e) {
-            LoggerHelper.error("path children path close failed.", e);
-            throw new NiubiException(e);
-        }
-        try {
-            nodeCache.close();
         } catch (IOException e) {
             LoggerHelper.error("path children path close failed.", e);
             throw new NiubiException(e);
@@ -196,26 +209,27 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         private final AtomicInteger leaderCount = new AtomicInteger();
 
-        private Object mutex = new Object();
-
         public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
             LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
             try {
-                synchronized (mutex) {
-                    checkUnavailableNode();
-                    MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-                    masterSlaveNodeData.getData().setState("Master");
-                    masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
-                    LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
-                    mutex.wait();
-                }
+                checkUnavailableNode();
+                MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
+                masterSlaveNodeData.getData().setState("Master");
+                masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
+                LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
+                nodeCache.start();
+                await();
             } catch (Exception e) {
                 LoggerHelper.info(getIp() + " startup failed,relinquish leadership.");
             } finally {
+                relinquishLeadership();
                 LoggerHelper.info(getIp() + " relinquishing leadership.");
             }
         }
 
+        /**
+         * Check unavailable nodes , release jobs that is assigned on these nodes.
+         */
         private void checkUnavailableNode() {
             List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
             List<String> availableNodes = new ArrayList<>();
@@ -234,16 +248,29 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
             }
         }
 
+        private void relinquishLeadership() {
+            LoggerHelper.info("begin stop job cache.");
+            if (nodeCache != null) {
+                try {
+                    nodeCache.close();
+                } catch (Throwable e) {
+                    LoggerHelper.warn("stop node cache failed.", e);
+                }
+                nodeCache = null;
+            }
+            if (client.getState() == CuratorFrameworkState.STARTED) {
+                MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                releaseJobs(nodePath, nodeData);
+                nodeData.setState("Slave");
+                masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
+            }
+            LoggerHelper.info("clear node successfully.");
+        }
+
         public void stateChanged(CuratorFramework client, ConnectionState newState) {
             LoggerHelper.info(getIp() + " state change [" + newState + "]");
             if (!newState.isConnected()) {
-                synchronized (mutex) {
-                    MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
-                    releaseJobs(nodePath, nodeData);
-                    nodeData.setState("Slave");
-                    masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
-                    mutex.notify();
-                }
+                release();
             }
         }
 
@@ -253,6 +280,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         @Override
         public synchronized void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+            //double check
             if (!leaderSelector.hasLeadership()) {
                 return;
             }

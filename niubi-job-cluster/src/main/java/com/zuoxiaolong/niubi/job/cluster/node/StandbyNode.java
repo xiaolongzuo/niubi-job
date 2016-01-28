@@ -219,7 +219,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
         public void stateChanged(CuratorFramework client, ConnectionState newState) {
             LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
             if (!newState.isConnected()) {
-                relinquishLeadership();
                 release();
             }
         }
