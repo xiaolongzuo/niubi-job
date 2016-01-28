@@ -146,7 +146,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
         @Override
         public void acquireLeadership() throws Exception {
-            AssertHelper.isTrue(isJoined(), "illegal state .");
             StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
             int runningJobCount = startupJobs();
             nodeData.setRunningJobCount(runningJobCount);

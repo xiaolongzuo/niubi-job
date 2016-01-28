@@ -138,8 +138,11 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
 
         public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
             LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
+            boolean isJoined = isJoined();
             try {
-                acquireLeadership();
+                if (isJoined) {
+                    acquireLeadership();
+                }
             } catch (Throwable e) {
                 relinquishLeadership();
                 LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);

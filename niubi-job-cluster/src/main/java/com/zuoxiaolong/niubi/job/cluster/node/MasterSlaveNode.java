@@ -194,7 +194,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         @Override
         public void acquireLeadership() throws Exception {
-            AssertHelper.isTrue(isJoined(), "illegal state .");
             checkUnavailableNode();
             MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
             masterSlaveNodeData.getData().setState("Master");
