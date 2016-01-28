@@ -21,7 +21,6 @@ import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
-import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.*;
@@ -144,11 +143,6 @@ public class StandbyNode extends AbstractRemoteJobNode {
     }
 
     private class StandbyLeadershipSelectorListener extends AbstractLeadershipSelectorListener {
-
-        @Override
-        public String getIdentifier() {
-            return getIp();
-        }
 
         @Override
         public void acquireLeadership() throws Exception {

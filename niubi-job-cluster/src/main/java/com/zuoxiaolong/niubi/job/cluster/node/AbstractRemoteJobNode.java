@@ -24,6 +24,9 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
+import org.apache.curator.framework.state.ConnectionState;
 import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.IOException;
@@ -32,6 +35,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -50,7 +54,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         this.state.set(State.LATENT);
     }
 
-    public enum State { LATENT, JOINED, EXITED}
+    protected enum State { LATENT, JOINED, EXITED}
 
     protected boolean isJoined() {
         return this.state.get() == State.JOINED;
@@ -123,6 +127,46 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
         Properties properties = Bootstrap.properties();
         properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, JarFileHelper.getJarFileName(jarFilePath));
         return containerConstructor.newInstance(jarApplicationClassLoader, properties, packagesToScan, jarFilePath);
+    }
+
+    protected abstract class AbstractLeadershipSelectorListener implements LeaderSelectorListener {
+
+        private final AtomicInteger leaderCount = new AtomicInteger();
+
+        private Object mutex = new Object();
+
+        public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
+            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
+            try {
+                acquireLeadership();
+            } catch (Throwable e) {
+                relinquishLeadership();
+                LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
+                return;
+            }
+            try {
+                synchronized (mutex) {
+                    mutex.wait();
+                }
+            } catch (InterruptedException e) {
+                LoggerHelper.info(getIp() + " has been interrupted.");
+            }
+        }
+
+        public void stateChanged(CuratorFramework client, ConnectionState newState) {
+            LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
+            if (!newState.isConnected()) {
+                relinquishLeadership();
+                synchronized (mutex) {
+                    mutex.notify();
+                }
+            }
+        }
+
+        public abstract void acquireLeadership() throws Exception;
+
+        public abstract void relinquishLeadership();
+
     }
 
 }

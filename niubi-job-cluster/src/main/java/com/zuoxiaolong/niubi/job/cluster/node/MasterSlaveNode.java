@@ -22,7 +22,6 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
-import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.*;
@@ -192,11 +191,6 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     private class MasterSlaveLeadershipSelectorListener extends AbstractLeadershipSelectorListener {
-
-        @Override
-        public String getIdentifier() {
-            return getIp();
-        }
 
         @Override
         public void acquireLeadership() throws Exception {
