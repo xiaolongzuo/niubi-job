@@ -51,6 +51,7 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
     public AbstractRemoteJobNode() {
         super(Bootstrap.properties());
         this.containerCache = new ConcurrentHashMap<>();
+        this.state = new AtomicReference<>();
         this.state.set(State.LATENT);
     }
 
