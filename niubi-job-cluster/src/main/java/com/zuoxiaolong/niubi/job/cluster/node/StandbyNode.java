@@ -24,10 +24,7 @@ import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.ExceptionHelper;
-import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.helper.*;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -124,11 +121,11 @@ public class StandbyNode extends AbstractRemoteJobNode {
         }
     }
 
-    public synchronized void join() {
+    public synchronized void doJoin() {
         leaderSelector.start();
     }
 
-    public synchronized void exit() {
+    public synchronized void doExit() {
         try {
             if (jobCache != null) {
                 jobCache.close();
@@ -155,6 +152,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
         @Override
         public void acquireLeadership() throws Exception {
+            AssertHelper.isTrue(isJoined(), "illegal state .");
             StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
             int runningJobCount = startupJobs();
             nodeData.setRunningJobCount(runningJobCount);
@@ -211,6 +209,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
 
         @Override
         public synchronized void childEvent(CuratorFramework curatorFramework, PathChildrenCacheEvent event) throws Exception {
+            AssertHelper.isTrue(isJoined(), "illegal state .");
             boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
             if (!hasLeadership) {
                 return;

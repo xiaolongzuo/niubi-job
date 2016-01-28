@@ -18,6 +18,7 @@ package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
@@ -31,6 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Xiaolong Zuo
@@ -40,10 +42,33 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
 
     private Map<String, Container> containerCache;
 
+    protected AtomicReference<State> state;
+
     public AbstractRemoteJobNode() {
         super(Bootstrap.properties());
         this.containerCache = new ConcurrentHashMap<>();
+        this.state.set(State.LATENT);
     }
+
+    public enum State { LATENT, JOINED, EXITED}
+
+    protected boolean isJoined() {
+        return this.state.get() == State.JOINED;
+    }
+
+    @Override
+    public void join() {
+        AssertHelper.isTrue(state.compareAndSet(State.LATENT, State.JOINED), "illegal state .");
+    }
+
+    @Override
+    public void exit() {
+        AssertHelper.isTrue(state.compareAndSet(State.JOINED, State.EXITED), "illegal state .");
+    }
+
+    public abstract void doJoin();
+
+    public abstract void doExit();
 
     protected Map<String, Container> getContainerCache() {
         return Collections.unmodifiableMap(containerCache);

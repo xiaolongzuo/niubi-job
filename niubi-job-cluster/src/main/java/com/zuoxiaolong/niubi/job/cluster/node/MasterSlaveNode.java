@@ -25,10 +25,7 @@ import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
 import com.zuoxiaolong.niubi.job.cluster.listener.AbstractLeadershipSelectorListener;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.ExceptionHelper;
-import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
-import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
+import com.zuoxiaolong.niubi.job.core.helper.*;
 import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -136,7 +133,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     @Override
-    public void join() {
+    public void doJoin() {
         leaderSelector.start();
         try {
             this.jobCache.start();
@@ -147,7 +144,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
     }
 
     @Override
-    public void exit() {
+    public void doExit() {
         try {
             if (nodeCache != null) {
                 nodeCache.close();
@@ -203,6 +200,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         @Override
         public void acquireLeadership() throws Exception {
+            AssertHelper.isTrue(isJoined(), "illegal state .");
             checkUnavailableNode();
             MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
             masterSlaveNodeData.getData().setState("Master");
@@ -257,6 +255,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         @Override
         public synchronized void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
+            AssertHelper.isTrue(isJoined(), "illegal state .");
             //double check
             if (!leaderSelector.hasLeadership()) {
                 return;
@@ -273,6 +272,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
 
         @Override
         public synchronized void childEvent(CuratorFramework clientInner, PathChildrenCacheEvent event) throws Exception {
+            AssertHelper.isTrue(isJoined(), "illegal state .");
             if (!EventHelper.isChildModifyEvent(event)) {
                 return;
             }
@@ -308,7 +308,7 @@ public class MasterSlaveNode extends AbstractRemoteJobNode {
                 return;
             }
             if (hasLeadership) {
-                //check weigher node path
+                //check whether the node is available or not.
                 List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
                 boolean nodeIsLive = false;
                 for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
