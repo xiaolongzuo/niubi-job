@@ -59,11 +59,13 @@ public abstract class AbstractRemoteJobNode extends AbstractNode implements Remo
     @Override
     public void join() {
         AssertHelper.isTrue(state.compareAndSet(State.LATENT, State.JOINED), "illegal state .");
+        doJoin();
     }
 
     @Override
     public void exit() {
         AssertHelper.isTrue(state.compareAndSet(State.JOINED, State.EXITED), "illegal state .");
+        doExit();
     }
 
     public abstract void doJoin();
