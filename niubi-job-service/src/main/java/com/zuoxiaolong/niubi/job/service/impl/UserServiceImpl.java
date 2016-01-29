@@ -24,13 +24,13 @@ import com.zuoxiaolong.niubi.job.persistent.shiro.HashHelper;
 import com.zuoxiaolong.niubi.job.service.ServiceException;
 import com.zuoxiaolong.niubi.job.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-@Component
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
