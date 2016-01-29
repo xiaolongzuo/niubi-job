@@ -1,8 +1,8 @@
-# niubi-job
+# Niubi Job
 This is a distributed job scheduling framework.
 
-# Download the newest version
-##### Current version : 0.9.3 [stable]
+# Download
+##### Current stable version : 0.9.3
  * [niubi-job-cluster.zip](http://www.zuoxiaolong.com/download/niubi-job-cluster.zip "niubi-job-cluster.zip")   [Cluster for Windows]
  * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Cluster for Unix/Mac]
  * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [Console for Web UI]
