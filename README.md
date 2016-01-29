@@ -1,5 +1,5 @@
 # Niubi Job
-This is a distributed job scheduling framework.
+Niubi Job is a high availability, distributed job scheduling framework.The API will be provided to users with simple Web-UI for start/pause/restart jobs.
 
 # Download
 ##### Current stable version : 0.9.3
