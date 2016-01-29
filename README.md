@@ -14,3 +14,6 @@ Niubi Job is a high availability, distributed job scheduling framework.The API w
 # Documentation
  * [Installation tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html")
  * [Develop tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html")
+
+# License
+The Spring Framework is released under version 2.0 of the Apache License.
