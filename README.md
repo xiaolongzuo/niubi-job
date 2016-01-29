@@ -14,6 +14,7 @@ Niubi Job is a high availability, distributed job scheduling framework.The API w
 # Documentation
  * [Installation tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html")
  * [Develop tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html")
+ * [Framework design principles](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html")
 
 # License
 The Niubi Job Framework is released under version 2.0 of the Apache License.
