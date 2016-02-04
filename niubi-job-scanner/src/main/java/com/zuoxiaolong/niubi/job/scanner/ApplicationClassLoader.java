@@ -164,7 +164,7 @@ public class ApplicationClassLoader extends URLClassLoader {
         if (url != null) {
             return url;
         }
-        if (entrust) {
+        if (!entrust) {
             ClassLoader parent = getParent();
             if (parent instanceof URLClassLoader) {
                 url = ((URLClassLoader)parent).findResource(name);
