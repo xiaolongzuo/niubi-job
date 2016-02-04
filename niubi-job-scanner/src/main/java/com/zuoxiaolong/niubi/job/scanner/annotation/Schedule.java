@@ -32,13 +32,11 @@ import java.lang.annotation.Target;
 public @interface Schedule {
 
     /**
-     * 仅当type为CRON时有效
      * @return cron
      */
     String cron() default "";
 
     /**
-     * 丢失的任务策略
      * @return misfirePolicy
      */
     MisfirePolicy misfirePolicy() default MisfirePolicy.None;
