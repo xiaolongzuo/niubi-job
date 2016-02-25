@@ -19,6 +19,7 @@ package com.zuoxiaolong.niubi.job.api.curator;
 import com.zuoxiaolong.niubi.job.api.StandbyNodeApi;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
+import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
@@ -38,6 +39,9 @@ public class StandbyNodeApiImpl extends AbstractCurdApiImpl implements StandbyNo
     @Override
     public List<StandbyNodeData> getAllNodes() {
         List<ChildData> childDataList = getChildren(PathHelper.getParentPath(getStandbyPathApi().getNodePath()));
+        if (ListHelper.isEmpty(childDataList)) {
+            return null;
+        }
         List<StandbyNodeData> standbyNodeDataList = childDataList.stream().map(StandbyNodeData::new).collect(Collectors.toList());
         return standbyNodeDataList;
     }
