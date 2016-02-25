@@ -60,6 +60,9 @@ public abstract class AbstractCurdApiImpl {
     }
 
     protected List<ChildData> getChildren(String path) {
+        if (!checkExists(path)) {
+            return null;
+        }
         try {
             List<ChildData> childDataList = new ArrayList<>();
             List<String> children = client.getChildren().forPath(path);
