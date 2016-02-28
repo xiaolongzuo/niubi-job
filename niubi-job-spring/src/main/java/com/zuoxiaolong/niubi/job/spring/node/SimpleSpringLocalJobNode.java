@@ -17,9 +17,13 @@
 package com.zuoxiaolong.niubi.job.spring.node;
 
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
-import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.node.AbstractLocalJobNode;
-import com.zuoxiaolong.niubi.job.spring.container.DefaultSpringContainer;
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
+import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
+import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -28,17 +32,25 @@ import org.springframework.context.ApplicationContext;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class SimpleSpringLocalJobNode extends AbstractLocalJobNode {
+public class SimpleSpringLocalJobNode extends AbstractNode {
 
-    private Container container;
+    private SchedulerManager schedulerManager;
 
     public SimpleSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan) {
         ClassHelper.overrideThreadContextClassLoader(applicationContext.getClassLoader());
-        this.container = new DefaultSpringContainer(applicationContext, packagesToScan);
+        JobBeanFactory jobBeanFactory = new SpringJobBeanFactory(applicationContext);
+        JobScanner jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
+        schedulerManager = new DefaultSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
     }
 
     @Override
-    public Container getContainer() {
-        return container;
+    public void join() {
+        schedulerManager.startup();
     }
+
+    @Override
+    public void exit() {
+        schedulerManager.shutdown();
+    }
+
 }

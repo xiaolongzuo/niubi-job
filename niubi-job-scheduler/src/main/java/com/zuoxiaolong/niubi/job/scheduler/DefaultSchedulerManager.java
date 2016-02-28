@@ -69,22 +69,16 @@ public class DefaultSchedulerManager implements SchedulerManager {
         this.properties = new Properties(properties);
         this.jobBeanFactory = jobBeanFactory;
         this.jobDescriptorList = Collections.unmodifiableList(jobDescriptorList);
-        startScheduler();
+        initScheduler();
+        initJobDetails();
     }
 
-    public DefaultSchedulerManager(Properties properties, JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
+    public DefaultSchedulerManager(Properties properties) {
         AssertHelper.notNull(properties, "configuration can't be null.");
         AssertHelper.notNull(jobBeanFactory, "jobBeanFactory can't be null.");
         AssertHelper.notNull(jobDescriptorList, "jobDescriptorList can't be null.");
         this.properties = new Properties(properties);
-        this.jobBeanFactory = jobBeanFactory;
-        this.jobDescriptorList = Collections.unmodifiableList(jobDescriptorList);
-        startScheduler();
-    }
-
-    private synchronized void startScheduler() {
         initScheduler();
-        initJobDetails();
     }
 
     private synchronized void stopScheduler() {
@@ -100,17 +94,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
         this.groupNameListMap = null;
         this.jobStatusMap = null;
         this.groupList = null;
-    }
-
-    private synchronized void checkScheduler() {
-        try {
-            if (scheduler == null || !scheduler.isStarted()) {
-                startScheduler();
-            }
-        } catch (SchedulerException e) {
-            LoggerHelper.error("check scheduler state failed.", e);
-            throw new NiubiException(e);
-        }
     }
 
     protected void initScheduler() {
@@ -190,12 +173,10 @@ public class DefaultSchedulerManager implements SchedulerManager {
     }
 
     public synchronized void startup() {
-        checkScheduler();
         getGroupList().forEach(this::startup);
     }
 
     public synchronized void startup(String group) {
-        checkScheduler();
         for (String name : getNameList(group)) {
             startup(group, name);
         }
@@ -203,7 +184,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startup(String group, String name) {
-        checkScheduler();
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
@@ -243,7 +223,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String cron, String misfirePolicy) {
-        checkScheduler();
         for (String group : getGroupList()) {
             startupManual(group, cron, misfirePolicy);
         }
@@ -251,7 +230,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String group, String cron, String misfirePolicy) {
-        checkScheduler();
         for (String name : getNameList(group)) {
             startupManual(group, name, cron, misfirePolicy);
         }
@@ -259,7 +237,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
 
     @Override
     public synchronized void startupManual(String group, String name, String cron, String misfirePolicy) {
-        checkScheduler();
         JobKey jobKey = JobKey.jobKey(name, group);
         ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         SchedulerJobDescriptor jobDescriptor;
@@ -294,6 +271,11 @@ public class DefaultSchedulerManager implements SchedulerManager {
             }
         }
         jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
+    }
+
+    @Override
+    public void startupManual(String jarFileName, String packagesToScan, boolean isSpring, String group, String name, String cron, String misfirePolicy) {
+
     }
 
     public synchronized void shutdown() {

@@ -24,7 +24,6 @@ import com.zuoxiaolong.niubi.job.api.helper.EventHelper;
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.*;
-import com.zuoxiaolong.niubi.job.scheduler.container.Container;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -47,7 +46,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class StandbyNode extends AbstractRemoteJobNode {
+public class StandbyNode extends AbstractClusterJobNode {
 
     private final LeaderSelector leaderSelector;
 
@@ -133,7 +132,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
         } catch (Throwable e) {
             LoggerHelper.error("job cache close failed.", e);
         }
-        shutdownAllScheduler();
+        schedulerManager.shutdown();
         LoggerHelper.info("all scheduler has been shutdown.");
         standbyApiFactory.nodeApi().deleteNode(nodePath);
         LoggerHelper.info(getIp() + " has been deleted.");
@@ -165,8 +164,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 try {
                     StandbyJobData.Data data = standbyJobData.getData();
                     if ("Startup".equals(data.getState())) {
-                        Container container = getContainer(standbyJobData.getData().getJarFileName(), standbyJobData.getData().getPackagesToScan(), standbyJobData.getData().isSpring());
-                        container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                        schedulerManager.startupManual(data.getJarFileName(), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                         runningJobCount++;
                     }
                 } catch (Exception e) {
@@ -187,7 +185,7 @@ public class StandbyNode extends AbstractRemoteJobNode {
                 LoggerHelper.warn("job cache close failed.", e);
             }
             LoggerHelper.info("begin stop scheduler manager.");
-            shutdownAllScheduler();
+            schedulerManager.shutdown();
             if (client.getState() == CuratorFrameworkState.STARTED) {
                 StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
                 standbyApiFactory.nodeApi().updateNode(nodePath, data);
@@ -225,15 +223,13 @@ public class StandbyNode extends AbstractRemoteJobNode {
         private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
             try {
                 if (data.isStart() || data.isRestart()) {
-                    Container container = getContainer(data.getJarFileName(), data.getPackagesToScan(), data.isSpring());
-                    container.schedulerManager().startupManual(data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    schedulerManager.startupManual(data.getJarFileName(), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                     if (data.isStart()) {
                         nodeData.increment();
                     }
                     data.setState("Startup");
                 } else {
-                    Container container = getContainer(data.getOriginalJarFileName(), data.getPackagesToScan(), data.isSpring());
-                    container.schedulerManager().shutdown(data.getGroupName(), data.getJobName());
+                    schedulerManager.shutdown(data.getGroupName(), data.getJobName());
                     nodeData.decrement();
                     data.setState("Pause");
                 }

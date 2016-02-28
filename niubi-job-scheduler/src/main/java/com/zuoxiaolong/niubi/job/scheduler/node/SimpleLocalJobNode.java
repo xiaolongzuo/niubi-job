@@ -16,24 +16,36 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.node;
 
-import com.zuoxiaolong.niubi.job.scheduler.container.Container;
-import com.zuoxiaolong.niubi.job.scheduler.container.DefaultContainer;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
+import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class SimpleLocalJobNode extends AbstractLocalJobNode {
+public class SimpleLocalJobNode extends AbstractNode {
 
-    private Container container;
+    private SchedulerManager schedulerManager;
 
     public SimpleLocalJobNode(String packagesToScan) {
-        this.container = new DefaultContainer(packagesToScan);
+        JobBeanFactory jobBeanFactory = new DefaultJobBeanFactory();
+        JobScanner jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
+        schedulerManager = new DefaultSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
     }
 
     @Override
-    public Container getContainer() {
-        return container;
+    public void join() {
+        schedulerManager.startup();
+    }
+
+    @Override
+    public void exit() {
+        schedulerManager.shutdown();
     }
 
 }

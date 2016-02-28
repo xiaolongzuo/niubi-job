@@ -36,6 +36,8 @@ public interface SchedulerManager {
 
     void startupManual(String group, String name, String cron, String misfirePolicy);
 
+    void startupManual(String jarFileName, String packagesToScan, boolean isSpring, String group, String name, String cron, String misfirePolicy);
+
     void shutdown();
 
     void shutdown(String group);
