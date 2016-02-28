@@ -26,12 +26,12 @@ import java.net.URL;
  */
 public abstract class HttpHelper {
 
-    public static String downloadRemoteResource(String jarFilePath, String url) throws IOException {
+    public static String downloadRemoteResource(String filePath, String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.connect();
         byte[] bytes = IOHelper.readStreamBytesAndClose(connection.getInputStream());
-        IOHelper.writeFile(jarFilePath, bytes);
-        return jarFilePath;
+        IOHelper.writeFile(filePath, bytes);
+        return filePath;
     }
 
 }
