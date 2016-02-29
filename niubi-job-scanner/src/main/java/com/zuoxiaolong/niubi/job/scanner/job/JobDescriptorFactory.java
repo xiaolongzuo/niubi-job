@@ -26,7 +26,7 @@ import java.lang.reflect.Method;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class JobDescriptorFactory {
+public final class JobDescriptorFactory {
 
     private JobDescriptorFactory() {}
 
