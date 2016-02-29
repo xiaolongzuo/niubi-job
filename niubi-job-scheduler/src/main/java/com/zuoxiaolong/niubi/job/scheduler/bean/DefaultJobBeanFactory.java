@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import org.quartz.JobKey;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,16 @@ import java.util.Map;
  */
 public class DefaultJobBeanFactory implements JobBeanFactory {
 
+    private ClassLoader classLoader;
+
+    public DefaultJobBeanFactory(ClassLoader classLoader) {
+
+    }
+
     private Map<Class<?>, Object> jobBeanInstanceClassMap = new HashMap<>();
 
-    public <T> T getJobBean(Class<T> clazz) {
+    @Override
+    public <T> T getJobBean(JobKey jobKey) {
         T instance = (T) jobBeanInstanceClassMap.get(clazz);
         if (instance != null) {
             return instance;

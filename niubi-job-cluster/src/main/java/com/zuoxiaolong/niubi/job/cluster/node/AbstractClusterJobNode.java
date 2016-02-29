@@ -17,16 +17,19 @@
 package com.zuoxiaolong.niubi.job.cluster.node;
 
 import com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap;
+import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
+import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
-import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultManualSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.ManualSchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
 import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.leader.LeaderSelectorListener;
 import org.apache.curator.framework.state.ConnectionState;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -38,11 +41,11 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
 
     protected AtomicReference<State> state;
 
-    protected SchedulerManager schedulerManager;
+    protected ManualSchedulerManager schedulerManager;
 
     public AbstractClusterJobNode() {
         super(Bootstrap.properties());
-        this.schedulerManager = new DefaultSchedulerManager(Bootstrap.properties());
+        this.schedulerManager = new DefaultManualSchedulerManager(Bootstrap.properties());
         this.state = new AtomicReference<>();
         this.state.set(State.LATENT);
     }
@@ -51,6 +54,17 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
 
     protected boolean isJoined() {
         return this.state.get() == State.JOINED;
+    }
+
+    protected String downloadJarFile(String jarFileName) {
+        String jarFilePath;
+        try {
+            jarFilePath = JarFileHelper.downloadJarFile(Bootstrap.getJobDir(), Bootstrap.getJarUrl(jarFileName));
+        } catch (IOException e) {
+            LoggerHelper.error("download jar file failed. [" + jarFileName + "]", e);
+            throw new NiubiException(e);
+        }
+        return jarFilePath;
     }
 
     @Override

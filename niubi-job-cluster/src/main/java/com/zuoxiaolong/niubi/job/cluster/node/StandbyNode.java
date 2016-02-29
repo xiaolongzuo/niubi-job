@@ -164,7 +164,7 @@ public class StandbyNode extends AbstractClusterJobNode {
                 try {
                     StandbyJobData.Data data = standbyJobData.getData();
                     if ("Startup".equals(data.getState())) {
-                        schedulerManager.startupManual(data.getJarFileName(), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                        schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                         runningJobCount++;
                     }
                 } catch (Exception e) {
@@ -223,7 +223,7 @@ public class StandbyNode extends AbstractClusterJobNode {
         private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
             try {
                 if (data.isStart() || data.isRestart()) {
-                    schedulerManager.startupManual(data.getJarFileName(), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                     if (data.isStart()) {
                         nodeData.increment();
                     }

@@ -349,7 +349,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             MasterSlaveJobData.Data data = jobData.getData();
             try {
                 if (data.isStart() || data.isRestart()) {
-                    schedulerManager.startupManual(data.getJarFileName(), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
                     if (data.isStart()) {
                         nodeData.addJobPath(jobData.getPath());
                     }

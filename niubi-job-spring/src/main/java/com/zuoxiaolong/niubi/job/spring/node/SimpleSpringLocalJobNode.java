@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.spring.node;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
-import com.zuoxiaolong.niubi.job.scheduler.DefaultSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultAutomaticSchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
@@ -40,7 +40,7 @@ public class SimpleSpringLocalJobNode extends AbstractNode {
         ClassHelper.overrideThreadContextClassLoader(applicationContext.getClassLoader());
         JobBeanFactory jobBeanFactory = new SpringJobBeanFactory(applicationContext);
         JobScanner jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
-        schedulerManager = new DefaultSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
+        schedulerManager = new DefaultAutomaticSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
     }
 
     @Override

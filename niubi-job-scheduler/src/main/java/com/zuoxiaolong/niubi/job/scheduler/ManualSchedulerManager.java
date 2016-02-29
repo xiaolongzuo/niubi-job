@@ -16,24 +16,16 @@
 
 package com.zuoxiaolong.niubi.job.scheduler;
 
-import java.util.List;
-
 /**
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4
  */
-public interface SchedulerManager {
+public interface ManualSchedulerManager extends SchedulerManager {
 
-    void shutdown();
+    void startupManual(String jarFilePath, String packagesToScan, boolean isSpring, String cron, String misfirePolicy);
 
-    void shutdown(String group);
+    void startupManual(String jarFilePath, String packagesToScan, boolean isSpring, String group, String cron, String misfirePolicy);
 
-    void shutdown(String group, String name);
-
-    List<String> getGroupList();
-
-    List<String> getNameList(String group);
-
-    ScheduleStatus getScheduleStatus(String group, String name);
+    void startupManual(String jarFilePath, String packagesToScan, boolean isSpring, String group, String name, String cron, String misfirePolicy);
 
 }

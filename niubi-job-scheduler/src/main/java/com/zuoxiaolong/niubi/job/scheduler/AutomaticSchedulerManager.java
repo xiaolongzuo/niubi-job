@@ -16,24 +16,16 @@
 
 package com.zuoxiaolong.niubi.job.scheduler;
 
-import java.util.List;
-
 /**
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4
  */
-public interface SchedulerManager {
+public interface AutomaticSchedulerManager extends SchedulerManager {
 
-    void shutdown();
+    void startup();
 
-    void shutdown(String group);
+    void startup(String group);
 
-    void shutdown(String group, String name);
-
-    List<String> getGroupList();
-
-    List<String> getNameList(String group);
-
-    ScheduleStatus getScheduleStatus(String group, String name);
+    void startup(String group, String name);
 
 }
