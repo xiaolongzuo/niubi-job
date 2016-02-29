@@ -268,7 +268,7 @@ public abstract class ReflectHelper {
 				methodList.add(method);
 			}
 		}
-		if (methodList.size() == 0) {
+		if (methodList.isEmpty()) {
 			return null;
 		}
 		if (methodList.size() > 1) {
