@@ -42,8 +42,7 @@ public class MasterSlaveNodeApiImpl extends AbstractCurdApiImpl implements Maste
         if (ListHelper.isEmpty(childDataList)) {
             return null;
         }
-        List<MasterSlaveNodeData> masterSlaveNodeDataList = childDataList.stream().map(MasterSlaveNodeData::new).collect(Collectors.toList());
-        return masterSlaveNodeDataList;
+        return childDataList.stream().map(MasterSlaveNodeData::new).collect(Collectors.toList());
     }
 
     @Override

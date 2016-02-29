@@ -42,8 +42,7 @@ public class StandbyNodeApiImpl extends AbstractCurdApiImpl implements StandbyNo
         if (ListHelper.isEmpty(childDataList)) {
             return null;
         }
-        List<StandbyNodeData> standbyNodeDataList = childDataList.stream().map(StandbyNodeData::new).collect(Collectors.toList());
-        return standbyNodeDataList;
+        return childDataList.stream().map(StandbyNodeData::new).collect(Collectors.toList());
     }
 
     @Override

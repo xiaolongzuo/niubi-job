@@ -39,8 +39,7 @@ public class StandbyJobApiImpl extends AbstractCurdApiImpl implements StandbyJob
     @Override
     public List<StandbyJobData> getAllJobs() {
         List<ChildData> childDataList = getChildren(getStandbyPathApi().getJobPath());
-        List<StandbyJobData> nodeModelList = childDataList.stream().map(StandbyJobData::new).collect(Collectors.toList());
-        return nodeModelList;
+        return childDataList.stream().map(StandbyJobData::new).collect(Collectors.toList());
     }
 
     @Override
