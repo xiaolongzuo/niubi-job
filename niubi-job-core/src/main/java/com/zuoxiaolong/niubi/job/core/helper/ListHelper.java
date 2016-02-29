@@ -27,7 +27,7 @@ import java.util.List;
 public abstract class ListHelper {
 
     public static <T> List<T> merge(List<T> list1, List<T> list2) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list1 != null) {
             mergeResult.addAll(list1);
         }
@@ -38,7 +38,7 @@ public abstract class ListHelper {
     }
 
     public static <T> List<T> add(List<T> list, T element) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
         }
@@ -49,7 +49,7 @@ public abstract class ListHelper {
     }
 
     public static <T> List<T> sub(List<T> list, T element) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
         }

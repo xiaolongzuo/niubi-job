@@ -262,7 +262,7 @@ public abstract class ReflectHelper {
 		if (methodName == null || methodName.length() == 0) {
 			return null;
 		}
-		List<Method> methodList = new ArrayList<Method>();
+		List<Method> methodList = new ArrayList<>();
 		for (Method method : methods) {
 			if (method.getName().equals(methodName)) {
 				methodList.add(method);

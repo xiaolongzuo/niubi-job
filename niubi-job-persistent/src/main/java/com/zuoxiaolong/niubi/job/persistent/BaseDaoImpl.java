@@ -71,7 +71,7 @@ public class BaseDaoImpl implements BaseDao {
 
 	@Override
 	public <T> List<String> save(List<T> entityList) {
-		List<String> idList = new ArrayList<String>();
+		List<String> idList = new ArrayList<>();
 		Session session = getHibernateSession();
         idList.addAll(entityList.stream().map(entity -> (String) session.save(entity)).collect(Collectors.toList()));
 		return idList;
@@ -159,7 +159,7 @@ public class BaseDaoImpl implements BaseDao {
 	@Override
 	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity, boolean useLike) {
 		if (pager == null) {
-			pager = new Pager<T>();
+			pager = new Pager<>();
 		}
 
 		StringBuffer sqlBuffer = new StringBuffer("from " + getEntityAnnotationName(clazz) + " where 1=1 ");
@@ -197,7 +197,7 @@ public class BaseDaoImpl implements BaseDao {
 	}
 
 	private <T> List<Object> generateValueListAndSetSql(Class<T> clazz, T entity, StringBuffer sqlBuffer, boolean useLike) {
-		List<Object> valueList = new ArrayList<Object>();
+		List<Object> valueList = new ArrayList<>();
 		if (entity != null) {
 			Field[] fields = ReflectHelper.getAllFields(entity);
 			for (int i = 0, index = 0; i < fields.length; i++) {

@@ -31,7 +31,7 @@ public class Pager<E> {
 
 	private int totalCount;
 	
-	private ViewJsonData<E> viewJsonData = new ViewJsonData<E>();
+	private ViewJsonData<E> viewJsonData = new ViewJsonData<>();
 
 	public int getPageNumber() {
 		return pageNumber;
