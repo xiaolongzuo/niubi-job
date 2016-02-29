@@ -24,7 +24,7 @@ import java.net.URL;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class HttpHelper {
+public interface HttpHelper {
 
     public static String downloadRemoteResource(String filePath, String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();

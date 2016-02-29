@@ -27,7 +27,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class ReflectHelper {
+public interface ReflectHelper {
 
     public static void copyFieldValues(Object source, Object target) {
         if (source == null || target == null) {

@@ -25,7 +25,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class JarFileHelper {
+public interface JarFileHelper {
 
     public static String getJarFileName(String jarFilePath) {
         if (jarFilePath == null) {

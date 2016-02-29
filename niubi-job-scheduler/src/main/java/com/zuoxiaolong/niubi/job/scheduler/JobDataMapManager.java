@@ -27,7 +27,7 @@ import org.quartz.SchedulerException;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class JobDataMapManager {
+public interface JobDataMapManager {
 
     public static SchedulerJobDescriptor getJobDescriptor(JobDetail jobDetail) {
         return (SchedulerJobDescriptor) jobDetail.getJobDataMap().get(SchedulerJobDescriptor.DATA_MAP_KEY);

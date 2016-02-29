@@ -25,7 +25,7 @@ import java.util.Date;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class DateHelper {
+public interface DateHelper {
 
     public static String format(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
