@@ -75,8 +75,7 @@ public abstract class AbstractCurdApiImpl {
 
     protected ChildData getData(String path) {
         try {
-            ChildData childData = new ChildData(path, EMPTY_STAT, client.getData().forPath(path));
-            return childData;
+            return new ChildData(path, EMPTY_STAT, client.getData().forPath(path));
         } catch (Exception e) {
             throw new NiubiException(e);
         }
