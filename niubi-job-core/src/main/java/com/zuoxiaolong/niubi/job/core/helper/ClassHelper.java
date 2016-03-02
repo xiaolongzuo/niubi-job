@@ -23,7 +23,7 @@ package com.zuoxiaolong.niubi.job.core.helper;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class ClassHelper {
+public interface ClassHelper {
 
     public static String getPackageName(String className) {
         AssertHelper.notEmpty(className, "className can't be null.");

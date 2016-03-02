@@ -24,7 +24,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class ListHelper {
+public interface ListHelper {
 
     public static <T> List<T> merge(List<T> list1, List<T> list2) {
         List<T> mergeResult = new ArrayList<>();

@@ -22,7 +22,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class EventHelper {
+public interface EventHelper {
 
     public static boolean isChildAddEvent(PathChildrenCacheEvent event) {
         return event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED;

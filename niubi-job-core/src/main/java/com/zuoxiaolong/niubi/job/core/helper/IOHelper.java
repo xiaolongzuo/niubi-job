@@ -26,7 +26,7 @@ import java.net.HttpURLConnection;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class IOHelper {
+public interface IOHelper {
 
     public static void writeFile(String fileName, byte[] bytes) throws IOException {
         if (fileName != null) {

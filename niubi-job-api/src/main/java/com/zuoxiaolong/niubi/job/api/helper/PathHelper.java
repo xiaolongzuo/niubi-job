@@ -22,7 +22,7 @@ import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class PathHelper {
+public interface PathHelper {
 
     public static String getParentPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");

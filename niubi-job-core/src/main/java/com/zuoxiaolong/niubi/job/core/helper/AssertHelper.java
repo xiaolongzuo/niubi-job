@@ -22,7 +22,7 @@ package com.zuoxiaolong.niubi.job.core.helper;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class AssertHelper {
+public interface AssertHelper {
 
     /**
      * Assert that the object is not {@code null}
