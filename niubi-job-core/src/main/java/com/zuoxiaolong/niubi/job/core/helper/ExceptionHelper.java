@@ -48,10 +48,10 @@ public abstract class ExceptionHelper {
             if (stackElements != null) {
                 for (int i = 0; i < stackElements.length && i < MAX_STACK_TRACE_DEEP; i++) {
                     stringBuffer.append(tab);
-                    stringBuffer.append(stackElements[i].getClassName()).append(".");
-                    stringBuffer.append(stackElements[i].getMethodName()).append("(");
-                    stringBuffer.append(stackElements[i].getFileName()).append(":");
-                    stringBuffer.append(stackElements[i].getLineNumber()).append(")");
+                    stringBuffer.append(stackElements[i].getClassName()).append('.');
+                    stringBuffer.append(stackElements[i].getMethodName()).append('(');
+                    stringBuffer.append(stackElements[i].getFileName()).append(':');
+                    stringBuffer.append(stackElements[i].getLineNumber()).append(')');
                     stringBuffer.append(line);
                 }
             }
