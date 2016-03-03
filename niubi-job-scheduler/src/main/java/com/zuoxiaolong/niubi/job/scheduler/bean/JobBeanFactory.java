@@ -16,8 +16,6 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
-import org.quartz.JobKey;
-
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -26,6 +24,6 @@ public interface JobBeanFactory {
 
     String DATA_MAP_KEY = "_job_bean_factory";
 
-    <T> T getJobBean(JobKey jobKey);
+    <T> T getJobBean(String group, String name);
 
 }

@@ -19,8 +19,8 @@ package com.zuoxiaolong.niubi.job.spring.node;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
+import com.zuoxiaolong.niubi.job.scheduler.AutomaticSchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.DefaultAutomaticSchedulerManager;
-import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
 import com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory;
@@ -34,7 +34,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class SimpleSpringLocalJobNode extends AbstractNode {
 
-    private SchedulerManager schedulerManager;
+    private AutomaticSchedulerManager schedulerManager;
 
     public SimpleSpringLocalJobNode(ApplicationContext applicationContext, String packagesToScan) {
         ClassHelper.overrideThreadContextClassLoader(applicationContext.getClassLoader());

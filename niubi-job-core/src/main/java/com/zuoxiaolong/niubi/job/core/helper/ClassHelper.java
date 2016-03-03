@@ -25,6 +25,11 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 public abstract class ClassHelper {
 
+    public static String getFullClassName(String packageName, String className) {
+        AssertHelper.notEmpty(className, "className can't be null.");
+        return StringHelper.isEmpty(packageName) ? className : (packageName + "." + className);
+    }
+
     public static String getPackageName(String className) {
         AssertHelper.notEmpty(className, "className can't be null.");
         int index = className.lastIndexOf(".");

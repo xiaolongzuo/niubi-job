@@ -17,6 +17,7 @@
 package com.zuoxiaolong.niubi.job.scheduler;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -62,7 +63,7 @@ public abstract class AbstractSchedulerManager implements SchedulerManager {
     }
 
     protected String getUniqueId(JobKey jobKey) {
-        return jobKey.getGroup() + "." + jobKey.getName();
+        return ClassHelper.getFullClassName(jobKey.getGroup(), jobKey.getName());
     }
 
     @Override

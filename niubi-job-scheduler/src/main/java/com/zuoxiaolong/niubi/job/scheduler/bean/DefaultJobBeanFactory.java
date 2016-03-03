@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import org.quartz.JobKey;
+import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,33 +30,37 @@ public class DefaultJobBeanFactory implements JobBeanFactory {
 
     private ClassLoader classLoader;
 
-    public DefaultJobBeanFactory(ClassLoader classLoader) {
+    private Map<String, Object> jobBeanInstanceClassMap = new HashMap<>();
 
+    public DefaultJobBeanFactory(ClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
-    private Map<Class<?>, Object> jobBeanInstanceClassMap = new HashMap<>();
-
     @Override
-    public <T> T getJobBean(JobKey jobKey) {
-        T instance = (T) jobBeanInstanceClassMap.get(clazz);
+    public <T> T getJobBean(String group, String name) {
+        T instance = (T) jobBeanInstanceClassMap.get(ClassHelper.getFullClassName(group, name));
         if (instance != null) {
             return instance;
         }
-        return registerJobBeanInstance(clazz);
+        return registerJobBeanInstance(group, name);
     }
 
-    private synchronized <T> T registerJobBeanInstance(Class<T> clazz) {
+    private synchronized <T> T registerJobBeanInstance(String group, String name) {
         try {
-            T instance = (T) jobBeanInstanceClassMap.get(clazz);
+            String fullClassName = ClassHelper.getFullClassName(group, name);
+            T instance = (T) jobBeanInstanceClassMap.get(fullClassName);
             if (instance == null) {
+                Class<T> clazz = (Class<T>) classLoader.loadClass(fullClassName);
                 instance = clazz.newInstance();
-                jobBeanInstanceClassMap.put(clazz, instance);
+                jobBeanInstanceClassMap.put(fullClassName, instance);
             }
             return instance;
         } catch (InstantiationException e) {
             throw new NiubiException(e);
         } catch (IllegalAccessException e) {
             throw new NiubiException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
