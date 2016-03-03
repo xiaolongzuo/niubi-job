@@ -19,6 +19,8 @@ package com.zuoxiaolong.niubi.job.scheduler;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
+import com.zuoxiaolong.niubi.job.scanner.JobScanner;
+import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
@@ -106,10 +108,12 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
             jobBeanFactoryClassName = "com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory";
         }
         ClassLoader jarApplicationClassLoader = ApplicationClassLoaderFactory.getJarApplicationClassLoader(jarFilePath);
+        JobScanner jobScanner = JobScannerFactory.createJarFileJobScanner(jarApplicationClassLoader, packagesToScan, jarFilePath);
+        List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
         Class<? extends JobBeanFactory> jobBeanFactoryClass = (Class<? extends JobBeanFactory>) jarApplicationClassLoader.loadClass(jobBeanFactoryClassName);
         Class<?>[] parameterTypes = new Class[]{ClassLoader.class};
         Constructor<? extends JobBeanFactory> jobBeanFactoryConstructor = jobBeanFactoryClass.getConstructor(parameterTypes);
-        return jobBeanFactoryConstructor.newInstance(jarApplicationClassLoader, properties, packagesToScan, jarFilePath);
+        return jobBeanFactoryConstructor.newInstance(jarApplicationClassLoader);
     }
 
 }

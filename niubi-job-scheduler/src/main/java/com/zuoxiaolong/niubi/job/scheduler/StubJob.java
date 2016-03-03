@@ -41,9 +41,9 @@ public class StubJob implements Job {
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
             if (jobDescriptor.hasParameter()) {
-                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group(), jobDescriptor.name()), new Object[]{jobParameter});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group()), new Object[]{jobParameter});
             } else {
-                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group(), jobDescriptor.name()), new Object[]{});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group()), new Object[]{});
             }
             LoggerHelper.info("execute job success: " + jobMessageString);
         } catch (Exception e) {

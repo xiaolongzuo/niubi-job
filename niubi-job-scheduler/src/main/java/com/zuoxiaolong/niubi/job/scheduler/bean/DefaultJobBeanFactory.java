@@ -17,7 +17,6 @@
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,22 +36,21 @@ public class DefaultJobBeanFactory implements JobBeanFactory {
     }
 
     @Override
-    public <T> T getJobBean(String group, String name) {
-        T instance = (T) jobBeanInstanceClassMap.get(ClassHelper.getFullClassName(group, name));
+    public <T> T getJobBean(String className) {
+        T instance = (T) jobBeanInstanceClassMap.get(className);
         if (instance != null) {
             return instance;
         }
-        return registerJobBeanInstance(group, name);
+        return registerJobBeanInstance(className);
     }
 
-    private synchronized <T> T registerJobBeanInstance(String group, String name) {
+    private synchronized <T> T registerJobBeanInstance(String className) {
         try {
-            String fullClassName = ClassHelper.getFullClassName(group, name);
-            T instance = (T) jobBeanInstanceClassMap.get(fullClassName);
+            T instance = (T) jobBeanInstanceClassMap.get(className);
             if (instance == null) {
-                Class<T> clazz = (Class<T>) classLoader.loadClass(fullClassName);
+                Class<T> clazz = (Class<T>) classLoader.loadClass(className);
                 instance = clazz.newInstance();
-                jobBeanInstanceClassMap.put(fullClassName, instance);
+                jobBeanInstanceClassMap.put(className, instance);
             }
             return instance;
         } catch (InstantiationException e) {

@@ -24,6 +24,6 @@ public interface JobBeanFactory {
 
     String DATA_MAP_KEY = "_job_bean_factory";
 
-    <T> T getJobBean(String group, String name);
+    <T> T getJobBean(String className);
 
 }

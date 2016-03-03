@@ -17,7 +17,6 @@ package com.zuoxiaolong.niubi.job.spring.bean;
  */
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
@@ -60,11 +59,10 @@ public class SpringJobBeanFactory implements JobBeanFactory {
     }
 
     @Override
-    public <T> T getJobBean(String group, String name) {
-        String fullClassName = ClassHelper.getFullClassName(group, name);
+    public <T> T getJobBean(String className) {
         Class<T> clazz;
         try {
-            clazz = (Class<T>) classLoader.loadClass(fullClassName);
+            clazz = (Class<T>) classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
             throw new NiubiException(e);
         }
@@ -72,9 +70,9 @@ public class SpringJobBeanFactory implements JobBeanFactory {
         try {
             instance = applicationContext.getBean(clazz);
         } catch (Throwable e) {
-            LoggerHelper.warn("can't find instance for " + fullClassName);
+            LoggerHelper.warn("can't find instance for " + className);
             try {
-                instance = registerJobBeanInstance(group, name);
+                instance = registerJobBeanInstance(className);
             } catch (Throwable e1) {
                 throw new NiubiException(e1);
             }
@@ -82,14 +80,13 @@ public class SpringJobBeanFactory implements JobBeanFactory {
         return instance;
     }
 
-    private synchronized <T> T registerJobBeanInstance(String group, String name) {
+    private synchronized <T> T registerJobBeanInstance(String className) {
         try {
-            String fullClassName = ClassHelper.getFullClassName(group, name);
-            T instance = (T) jobBeanInstanceClassMap.get(fullClassName);
+            T instance = (T) jobBeanInstanceClassMap.get(className);
             if (instance == null) {
-                Class<T> clazz = (Class<T>) classLoader.loadClass(fullClassName);
+                Class<T> clazz = (Class<T>) classLoader.loadClass(className);
                 instance = clazz.newInstance();
-                jobBeanInstanceClassMap.put(fullClassName, instance);
+                jobBeanInstanceClassMap.put(className, instance);
             }
             return instance;
         } catch (InstantiationException e) {
