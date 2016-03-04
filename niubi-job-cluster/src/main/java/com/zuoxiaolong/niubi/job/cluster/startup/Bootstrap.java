@@ -40,8 +40,6 @@ import java.util.Properties;
  */
 public final class Bootstrap {
 
-    private Bootstrap() {}
-
     private static final ClassLoader systemClassLoader = ClassLoader.getSystemClassLoader();
 
     private static final ApplicationClassLoader applicationClassLoader;
@@ -57,6 +55,8 @@ public final class Bootstrap {
     private static final Properties properties;
 
     private static Object nodeInstance;
+
+    private Bootstrap() {}
 
     public static void main(String[] args) throws Exception {
         if (!ListHelper.isEmpty(args) && "start".equals(args[0])) {

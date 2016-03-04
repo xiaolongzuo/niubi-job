@@ -261,7 +261,6 @@ public class DefaultSchedulerManager implements SchedulerManager {
     public synchronized void startupManual(String group, String name, String cron, String misfirePolicy) {
         checkScheduler();
         JobKey jobKey = JobKey.jobKey(name, group);
-        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         SchedulerJobDescriptor jobDescriptor;
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
@@ -270,6 +269,8 @@ public class DefaultSchedulerManager implements SchedulerManager {
             LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
             throw new NiubiException(e);
         }
+
+        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             try {

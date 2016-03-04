@@ -41,12 +41,13 @@ public class DefaultHandlerExceptionResolver implements HandlerExceptionResolver
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         ExceptionForward methodExceptionForward = handlerMethod.getMethodAnnotation(ExceptionForward.class);
-        ExceptionForward beanExceptionForward = handlerMethod.getBeanType().getDeclaredAnnotation(ExceptionForward.class);
         StringBuffer stringBuffer = new StringBuffer("forward:");
         if (methodExceptionForward != null) {
             stringBuffer.append(methodExceptionForward.value());
             return new ModelAndView(stringBuffer.toString());
         }
+
+        ExceptionForward beanExceptionForward = handlerMethod.getBeanType().getDeclaredAnnotation(ExceptionForward.class);
         if (beanExceptionForward != null) {
             stringBuffer.append(beanExceptionForward.value());
             return new ModelAndView(stringBuffer.toString());

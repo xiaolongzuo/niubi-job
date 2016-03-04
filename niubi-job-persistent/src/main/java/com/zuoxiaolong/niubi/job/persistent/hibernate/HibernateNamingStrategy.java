@@ -41,10 +41,6 @@ public class HibernateNamingStrategy extends PhysicalNamingStrategyStandardImpl 
 		this.maxLength = maxLength;
 	}
 
-    public HibernateNamingStrategy() {
-        super();
-    }
-
     @Override
     public Identifier toPhysicalCatalogName(Identifier name, JdbcEnvironment context) {
         return addUnderscores(name);
@@ -69,6 +65,10 @@ public class HibernateNamingStrategy extends PhysicalNamingStrategyStandardImpl 
     public Identifier toPhysicalColumnName(Identifier name, JdbcEnvironment context) {
         return addUnderscores(name);
     }
+
+	public HibernateNamingStrategy() {
+		super();
+	}
 
     private Identifier addUnderscores(Identifier name) {
         if (name != null) {
