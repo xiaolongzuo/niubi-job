@@ -35,7 +35,7 @@ public class StubJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
-        JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
+        JobParameter jobParameter = (JobParameter) jobExecutionContext.getMergedJobDataMap().get(JobParameter.DATA_MAP_KEY);
         JobBeanFactory jobBeanFactory = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
         String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {

@@ -18,20 +18,12 @@ package com.zuoxiaolong.niubi.job.scheduler;
 
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoaderFactory;
-import com.zuoxiaolong.niubi.job.scanner.JobScanner;
-import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
 import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
-import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
-import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 
-import java.lang.reflect.Constructor;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -39,10 +31,6 @@ import java.util.Properties;
  * @since 0.9.4
  */
 public class DefaultManualSchedulerManager extends AbstractSchedulerManager implements ManualSchedulerManager {
-
-    private Map<String, JobBeanFactory> jobBeanFactoryMap;
-
-    private Map<String, List<JobDescriptor>> jobDescriptorListMap;
 
     public DefaultManualSchedulerManager(Properties properties) {
         initScheduler(properties);
@@ -64,16 +52,18 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
 
     @Override
     public synchronized void startupManual(String jarFilePath, String packagesToScan, boolean isSpring, String group, String name, String cron, String misfirePolicy) {
+        SchedulerJobDescriptor jobDescriptor = JobJarCache.instance().getJobDescriptor(jarFilePath, packagesToScan, group, name);
         JobKey jobKey = JobKey.jobKey(name, group);
-        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
-        SchedulerJobDescriptor jobDescriptor;
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
-            jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+            if (jobDetail == null) {
+                scheduler.addJob(jobDescriptor.jobDetail(), true);
+            }
         } catch (SchedulerException e) {
             LoggerHelper.error("get jobDescriptor [" + group + "," + name + "] job failed.", e);
             throw new NiubiException(e);
         }
+        ScheduleStatus scheduleStatus = jobStatusMap.get(getUniqueId(jobKey));
         if (scheduleStatus == null || scheduleStatus == ScheduleStatus.SHUTDOWN) {
             LoggerHelper.info("job [" + group + "," + name + "] now is shutdown ,begin startup.");
             try {
@@ -98,22 +88,6 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
             }
         }
         jobStatusMap.put(getUniqueId(jobKey), ScheduleStatus.STARTUP);
-    }
-
-    protected JobBeanFactory createJobBeanFactory(String jarFilePath, String packagesToScan, boolean isSpring) throws Exception {
-        String jobBeanFactoryClassName;
-        if (isSpring) {
-            jobBeanFactoryClassName = "com.zuoxiaolong.niubi.job.spring.bean.SpringJobBeanFactory";
-        } else {
-            jobBeanFactoryClassName = "com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory";
-        }
-        ClassLoader jarApplicationClassLoader = ApplicationClassLoaderFactory.getJarApplicationClassLoader(jarFilePath);
-        JobScanner jobScanner = JobScannerFactory.createJarFileJobScanner(jarApplicationClassLoader, packagesToScan, jarFilePath);
-        List<JobDescriptor> jobDescriptorList = jobScanner.getJobDescriptorList();
-        Class<? extends JobBeanFactory> jobBeanFactoryClass = (Class<? extends JobBeanFactory>) jarApplicationClassLoader.loadClass(jobBeanFactoryClassName);
-        Class<?>[] parameterTypes = new Class[]{ClassLoader.class};
-        Constructor<? extends JobBeanFactory> jobBeanFactoryConstructor = jobBeanFactoryClass.getConstructor(parameterTypes);
-        return jobBeanFactoryConstructor.newInstance(jarApplicationClassLoader);
     }
 
 }

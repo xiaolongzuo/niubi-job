@@ -63,7 +63,7 @@ public abstract class AbstractSchedulerManager implements SchedulerManager {
     }
 
     protected String getUniqueId(JobKey jobKey) {
-        return ClassHelper.getFullClassName(jobKey.getGroup(), jobKey.getName());
+        return ClassHelper.getUniqueDescriptor(jobKey.getGroup(), jobKey.getName());
     }
 
     @Override
