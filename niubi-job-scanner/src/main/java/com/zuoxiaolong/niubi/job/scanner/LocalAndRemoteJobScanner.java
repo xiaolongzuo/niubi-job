@@ -85,7 +85,7 @@ public class LocalAndRemoteJobScanner extends AbstractJobScanner {
     private void fill(String packageName, File file) {
         String fileName = file.getName();
         if (file.isFile() && fileName.endsWith(".class")) {
-            String className = packageName + "." + fileName.substring(0, fileName.lastIndexOf("."));
+            String className = packageName + "." + fileName.substring(0, fileName.lastIndexOf('.'));
             super.scanClass(className);
         } else if (file.isDirectory()) {
             File[] children = file.listFiles();
