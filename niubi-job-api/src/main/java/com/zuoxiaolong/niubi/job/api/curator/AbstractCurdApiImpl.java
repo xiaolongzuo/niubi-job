@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * 抽象的ZK CURD操作API实现类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

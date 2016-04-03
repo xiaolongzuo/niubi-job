@@ -44,7 +44,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * master-slave mode.
+ * 主从模式的集群实现.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -103,7 +103,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
     }
 
     /**
-     * If there has not anyone node alive, change state of all jobs to shutdown.
+     * 如果没有任何一个节点存活的话,就改变所有的任务状态为shutdown.
      */
     private void initJobs() {
         List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
@@ -170,10 +170,10 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
     }
 
     /**
-     * Release jobs on the node.
+     * 释放节点的所有Job.
      *
-     * @param nodePath the zk path of node.
-     * @param nodeData the data of node.
+     * @param nodePath 节点path.
+     * @param nodeData 节点数据.
      */
     private void releaseJobs(String nodePath, MasterSlaveNodeData.Data nodeData) {
         if (ListHelper.isEmpty(nodeData.getJobPaths())) {
@@ -202,7 +202,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
         }
 
         /**
-         * Check unavailable nodes , release jobs that is assigned on these nodes.
+         * 检查失效的节点,并且释放失效节点的Job.
          */
         private void checkUnavailableNode() {
             List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
@@ -248,7 +248,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
         @Override
         public synchronized void childEvent(CuratorFramework client, PathChildrenCacheEvent event) throws Exception {
             AssertHelper.isTrue(isJoined(), "illegal state .");
-            //double check
+            //对Master权限进行双重检查
             if (!leaderSelector.hasLeadership()) {
                 return;
             }
@@ -278,7 +278,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             }
             boolean hasLeadership = leaderSelector != null && leaderSelector.hasLeadership();
             if (hasLeadership && StringHelper.isEmpty(data.getNodePath())) {
-                //if has operation, wait a moment.
+                //如果当前有操作的话,就等待3秒
                 if (checkNotExecuteOperation()) {
                     try {
                         Thread.sleep(3000);
@@ -300,7 +300,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
                 return;
             }
             if (hasLeadership) {
-                //check whether the node is available or not.
+                //检查任务被分配的节点是否有效
                 List<MasterSlaveNodeData> masterSlaveNodeDataList = masterSlaveApiFactory.nodeApi().getAllNodes();
                 boolean nodeIsLive = false;
                 for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
@@ -314,7 +314,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
                     masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
                 }
             }
-            //if the job has been assigned to this node, then execute.
+            //如果任务已经被分配到该节点,则在当前节点进行Job操作.
             if (EventHelper.isChildUpdateEvent(event) && nodePath.equals(data.getNodePath())) {
                 MasterSlaveNodeData.Data nodeData;
                 try {

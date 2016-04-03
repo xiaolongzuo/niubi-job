@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.scheduler;
 
 /**
+ * 自动管理的调度管理器,主要用于本地启动niubi-job时,管理任务的启动与暂停.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.4
  */

@@ -16,9 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.scheduler.bean;
 
-import org.quartz.JobKey;
-
 /**
+ * JobBean工厂接口,该接口设计是为了更好的兼容spring容器的JobBean管理
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -26,6 +26,6 @@ public interface JobBeanFactory {
 
     String DATA_MAP_KEY = "_job_bean_factory";
 
-    <T> T getJobBean(JobKey jobKey);
+    <T> T getJobBean(String className);
 
 }

@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.api;
 
 /**
+ * Node节点操作API
+ *
  * @author Xiaolong Zuo
  */
 public interface NodeApi {

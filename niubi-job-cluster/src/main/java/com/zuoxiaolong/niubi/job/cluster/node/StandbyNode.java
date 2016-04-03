@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * standby mode.
+ * 主备模式的集群实现.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

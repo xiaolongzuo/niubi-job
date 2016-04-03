@@ -26,7 +26,11 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
+import java.util.Map;
+
 /**
+ * 占位任务,它代表着一个由调度器添加的任务.
+ * 该类会根据调度器传递的参数启动一个任务.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -36,14 +40,15 @@ public class StubJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
         JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
-        JobBeanFactory jobBeanFactory = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
+        Map<String, JobBeanFactory> jobBeanFactoryMap = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
+        JobBeanFactory jobBeanFactory = jobBeanFactoryMap.get(JobDataMapManager.getJarFilePath(jobExecutionContext));
         String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
             if (jobDescriptor.hasParameter()) {
-                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.clazz()), new Object[]{jobParameter});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group()), new Object[]{jobParameter});
             } else {
-                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.clazz()), new Object[]{});
+                jobDescriptor.method().invoke(jobBeanFactory.getJobBean(jobDescriptor.group()), new Object[]{});
             }
             LoggerHelper.info("execute job success: " + jobMessageString);
         } catch (Exception e) {

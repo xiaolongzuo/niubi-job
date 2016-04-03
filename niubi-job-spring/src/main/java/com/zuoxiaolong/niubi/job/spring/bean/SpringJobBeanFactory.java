@@ -33,30 +33,41 @@ public class SpringJobBeanFactory implements JobBeanFactory {
 
     private ApplicationContext applicationContext;
 
+    private ClassLoader classLoader;
+
     /**
-     * for remote
+     * 该构造函数用于集群环境
+     *
      * @throws BeansException
      */
     public SpringJobBeanFactory(ClassLoader classLoader) throws BeansException {
+        this.classLoader = classLoader;
         ClassUtils.overrideThreadContextClassLoader(classLoader);
         this.applicationContext = new ClassPathXmlApplicationContext(JobScanner.APPLICATION_CONTEXT_XML_PATH);
     }
 
     /**
-     * for local
-     * @param applicationContext
+     * 该构造函数用于本地环境
+     *
+     * @param applicationContext 本地的ApplicationContext上下文对象
      */
     public SpringJobBeanFactory(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
     @Override
-    public <T> T getJobBean(Class<T> clazz) {
+    public <T> T getJobBean(String className) {
         T instance;
+        Class<T> clazz;
+        try {
+            clazz = (Class<T>) classLoader.loadClass(className);
+        } catch (Throwable e) {
+            throw new NiubiException(e);
+        }
         try {
             instance = applicationContext.getBean(clazz);
         } catch (Throwable e) {
-            LoggerHelper.warn("can't find instance for " + clazz);
+            LoggerHelper.warn("can't find instance for " + className);
             try {
                 instance = clazz.newInstance();
             } catch (Throwable e1) {

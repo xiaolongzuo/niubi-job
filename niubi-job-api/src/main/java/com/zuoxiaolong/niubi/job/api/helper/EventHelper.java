@@ -19,6 +19,8 @@ package com.zuoxiaolong.niubi.job.api.helper;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 
 /**
+ * 事件处理帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

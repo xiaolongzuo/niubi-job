@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 应用的类加载器工厂,负责管理节点类加载器和jar包类加载器
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -35,6 +37,11 @@ public abstract class ApplicationClassLoaderFactory {
         ApplicationClassLoaderFactory.systemClassLoader = systemClassLoader;
     }
 
+    /**
+     * 获取节点的类加载器,对于一个节点来说,该类加载器唯一
+     *
+     * @return 节点的类加载器
+     */
     public synchronized static ApplicationClassLoader getNodeApplicationClassLoader() {
         if (nodeApplicationClassLoader != null) {
             return nodeApplicationClassLoader;
@@ -46,6 +53,12 @@ public abstract class ApplicationClassLoaderFactory {
         return nodeApplicationClassLoader;
     }
 
+    /**
+     * 获取jar包对应的类加载器,对于一个固定的jar包来说,该类加载器唯一
+     *
+     * @param jarFilePath jar包的本地文件路径
+     * @return jar包对应的类加载器
+     */
     public static ApplicationClassLoader getJarApplicationClassLoader(String jarFilePath) {
         ApplicationClassLoader jarApplicationClassLoader = jarApplicationClassLoaderCache.get(jarFilePath);
         if (jarApplicationClassLoader != null) {

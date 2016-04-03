@@ -25,6 +25,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
+ * ZK数据节点抽象的通用类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

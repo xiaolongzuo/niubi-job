@@ -22,6 +22,8 @@ import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import java.util.List;
 
 /**
+ * 主从模式下Job节点操作API
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

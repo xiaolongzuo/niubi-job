@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.api;
 
 /**
+ * 主备模式下path操作API
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

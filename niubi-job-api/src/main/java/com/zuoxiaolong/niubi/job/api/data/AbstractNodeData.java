@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.api.data;
 
 /**
+ * ZK Node数据节点抽象类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

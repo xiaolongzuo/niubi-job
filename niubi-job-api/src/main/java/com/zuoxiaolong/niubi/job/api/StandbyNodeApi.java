@@ -21,6 +21,8 @@ import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import java.util.List;
 
 /**
+ * 主备模式下Node节点操作API
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

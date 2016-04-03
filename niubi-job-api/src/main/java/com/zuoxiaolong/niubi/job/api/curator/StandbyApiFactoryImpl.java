@@ -23,6 +23,8 @@ import com.zuoxiaolong.niubi.job.api.StandbyPathApi;
 import org.apache.curator.framework.CuratorFramework;
 
 /**
+ * 主备模式API的工厂接口实现
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

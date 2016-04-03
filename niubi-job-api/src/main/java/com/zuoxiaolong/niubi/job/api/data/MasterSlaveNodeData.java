@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 主从模式ZK Node数据节点类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

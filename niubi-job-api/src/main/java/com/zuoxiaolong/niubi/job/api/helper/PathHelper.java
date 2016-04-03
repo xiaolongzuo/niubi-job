@@ -19,6 +19,8 @@ package com.zuoxiaolong.niubi.job.api.helper;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 
 /**
+ * path帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

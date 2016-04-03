@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * 节点的启动类,包含Main函数
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -103,11 +105,11 @@ public class Bootstrap {
 
     static {
         String userDir = System.getProperty("user.dir").replace("\\", "/");
-        //for test env
+        //用于测试环境
         rootDir = userDir + "/target";
         File binDir = new File(rootDir + "/bin");
         if (!binDir.exists()) {
-            //for production env
+            //用于生产环境
             rootDir = userDir.substring(0, userDir.lastIndexOf("/"));
             binDir = new File(rootDir + "/bin");
             if (!binDir.exists()) {

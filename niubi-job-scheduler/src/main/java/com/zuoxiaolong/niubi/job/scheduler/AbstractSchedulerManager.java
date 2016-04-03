@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * 默认的抽象调度管理器,实现了最基本的调度管理器共有的功能.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.4
  */

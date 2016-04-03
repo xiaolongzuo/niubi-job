@@ -44,6 +44,9 @@ public class MasterSlaveNodeServiceImpl extends AbstractService implements Maste
             LoggerHelper.warn("select all standby nodes failed, has been ignored [" + e.getClass().getName() + ", " + e.getMessage() + "]");
             return masterNodeViewList;
         }
+        if (masterSlaveNodeDataList == null) {
+            return new ArrayList<>();
+        }
         for (MasterSlaveNodeData masterSlaveNodeData : masterSlaveNodeDataList) {
             MasterNodeView masterNodeView = new MasterNodeView();
             masterNodeView.setId(masterSlaveNodeData.getId());

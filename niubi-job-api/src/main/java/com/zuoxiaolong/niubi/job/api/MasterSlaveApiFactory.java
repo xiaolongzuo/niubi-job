@@ -18,6 +18,8 @@
 package com.zuoxiaolong.niubi.job.api;
 
 /**
+ * 抽象工厂模式中的主从模式工厂接口
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

@@ -20,6 +20,8 @@ package com.zuoxiaolong.niubi.job.api.data;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 /**
+ * ZK Job数据节点抽象类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

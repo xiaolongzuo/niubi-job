@@ -22,6 +22,8 @@ import lombok.Setter;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
 /**
+ * 主备模式ZK Job数据节点类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

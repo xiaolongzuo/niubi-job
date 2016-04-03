@@ -23,6 +23,8 @@ import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.SchedulerException;
 
+import java.util.Map;
+
 /**
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -41,9 +43,13 @@ public abstract class JobDataMapManager {
         return (JobParameter) jobExecutionContext.getMergedJobDataMap().get(JobParameter.DATA_MAP_KEY);
     }
 
-    public static JobBeanFactory getJobBeanFactory(JobExecutionContext jobExecutionContext) {
+    public static String getJarFilePath(JobExecutionContext jobExecutionContext) {
+        return (String) jobExecutionContext.getMergedJobDataMap().get("jarFilePath");
+    }
+
+    public static Map<String, JobBeanFactory> getJobBeanFactory(JobExecutionContext jobExecutionContext) {
         try {
-            return (JobBeanFactory) jobExecutionContext.getScheduler().getContext().get(JobBeanFactory.DATA_MAP_KEY);
+            return (Map<String, JobBeanFactory>) jobExecutionContext.getScheduler().getContext().get("jobBeanFactoryMap");
         } catch (SchedulerException e) {
             throw new NiubiException(e);
         }

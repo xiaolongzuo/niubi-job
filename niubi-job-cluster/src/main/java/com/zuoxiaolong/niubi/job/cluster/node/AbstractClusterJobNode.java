@@ -34,6 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * 集群Job节点抽象类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -83,6 +85,10 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
 
     protected abstract void doExit();
 
+    /**
+     * Master节点抽象监听器.
+     * 本抽象类封装了获取Master权限和失去Master权限时线程的挂起控制
+     */
     protected abstract class AbstractLeadershipSelectorListener implements LeaderSelectorListener {
 
         private final AtomicInteger leaderCount = new AtomicInteger();

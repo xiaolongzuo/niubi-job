@@ -19,8 +19,8 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
+import com.zuoxiaolong.niubi.job.scheduler.AutomaticSchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.DefaultAutomaticSchedulerManager;
-import com.zuoxiaolong.niubi.job.scheduler.SchedulerManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 
@@ -30,10 +30,10 @@ import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
  */
 public class SimpleLocalJobNode extends AbstractNode {
 
-    private SchedulerManager schedulerManager;
+    private AutomaticSchedulerManager schedulerManager;
 
     public SimpleLocalJobNode(String packagesToScan) {
-        JobBeanFactory jobBeanFactory = new DefaultJobBeanFactory();
+        JobBeanFactory jobBeanFactory = new DefaultJobBeanFactory(ClassHelper.getDefaultClassLoader());
         JobScanner jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
         schedulerManager = new DefaultAutomaticSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
     }
