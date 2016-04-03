@@ -16,6 +16,7 @@
 
 package com.zuoxiaolong.niubi.job.spring.config;
 
+import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.ApplicationClassLoader;
 import com.zuoxiaolong.niubi.job.spring.node.SimpleSpringLocalJobNode;
 import lombok.Setter;
@@ -35,7 +36,13 @@ public class SpringContextJobDriver implements ApplicationContextAware {
     private String packagesToScan;
 
     public void init() {
-        boolean isSimpleMode = !(applicationContext.getClassLoader() instanceof ApplicationClassLoader);
+        ClassLoader classLoader = applicationContext.getClassLoader();
+        LoggerHelper.info("ClassLoader in job driver is " + classLoader);
+        System.out.println(classLoader);
+        System.out.println(classLoader.getClass() == ApplicationClassLoader.class);
+        boolean isSimpleMode = !(classLoader instanceof ApplicationClassLoader);
+        LoggerHelper.info("Mode in job driver is " + isSimpleMode);
+        System.out.println(isSimpleMode);
         //avoid dead cycle
         if (isSimpleMode) {
             new SimpleSpringLocalJobNode(applicationContext, packagesToScan).join();

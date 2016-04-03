@@ -26,6 +26,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.ClassUtils;
 
 /**
+ * spring环境下的JobBean工厂实现,所有的JobBean优先从spring IOC容器中获取.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

@@ -36,6 +36,8 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
+ * 手动控制的调度管理器默认实现,用于与Console交互.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.4
  */
@@ -129,6 +131,14 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
         throw new NiubiException(new RuntimeException("can't find SchedulerJobDescriptor for [" + group + "." + name + "]"));
     }
 
+    /**
+     * 创建Job的运行时环境,加载相应的Jar包资源.
+     *
+     * @param jarFilePath jar包本地路径
+     * @param packagesToScan 需要扫描的包
+     * @param isSpring 是否spring环境
+     * @throws Exception
+     */
     protected void createJobRuntimeEnv(String jarFilePath, String packagesToScan, boolean isSpring) throws Exception {
         JobBeanFactory jobBeanFactory = jobBeanFactoryMap.get(jarFilePath);
         if (jobBeanFactory != null) {
@@ -147,6 +157,14 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
         }
     }
 
+    /**
+     * 创建缓存JobBean实例的工厂
+     *
+     * @param jarFilePath Jar包本地路径
+     * @param isSpring 是否spring环境
+     * @return 创建好的JobBean工厂
+     * @throws Exception
+     */
     protected JobBeanFactory createJobBeanFactory(String jarFilePath, boolean isSpring) throws Exception {
         String jobBeanFactoryClassName;
         if (isSpring) {
