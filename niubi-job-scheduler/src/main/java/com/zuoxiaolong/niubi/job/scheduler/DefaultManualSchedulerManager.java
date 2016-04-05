@@ -125,7 +125,7 @@ public class DefaultManualSchedulerManager extends AbstractSchedulerManager impl
         }
         for (JobDescriptor jobDescriptorInner : jobDescriptorList) {
             if (jobDescriptorInner.group().equals(group) && jobDescriptorInner.name().equals(name)) {
-                return (SchedulerJobDescriptor) jobDescriptorInner;
+                return new DefaultSchedulerJobDescriptor(jobDescriptorInner);
             }
         }
         throw new NiubiException(new RuntimeException("can't find SchedulerJobDescriptor for [" + group + "." + name + "]"));
