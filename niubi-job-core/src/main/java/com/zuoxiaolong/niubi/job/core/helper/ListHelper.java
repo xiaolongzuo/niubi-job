@@ -24,10 +24,10 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class ListHelper {
+public interface ListHelper {
 
     public static <T> List<T> merge(List<T> list1, List<T> list2) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list1 != null) {
             mergeResult.addAll(list1);
         }
@@ -38,7 +38,7 @@ public abstract class ListHelper {
     }
 
     public static <T> List<T> add(List<T> list, T element) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
         }
@@ -49,7 +49,7 @@ public abstract class ListHelper {
     }
 
     public static <T> List<T> sub(List<T> list, T element) {
-        List<T> mergeResult = new ArrayList<T>();
+        List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
         }
@@ -60,7 +60,7 @@ public abstract class ListHelper {
     }
 
     public static boolean isEmpty(Collection<?> collection) {
-        return collection == null || collection.size() == 0;
+        return collection == null || collection.isEmpty();
     }
 
     public static boolean isEmpty(Object[] array) {

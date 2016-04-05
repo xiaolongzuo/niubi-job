@@ -22,7 +22,7 @@ import com.zuoxiaolong.niubi.job.api.StandbyPathApi;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class StandbyPathApiImpl implements StandbyPathApi {
+public final class StandbyPathApiImpl implements StandbyPathApi {
 
     public static final StandbyPathApi INSTANCE = new StandbyPathApiImpl();
 

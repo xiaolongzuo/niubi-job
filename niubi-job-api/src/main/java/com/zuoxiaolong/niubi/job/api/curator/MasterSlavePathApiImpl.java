@@ -22,7 +22,7 @@ import com.zuoxiaolong.niubi.job.api.MasterSlavePathApi;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class MasterSlavePathApiImpl implements MasterSlavePathApi {
+public final class MasterSlavePathApiImpl implements MasterSlavePathApi {
 
     public static final MasterSlavePathApi INSTANCE = new MasterSlavePathApiImpl();
 

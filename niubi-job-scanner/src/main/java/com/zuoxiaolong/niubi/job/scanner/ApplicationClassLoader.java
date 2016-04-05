@@ -149,32 +149,32 @@ public class ApplicationClassLoader extends URLClassLoader {
         if (url != null) {
             return url;
         }
-        if (entrust) {
-            ClassLoader parent = getParent();
-            if (parent instanceof URLClassLoader) {
-                url = ((URLClassLoader)parent).findResource(name);
-            } else {
-                url = parent.getResource(name);
-            }
-            if (url != null) {
-                return url;
-            }
-        }
+//        if (entrust) {
+//            ClassLoader parent = getParent();
+//            if (parent instanceof URLClassLoader) {
+//                url = ((URLClassLoader)parent).findResource(name);
+//            } else {
+//                url = parent.getResource(name);
+//            }
+//            if (url != null) {
+//                return url;
+//            }
+//        }
         url = findResource(name);
         if (url != null) {
             return url;
         }
-        if (!entrust) {
-            ClassLoader parent = getParent();
-            if (parent instanceof URLClassLoader) {
-                url = ((URLClassLoader)parent).findResource(name);
-            } else {
-                url = parent.getResource(name);
-            }
-            if (url != null) {
-                return url;
-            }
-        }
+//        if (!entrust) {
+//            ClassLoader parent = getParent();
+//            if (parent instanceof URLClassLoader) {
+//                url = ((URLClassLoader)parent).findResource(name);
+//            } else {
+//                url = parent.getResource(name);
+//            }
+//            if (url != null) {
+//                return url;
+//            }
+//        }
         return null;
     }
 

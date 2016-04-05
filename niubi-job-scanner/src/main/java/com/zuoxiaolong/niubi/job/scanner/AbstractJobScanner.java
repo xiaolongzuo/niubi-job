@@ -83,7 +83,7 @@ public abstract class AbstractJobScanner implements JobScanner {
 
     protected void scanClass(String className) {
         try {
-            if (packagesToScan.size() > 0) {
+            if (!packagesToScan.isEmpty()) {
                 String packageName = ClassHelper.getPackageName(className);
                 boolean skipPackage = true;
                 for (String packageToScan: packagesToScan) {

@@ -40,7 +40,7 @@ import java.util.Properties;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class Bootstrap {
+public final class Bootstrap {
 
     private Bootstrap() {}
 

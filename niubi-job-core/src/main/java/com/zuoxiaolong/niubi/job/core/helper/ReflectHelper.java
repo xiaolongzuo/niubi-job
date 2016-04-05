@@ -27,7 +27,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public abstract class ReflectHelper {
+public interface ReflectHelper {
 
     public static void copyFieldValues(Object source, Object target) {
         if (source == null || target == null) {
@@ -262,13 +262,13 @@ public abstract class ReflectHelper {
 		if (methodName == null || methodName.length() == 0) {
 			return null;
 		}
-		List<Method> methodList = new ArrayList<Method>();
+		List<Method> methodList = new ArrayList<>();
 		for (Method method : methods) {
 			if (method.getName().equals(methodName)) {
 				methodList.add(method);
 			}
 		}
-		if (methodList.size() == 0) {
+		if (methodList.isEmpty()) {
 			return null;
 		}
 		if (methodList.size() > 1) {
