@@ -47,9 +47,17 @@ public interface JobDataMapManager {
         return (String) jobExecutionContext.getMergedJobDataMap().get("jarFilePath");
     }
 
-    public static Map<String, JobBeanFactory> getJobBeanFactory(JobExecutionContext jobExecutionContext) {
+    public static Map<String, JobBeanFactory> getJobBeanFactoryMap(JobExecutionContext jobExecutionContext) {
         try {
             return (Map<String, JobBeanFactory>) jobExecutionContext.getScheduler().getContext().get("jobBeanFactoryMap");
+        } catch (SchedulerException e) {
+            throw new NiubiException(e);
+        }
+    }
+
+    public static JobBeanFactory getJobBeanFactory(JobExecutionContext jobExecutionContext) {
+        try {
+            return (JobBeanFactory) jobExecutionContext.getScheduler().getContext().get(JobBeanFactory.DATA_MAP_KEY);
         } catch (SchedulerException e) {
             throw new NiubiException(e);
         }

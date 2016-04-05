@@ -40,8 +40,13 @@ public class StubJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
         JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
-        Map<String, JobBeanFactory> jobBeanFactoryMap = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
-        JobBeanFactory jobBeanFactory = jobBeanFactoryMap.get(JobDataMapManager.getJarFilePath(jobExecutionContext));
+        Map<String, JobBeanFactory> jobBeanFactoryMap = JobDataMapManager.getJobBeanFactoryMap(jobExecutionContext);
+        JobBeanFactory jobBeanFactory;
+        if (jobBeanFactoryMap != null) {
+            jobBeanFactory = jobBeanFactoryMap.get(JobDataMapManager.getJarFilePath(jobExecutionContext));
+        } else {
+            jobBeanFactory = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
+        }
         String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
