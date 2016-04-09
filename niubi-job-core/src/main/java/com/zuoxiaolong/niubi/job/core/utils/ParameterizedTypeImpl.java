@@ -20,6 +20,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 /**
+ * 实现一个简单的参数化类型
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

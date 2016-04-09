@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.exception;
 
 /**
- * Represent a unknown generic type exception
+ * 代表发生了未知泛型类型的异常
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

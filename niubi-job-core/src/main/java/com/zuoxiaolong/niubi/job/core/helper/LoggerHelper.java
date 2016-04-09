@@ -19,7 +19,7 @@ package com.zuoxiaolong.niubi.job.core.helper;
 import org.apache.log4j.Logger;
 
 /**
- * log util class.
+ * 日志工具类.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

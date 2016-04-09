@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.exception;
 
 /**
- * Represent a framework exception
+ * 代表niubi-job中发生的异常
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

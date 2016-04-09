@@ -17,7 +17,7 @@ package com.zuoxiaolong.niubi.job.core.exception;
  */
 
 /**
- * Represent a config exception
+ * 代表一个配置相关的异常
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

@@ -17,20 +17,32 @@ package com.zuoxiaolong.niubi.job.core.helper;
  */
 
 /**
- * Class util.
- * Contains class loader util method.
+ * class帮助类,包含classLoader的帮助方法.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public interface ClassHelper {
 
-    public static String getUniqueDescriptor(String className, String methodName) {
+    /**
+     * 根据类名和方法名获取唯一的描述符
+     *
+     * @param className 类名
+     * @param methodName 方法名
+     * @return 唯一的描述符
+     */
+    static String getUniqueDescriptor(String className, String methodName) {
         AssertHelper.notEmpty(methodName, "className can't be null.");
         return StringHelper.isEmpty(className) ? methodName : (className + "." + methodName);
     }
 
-    public static String getPackageName(String className) {
+    /**
+     * 根据类名获取包名
+     *
+     * @param className 类名
+     * @return 包名
+     */
+    static String getPackageName(String className) {
         AssertHelper.notEmpty(className, "className can't be null.");
         int index = className.lastIndexOf(".");
         if (index < 0) {
@@ -39,14 +51,26 @@ public interface ClassHelper {
         return className.substring(0, index);
     }
 
-    public static String getClassName(String jarEntryName) {
+    /**
+     * 根据jar包里的entry名称获取类名
+     *
+     * @param jarEntryName jar包中的entry名称
+     * @return 类名,如果没找到则为{@code null}
+     */
+    static String getClassName(String jarEntryName) {
         if (jarEntryName.endsWith(".class")) {
             return jarEntryName.replace("/", ".").substring(0, jarEntryName.lastIndexOf("."));
         }
         return null;
     }
 
-    public static ClassLoader overrideThreadContextClassLoader(ClassLoader classLoaderToUse) {
+    /**
+     * 覆盖当前线程的类加载器
+     *
+     * @param classLoaderToUse 要使用的类加载器
+     * @return 返回线程在覆盖之前使用的类加载器
+     */
+    static ClassLoader overrideThreadContextClassLoader(ClassLoader classLoaderToUse) {
         Thread currentThread = Thread.currentThread();
         ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
         if (classLoaderToUse != null && !classLoaderToUse.equals(threadContextClassLoader)) {
@@ -58,7 +82,15 @@ public interface ClassHelper {
         }
     }
 
-    public static ClassLoader getDefaultClassLoader() {
+    /**
+     * 获取默认的类加载器,优先级为:
+     * 1,当前线程的类加载器
+     * 2,加载ClassHelper类的类加载器
+     * 3,系统类加载器
+     *
+     * @return 获取默认的类加载器
+     */
+    static ClassLoader getDefaultClassLoader() {
         ClassLoader classLoader = null;
         try {
             classLoader = Thread.currentThread().getContextClassLoader();

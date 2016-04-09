@@ -17,7 +17,7 @@
 package com.zuoxiaolong.niubi.job.core.helper;
 
 /**
- * Assert util.
+ * 断言帮助类
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -25,25 +25,42 @@ package com.zuoxiaolong.niubi.job.core.helper;
 public interface AssertHelper {
 
     /**
-     * Assert that the object is not {@code null}
+     * 检查对象是否为null.
      *
-     * @param o the object to check
-     * @param message the exception message to use if the assertion fails
-     * @throws IllegalArgumentException if the object is {@code null}
+     * @param o 要检查的对象
+     * @param message 如果检查失败,则使用该参数作为异常信息
+     *
+     * @throws IllegalArgumentException 如果检查的对象为{@code null}
      */
-    public static void notNull(Object o, String message) {
+    static void notNull(Object o, String message) {
         if (o == null) {
             throw new IllegalArgumentException(message);
         }
     }
 
-    public static void notEmpty(Object o, String message) {
+    /**
+     * 检查对象是否为empty.
+     *
+     * @param o 要检查的对象
+     * @param message 如果检查失败,则使用该参数作为异常信息
+     *
+     * @throws IllegalArgumentException 如果检查的对象为empty
+     */
+    static void notEmpty(Object o, String message) {
         if (o == null || o.toString().trim().length() == 0) {
             throw new IllegalArgumentException(message);
         }
     }
 
-    public static void isTrue(boolean b, String message) {
+    /**
+     * 检查结果是否为true
+     *
+     * @param b 要检查的结果
+     * @param message 如果检查失败,则使用该参数作为异常信息
+     *
+     * @throws IllegalArgumentException 如果检查的结果为false
+     */
+    static void isTrue(boolean b, String message) {
         if (!b) {
             throw new IllegalArgumentException(message);
         }

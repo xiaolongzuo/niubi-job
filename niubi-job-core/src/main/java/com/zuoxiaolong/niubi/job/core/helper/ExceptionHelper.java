@@ -19,6 +19,8 @@ package com.zuoxiaolong.niubi.job.core.helper;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 
 /**
+ * 异常帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -30,6 +32,13 @@ public abstract class ExceptionHelper {
 
     private static final int MAX_LENGTH = 5000 - DEFAULT_END_STRING.length();
 
+    /**
+     * 获取throwable对象的堆栈信息
+     *
+     * @param throwable 异常
+     * @param isHtmlStyle 是否需要html格式
+     * @return 堆栈信息
+     */
     public static String getStackTrace(Throwable throwable, boolean isHtmlStyle) {
         AssertHelper.notNull(throwable, "throwable can't be null.");
         String line = isHtmlStyle ? "<br/>" : "\r\n";
@@ -65,10 +74,16 @@ public abstract class ExceptionHelper {
         }
     }
 
+    /**
+     * @see ExceptionHelper#getStackTrace(Throwable, boolean)
+     */
     public static String getStackTrace(Throwable throwable) {
         return getStackTrace(throwable, false);
     }
 
+    /**
+     * @see ExceptionHelper#getStackTrace(Throwable)
+     */
     public static String getStackTrace() {
         return getStackTrace(new Throwable());
     }

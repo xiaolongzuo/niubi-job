@@ -23,12 +23,14 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 
 /**
+ * IO帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public interface IOHelper {
 
-    public static void writeFile(String fileName, byte[] bytes) throws IOException {
+    static void writeFile(String fileName, byte[] bytes) throws IOException {
         if (fileName != null) {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);
             fileOutputStream.write(bytes);
@@ -37,14 +39,14 @@ public interface IOHelper {
         }
     }
 
-    public static void writeStream(String content, String charset, OutputStream outputStream) throws IOException {
+    static void writeStream(String content, String charset, OutputStream outputStream) throws IOException {
         if (content != null) {
             outputStream.write(content.getBytes(charset));
             outputStream.flush();
         }
     }
 
-    public static String readStream(HttpURLConnection connection, String charset) throws IOException {
+    static String readStream(HttpURLConnection connection, String charset) throws IOException {
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             return IOHelper.readStream(connection.getInputStream(), charset);
         } else {
@@ -52,7 +54,7 @@ public interface IOHelper {
         }
     }
 
-    public static String readStream(InputStream inputStream, String charset) throws IOException {
+    static String readStream(InputStream inputStream, String charset) throws IOException {
         byte[] result = readStreamBytes(inputStream);
         if (result == null ) {
             return null;
@@ -60,7 +62,7 @@ public interface IOHelper {
         return new String(result, charset);
     }
 
-    public static byte[] readStreamBytes(HttpURLConnection connection) throws IOException {
+    static byte[] readStreamBytes(HttpURLConnection connection) throws IOException {
         if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
             return IOHelper.readStreamBytes(connection.getInputStream());
         } else {
@@ -68,7 +70,7 @@ public interface IOHelper {
         }
     }
 
-    public static byte[] readStreamBytes(InputStream inputStream) throws IOException {
+    static byte[] readStreamBytes(InputStream inputStream) throws IOException {
         byte[] cache = new byte[2048];
         int len;
         byte[] bytes = new byte[0];
@@ -84,7 +86,7 @@ public interface IOHelper {
         return bytes;
     }
 
-    public static byte[] readStreamBytesAndClose(InputStream inputStream) throws IOException {
+    static byte[] readStreamBytesAndClose(InputStream inputStream) throws IOException {
         byte[] bytes = readStreamBytes(inputStream);
         inputStream.close();
         return bytes;
