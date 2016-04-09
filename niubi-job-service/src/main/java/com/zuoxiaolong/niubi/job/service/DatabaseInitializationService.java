@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.service;
 
 /**
+ * 数据库初始化服务接口
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

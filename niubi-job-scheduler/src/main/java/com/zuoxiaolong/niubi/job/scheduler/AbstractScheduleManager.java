@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Xiaolong Zuo
  * @since 0.9.4
  */
-public abstract class AbstractSchedulerManager implements SchedulerManager {
+public abstract class AbstractScheduleManager implements ScheduleManager {
 
     protected Map<String, ScheduleStatus> jobStatusMap;
 
@@ -45,7 +45,7 @@ public abstract class AbstractSchedulerManager implements SchedulerManager {
 
     protected Scheduler scheduler;
 
-    public AbstractSchedulerManager() {
+    public AbstractScheduleManager() {
         this.groupNameListMap = new ConcurrentHashMap<>();
         this.groupList = new ArrayList<>();
         this.jobStatusMap = new ConcurrentHashMap<>();

@@ -27,6 +27,8 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
+ * ZK client的工厂Bean.用于在spring容器中构造一个ZK client.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

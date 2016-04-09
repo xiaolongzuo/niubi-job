@@ -49,11 +49,12 @@ public class SpringJobBeanFactory implements JobBeanFactory {
     }
 
     /**
-     * 该构造函数用于本地环境
+     * 该构造函数用于非集群环境
      *
      * @param applicationContext 本地的ApplicationContext上下文对象
      */
     public SpringJobBeanFactory(ApplicationContext applicationContext) {
+        this.classLoader = applicationContext.getClassLoader();
         this.applicationContext = applicationContext;
     }
 

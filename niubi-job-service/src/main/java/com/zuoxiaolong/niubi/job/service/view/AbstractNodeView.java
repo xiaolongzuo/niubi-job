@@ -17,6 +17,8 @@
 package com.zuoxiaolong.niubi.job.service.view;
 
 /**
+ * 抽象的节点数据视图类,用于在WEB页面展示
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

@@ -27,6 +27,9 @@ import java.net.UnknownHostException;
 import java.util.Properties;
 
 /**
+ * 抽象的任务执行节点.
+ * 该类封装了配置加载和IP初始化的过程.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -35,7 +38,7 @@ public abstract class AbstractNode implements Node {
     private String ip;
 
     /**
-     * for local
+     * 用于非集群环境
      */
     public AbstractNode() {
         Properties properties = new Properties();
@@ -57,7 +60,8 @@ public abstract class AbstractNode implements Node {
         }
     }
     /**
-     * for remote
+     * 用于集群环境.集群环境下需要传入自己的配置信息
+     *
      * @param properties
      */
     public AbstractNode(Properties properties) {

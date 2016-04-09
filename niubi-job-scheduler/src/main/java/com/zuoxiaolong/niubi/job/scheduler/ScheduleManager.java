@@ -19,10 +19,12 @@ package com.zuoxiaolong.niubi.job.scheduler;
 import java.util.List;
 
 /**
+ * 调度管理器接口.定义了一个基本的调度管理器应该具备的行为.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public interface SchedulerManager {
+public interface ScheduleManager {
 
     void shutdown();
 

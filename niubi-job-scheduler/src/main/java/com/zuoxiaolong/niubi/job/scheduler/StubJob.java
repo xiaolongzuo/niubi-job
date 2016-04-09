@@ -22,15 +22,10 @@ import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
 import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import com.zuoxiaolong.niubi.job.scanner.job.JobParameter;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-
-import java.util.Map;
+import org.quartz.*;
 
 /**
- * 占位任务,它代表着一个由调度器添加的任务.
- * 该类会根据调度器传递的参数启动一个任务.
+ * 占位任务,它代表着一个由调度器添加的任务,该类会根据调度器传递的参数启动一个任务.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
@@ -38,15 +33,11 @@ import java.util.Map;
 public class StubJob implements Job {
 
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobExecutionContext);
-        JobParameter jobParameter = JobDataMapManager.getJobParameter(jobExecutionContext);
-        Map<String, JobBeanFactory> jobBeanFactoryMap = JobDataMapManager.getJobBeanFactoryMap(jobExecutionContext);
-        JobBeanFactory jobBeanFactory;
-        if (jobBeanFactoryMap != null) {
-            jobBeanFactory = jobBeanFactoryMap.get(JobDataMapManager.getJarFilePath(jobExecutionContext));
-        } else {
-            jobBeanFactory = JobDataMapManager.getJobBeanFactory(jobExecutionContext);
-        }
+        JobDetail jobDetail = jobExecutionContext.getJobDetail();
+        Scheduler scheduler = jobExecutionContext.getScheduler();
+        JobDescriptor jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);
+        JobParameter jobParameter = JobDataMapManager.getJobParameter(jobDetail);
+        JobBeanFactory jobBeanFactory = getJobBeanFactory(scheduler, jobDetail);
         String jobMessageString = jobDescriptor + "  JobParameter:" + JsonHelper.toJson(jobParameter);
         try {
             LoggerHelper.info("begin execute job : " + jobMessageString);
@@ -60,7 +51,20 @@ public class StubJob implements Job {
             LoggerHelper.error("execute job failed: " + jobMessageString, e);
             throw new NiubiException(e);
         }
+    }
 
+    private JobBeanFactory getJobBeanFactory(Scheduler scheduler, JobDetail jobDetail) {
+        ScheduleMode scheduleMode = JobDataMapManager.getScheduleMode(scheduler);
+        JobBeanFactory jobBeanFactory;
+        if (scheduleMode == ScheduleMode.AUTOMATIC) {
+            jobBeanFactory = JobDataMapManager.getJobBeanFactory(scheduler);
+        } else if (scheduleMode == ScheduleMode.MANUAL) {
+            String jarFilePath = JobDataMapManager.getJarFilePath(jobDetail);
+            jobBeanFactory = JobEnvironmentCache.instance().getJobBeanFactory(jarFilePath);
+        } else {
+            throw new NiubiException(new RuntimeException("Unknown schedule mode."));
+        }
+        return jobBeanFactory;
     }
 
 }

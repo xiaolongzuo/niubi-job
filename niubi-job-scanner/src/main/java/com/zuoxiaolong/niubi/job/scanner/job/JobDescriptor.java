@@ -25,8 +25,6 @@ import java.lang.reflect.Method;
  */
 public interface JobDescriptor {
 
-    String DATA_MAP_KEY = "_job_detail";
-
     String group();
 
     String name();

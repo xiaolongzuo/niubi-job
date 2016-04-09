@@ -21,8 +21,8 @@ import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
 import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
 import com.zuoxiaolong.niubi.job.core.helper.JarFileHelper;
 import com.zuoxiaolong.niubi.job.core.helper.LoggerHelper;
-import com.zuoxiaolong.niubi.job.scheduler.DefaultManualSchedulerManager;
-import com.zuoxiaolong.niubi.job.scheduler.ManualSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultManualScheduleManager;
+import com.zuoxiaolong.niubi.job.scheduler.ManualScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.node.AbstractNode;
 import com.zuoxiaolong.niubi.job.scheduler.node.Node;
 import org.apache.curator.framework.CuratorFramework;
@@ -34,20 +34,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 集群Job节点抽象类
+ * 集群Job节点抽象类,封装了节点状态的切换,子类只需要实现自己加入和退出集群的方法.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see MasterSlaveNode
+ * @see StandbyNode
  */
 public abstract class AbstractClusterJobNode extends AbstractNode implements Node {
 
     protected AtomicReference<State> state;
 
-    protected ManualSchedulerManager schedulerManager;
+    protected ManualScheduleManager schedulerManager;
 
     public AbstractClusterJobNode() {
         super(Bootstrap.properties());
-        this.schedulerManager = new DefaultManualSchedulerManager(Bootstrap.properties());
+        this.schedulerManager = new DefaultManualScheduleManager(Bootstrap.properties());
         this.state = new AtomicReference<>();
         this.state.set(State.LATENT);
     }

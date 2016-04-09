@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.spring.config;
-
-import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
+package com.zuoxiaolong.niubi.job.scheduler;
 
 /**
- * 命名空间处理器
+ * 自动管理的调度管理器,主要用于本地启动niubi-job时,管理任务的启动与暂停.
  *
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4
  */
-public class NiubiJobNamespaceHandler extends NamespaceHandlerSupport {
+public interface AutomaticScheduleManager extends ScheduleManager {
 
-    @Override
-    public void init() {
-        registerBeanDefinitionParser("job-driven", new JobDrivenBeanDefinitionParser());
-    }
+    void startup();
+
+    void startup(String group);
+
+    void startup(String group, String name);
 
 }

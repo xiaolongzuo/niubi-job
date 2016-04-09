@@ -33,6 +33,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
+ * 该监听器用于启动一个cache去监听主从集群任务节点数据的变化,并且同步到console数据库
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

@@ -19,23 +19,30 @@ package com.zuoxiaolong.niubi.job.scheduler.node;
 import com.zuoxiaolong.niubi.job.core.helper.ClassHelper;
 import com.zuoxiaolong.niubi.job.scanner.JobScanner;
 import com.zuoxiaolong.niubi.job.scanner.JobScannerFactory;
-import com.zuoxiaolong.niubi.job.scheduler.AutomaticSchedulerManager;
-import com.zuoxiaolong.niubi.job.scheduler.DefaultAutomaticSchedulerManager;
+import com.zuoxiaolong.niubi.job.scheduler.AutomaticScheduleManager;
+import com.zuoxiaolong.niubi.job.scheduler.DefaultAutomaticScheduleManager;
 import com.zuoxiaolong.niubi.job.scheduler.bean.DefaultJobBeanFactory;
 import com.zuoxiaolong.niubi.job.scheduler.bean.JobBeanFactory;
 
 /**
+ * 该实现类用于非集群环境下的非spring任务执行.
+ * 内部包含的自动调度器可以按照注解自动的启动的任务.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see AutomaticScheduleManager
+ * @see DefaultAutomaticScheduleManager
+ *
  */
 public class SimpleLocalJobNode extends AbstractNode {
 
-    private AutomaticSchedulerManager schedulerManager;
+    private AutomaticScheduleManager schedulerManager;
 
     public SimpleLocalJobNode(String packagesToScan) {
         JobBeanFactory jobBeanFactory = new DefaultJobBeanFactory(ClassHelper.getDefaultClassLoader());
         JobScanner jobScanner = JobScannerFactory.createClasspathJobScanner(ClassHelper.getDefaultClassLoader(), packagesToScan);
-        schedulerManager = new DefaultAutomaticSchedulerManager(jobBeanFactory, jobScanner.getJobDescriptorList());
+        schedulerManager = new DefaultAutomaticScheduleManager(jobBeanFactory, jobScanner.getJobDescriptorList());
     }
 
     @Override

@@ -26,19 +26,19 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
  */
 public interface EventHelper {
 
-    public static boolean isChildAddEvent(PathChildrenCacheEvent event) {
+    static boolean isChildAddEvent(PathChildrenCacheEvent event) {
         return event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_ADDED;
     }
 
-    public static boolean isChildUpdateEvent(PathChildrenCacheEvent event) {
+    static boolean isChildUpdateEvent(PathChildrenCacheEvent event) {
         return event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_UPDATED;
     }
 
-    public static boolean isChildRemoveEvent(PathChildrenCacheEvent event) {
+    static boolean isChildRemoveEvent(PathChildrenCacheEvent event) {
         return event != null && event.getType() == PathChildrenCacheEvent.Type.CHILD_REMOVED;
     }
 
-    public static boolean isChildModifyEvent(PathChildrenCacheEvent event) {
+    static boolean isChildModifyEvent(PathChildrenCacheEvent event) {
         return isChildAddEvent(event) || isChildRemoveEvent(event) || isChildUpdateEvent(event);
     }
 

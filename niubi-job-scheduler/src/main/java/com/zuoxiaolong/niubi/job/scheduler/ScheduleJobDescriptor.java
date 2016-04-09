@@ -23,20 +23,26 @@ import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
 /**
+ * 可调度的任务描述符,将任务描述符与quartz集成.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see JobDescriptor
+ * @see DefaultScheduleJobDescriptor
+ *
  */
-public interface SchedulerJobDescriptor extends JobDescriptor {
+public interface ScheduleJobDescriptor extends JobDescriptor {
 
     boolean isManualTrigger();
 
     JobDetail jobDetail();
 
-    SchedulerJobDescriptor putJobData(String key, Object value);
+    JobDetail jobDetail(String jarFilePath);
 
     Trigger trigger();
 
-    SchedulerJobDescriptor withTrigger(String cron, String misfirePolicy);
+    ScheduleJobDescriptor withTrigger(String cron, String misfirePolicy);
 
     TriggerKey triggerKey();
 

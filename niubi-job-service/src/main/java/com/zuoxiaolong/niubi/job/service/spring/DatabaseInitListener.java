@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
+ * 数据库初始化的监听器.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

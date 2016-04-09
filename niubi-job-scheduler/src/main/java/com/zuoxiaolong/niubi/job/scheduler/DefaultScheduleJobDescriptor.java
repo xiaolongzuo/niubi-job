@@ -25,22 +25,24 @@ import org.quartz.*;
 import java.lang.reflect.Method;
 
 /**
+ * 可调度的任务描述符的默认实现.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class DefaultSchedulerJobDescriptor extends DefaultJobDescriptor implements SchedulerJobDescriptor {
+public class DefaultScheduleJobDescriptor extends DefaultJobDescriptor implements ScheduleJobDescriptor {
 
     private JobDataMap jobDataMap;
 
-    DefaultSchedulerJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
+    DefaultScheduleJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, Schedule schedule) {
         super(clazz, method, hasParameter, schedule.cron(), schedule.misfirePolicy());
     }
 
-    DefaultSchedulerJobDescriptor(JobDescriptor jobDescriptor) {
+    DefaultScheduleJobDescriptor(JobDescriptor jobDescriptor) {
         this(jobDescriptor.clazz(), jobDescriptor.method(), jobDescriptor.hasParameter(), jobDescriptor.cron(), jobDescriptor.misfirePolicy());
     }
 
-    DefaultSchedulerJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
+    DefaultScheduleJobDescriptor(Class<?> clazz, Method method, boolean hasParameter, String cron, MisfirePolicy misfirePolicy) {
         super(clazz, method, hasParameter, cron, misfirePolicy);
         this.jobDataMap = new JobDataMap();
     }
@@ -55,12 +57,16 @@ public class DefaultSchedulerJobDescriptor extends DefaultJobDescriptor implemen
         return JobKey.jobKey(name(), group());
     }
 
-    public SchedulerJobDescriptor putJobData(String key, Object value) {
-        jobDataMap.put(key, value);
-        return this;
+    public JobDetail jobDetail() {
+        return jobDetail(null);
     }
 
-    public JobDetail jobDetail() {
+    @Override
+    public JobDetail jobDetail(String jarFilePath) {
+        jobDataMap.put(JobDataMapManager.JOB_DESCRIPTOR_KEY, this);
+        if (jarFilePath != null) {
+            jobDataMap.put(JobDataMapManager.JAR_FILE_PATH_KEY, jarFilePath);
+        }
         return JobBuilder.newJob(StubJob.class)
                 .withIdentity(name(), group())
                 .storeDurably(true)
@@ -69,7 +75,7 @@ public class DefaultSchedulerJobDescriptor extends DefaultJobDescriptor implemen
     }
 
     @Override
-    public SchedulerJobDescriptor withTrigger(String cron, String misfirePolicy) {
+    public ScheduleJobDescriptor withTrigger(String cron, String misfirePolicy) {
         this.cron = cron;
         this.misfirePolicy = MisfirePolicy.valueOf(misfirePolicy);
         return this;

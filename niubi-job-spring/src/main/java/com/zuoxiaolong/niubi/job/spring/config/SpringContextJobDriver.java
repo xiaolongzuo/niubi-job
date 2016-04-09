@@ -23,6 +23,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
+ * spring环境下任务的驱动器,用于启动任务容器
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

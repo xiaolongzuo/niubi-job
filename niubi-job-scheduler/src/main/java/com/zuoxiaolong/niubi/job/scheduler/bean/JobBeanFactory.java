@@ -21,10 +21,12 @@ package com.zuoxiaolong.niubi.job.scheduler.bean;
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see DefaultJobBeanFactory
+ * @see SpringJobBeanFactory
+ *
  */
 public interface JobBeanFactory {
-
-    String DATA_MAP_KEY = "_job_bean_factory";
 
     <T> T getJobBean(String className);
 

@@ -26,19 +26,19 @@ import com.zuoxiaolong.niubi.job.core.helper.AssertHelper;
  */
 public interface PathHelper {
 
-    public static String getParentPath(String path) {
+    static String getParentPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");
         return path.substring(0, path.lastIndexOf("/"));
     }
 
-    public static String getJobPath(String jobParentPath, String group , String name) {
+    static String getJobPath(String jobParentPath, String group, String name) {
         AssertHelper.notNull(jobParentPath, "jobParentPath can't be null.");
         AssertHelper.notNull(group, "group can't be null.");
         AssertHelper.notNull(name, "name can't be null.");
         return jobParentPath + "/" + group + "." + name;
     }
 
-    public static String getEndPath(String path) {
+    static String getEndPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");
         return path.indexOf("/") >= 0 ? path.substring(path.lastIndexOf("/") + 1) : path;
     }

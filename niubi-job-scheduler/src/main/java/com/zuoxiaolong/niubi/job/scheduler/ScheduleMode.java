@@ -17,17 +17,20 @@
 package com.zuoxiaolong.niubi.job.scheduler;
 
 /**
- * 自动管理的调度管理器,主要用于本地启动niubi-job时,管理任务的启动与暂停.
+ * 调度模式
  *
  * @author Xiaolong Zuo
  * @since 0.9.4
  */
-public interface AutomaticSchedulerManager extends SchedulerManager {
+public enum ScheduleMode {
 
-    void startup();
+    /**
+     * 自动模式
+     */
+    AUTOMATIC,
 
-    void startup(String group);
-
-    void startup(String group, String name);
-
+    /**
+     * 手动模式
+     */
+    MANUAL
 }

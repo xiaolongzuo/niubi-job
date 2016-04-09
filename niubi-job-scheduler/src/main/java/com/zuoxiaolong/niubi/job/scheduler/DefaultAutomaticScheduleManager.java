@@ -33,19 +33,19 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * 自动调度管理器的默认实现
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
-public class DefaultAutomaticSchedulerManager extends AbstractSchedulerManager implements AutomaticSchedulerManager {
-
-    private JobBeanFactory jobBeanFactory;
+public class DefaultAutomaticScheduleManager extends AbstractScheduleManager implements AutomaticScheduleManager {
 
     private List<JobDescriptor> jobDescriptorList;
 
-    public DefaultAutomaticSchedulerManager(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
-        this.jobBeanFactory = jobBeanFactory;
+    public DefaultAutomaticScheduleManager(JobBeanFactory jobBeanFactory, List<JobDescriptor> jobDescriptorList) {
         this.jobDescriptorList = Collections.unmodifiableList(jobDescriptorList);
         initScheduler(loadProperties());
+        JobDataMapManager.initAutomaticScheduler(scheduler, jobBeanFactory);
         initJobDetails();
     }
 
@@ -66,19 +66,13 @@ public class DefaultAutomaticSchedulerManager extends AbstractSchedulerManager i
 
     protected void initJobDetails() {
         for (JobDescriptor descriptor : jobDescriptorList) {
-            addJobDetail(new DefaultSchedulerJobDescriptor(descriptor));
-        }
-        try {
-            scheduler.getContext().put(JobBeanFactory.DATA_MAP_KEY, jobBeanFactory);
-        } catch (SchedulerException e) {
-            LoggerHelper.error("get schedule context failed.", e);
-            throw new NiubiException(e);
+            addJobDetail(new DefaultScheduleJobDescriptor(descriptor));
         }
     }
 
-    protected void addJobDetail(SchedulerJobDescriptor descriptor) {
+    protected void addJobDetail(ScheduleJobDescriptor descriptor) {
         try {
-            scheduler.addJob(descriptor.putJobData(SchedulerJobDescriptor.DATA_MAP_KEY, descriptor).jobDetail(), true);
+            scheduler.addJob(descriptor.jobDetail(), true);
         } catch (SchedulerException e) {
             LoggerHelper.error("add job failed.", e);
             throw new NiubiException(e);
@@ -123,7 +117,7 @@ public class DefaultAutomaticSchedulerManager extends AbstractSchedulerManager i
     }
 
     private void startupJob(JobKey jobKey) {
-        SchedulerJobDescriptor jobDescriptor;
+        ScheduleJobDescriptor jobDescriptor;
         try {
             JobDetail jobDetail = scheduler.getJobDetail(jobKey);
             jobDescriptor = JobDataMapManager.getJobDescriptor(jobDetail);

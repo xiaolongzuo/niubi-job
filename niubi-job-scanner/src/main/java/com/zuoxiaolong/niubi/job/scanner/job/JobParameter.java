@@ -24,8 +24,6 @@ import java.util.HashMap;
  */
 public class JobParameter extends HashMap<String, Object> {
 
-    public static final String DATA_MAP_KEY = "_job_parameter";
-
     public Integer getInteger(String key) {
         return Integer.valueOf(get(key).toString());
     }

@@ -27,6 +27,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
+ * 抽象的服务实现类.
+ * 它包含了主从和主备API工厂实例,可以帮助子类方便的进行ZK操作.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

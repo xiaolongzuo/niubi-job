@@ -28,6 +28,8 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 /**
+ * 数据库初始化服务实现类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -37,6 +39,9 @@ public class DatabaseInitializationServiceImpl implements DatabaseInitialization
     @Autowired
     private BaseDao baseDao;
 
+    /**
+     * 本方法先检查数据库是否有admin为username的用户,如果没有则会插入一条,并且赋予权限.
+     */
     @Override
     public void initialize() {
         String adminUsername = "admin";

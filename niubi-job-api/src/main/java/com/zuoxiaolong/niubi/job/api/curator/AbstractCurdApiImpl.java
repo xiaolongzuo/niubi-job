@@ -49,18 +49,39 @@ public abstract class AbstractCurdApiImpl {
         this.client = client;
     }
 
+    /**
+     * 子类可以通过该方法获取curator客户端
+     *
+     * @return curator客户端
+     */
     protected CuratorFramework getClient() {
         return client;
     }
 
+    /**
+     * 获取主备模式下的PATH API
+     *
+     * @return 主备模式下的PATH API
+     */
     protected StandbyPathApi getStandbyPathApi() {
         return standbyPathApi;
     }
 
+    /**
+     * 获取主从模式下的PATH API
+     *
+     * @return 主从模式下的PATH API
+     */
     protected MasterSlavePathApi getMasterSlavePathApi() {
         return masterSlavePathApi;
     }
 
+    /**
+     * 获取该path下的所有子节点
+     *
+     * @param path 父节点路径
+     * @return 所有子节点
+     */
     protected List<ChildData> getChildren(String path) {
         if (!checkExists(path)) {
             return null;
@@ -75,6 +96,12 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
+    /**
+     * 获取该节点的数据
+     *
+     * @param path 节点路径
+     * @return 节点数据
+     */
     protected ChildData getData(String path) {
         try {
             return new ChildData(path, EMPTY_STAT, client.getData().forPath(path));
@@ -83,6 +110,12 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
+    /**
+     * 检查该节点是否存在
+     *
+     * @param path 节点路径
+     * @return 如果存在返回true,否则为false
+     */
     protected boolean checkExists(String path) {
         try {
             return client.checkExists().forPath(path) != null;
@@ -91,6 +124,13 @@ public abstract class AbstractCurdApiImpl {
         }
     }
 
+    /**
+     * 创建一个节点
+     *
+     * @param path 节点路径
+     * @param data 节点数据
+     * @return 节点路径
+     */
     protected String create(String path, byte[] data) {
         try {
             return getClient().create().creatingParentsIfNeeded().forPath(path, data);
