@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * 实体类的父类.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -38,6 +40,11 @@ public abstract class AbstractEntity implements Serializable {
 
 	private Date modifyDate;
 
+    /**
+     * 默认使用36位uuid作为主键
+     *
+     * @return id
+     */
 	@Id
 	@Column(length = 36, nullable = true)
 	@GeneratedValue(generator = "uuid")
