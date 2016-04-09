@@ -13,9 +13,9 @@ niubi-job是一个具备高可用特性的专门针对定时任务的任务调�
 
 # 如何下载
 ##### 当前稳定版本 : 0.9.3
- * [niubi-job-cluster.zip](http://www.zuoxiaolong.com/download/niubi-job-cluster.zip "niubi-job-cluster.zip")   [Cluster for Windows]
- * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Cluster for Unix/Mac]
- * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [Console for Web UI]
+ * [niubi-job-cluster.zip](http://www.zuoxiaolong.com/download/niubi-job-cluster.zip "niubi-job-cluster.zip")   [Windows版本]
+ * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Unix/Mac版本]
+ * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [web控制台war包]
 
 ##### 编译最新版本
 自己编译一样简单，你只需安装好git和maven，然后执行以下命令即可。
