@@ -22,3 +22,8 @@ logs/
 hs_err_pid*
 
 dependency-reduced-pom.xml
+
+# eclipse IDE
+.settings/
+.project
+.classpath
