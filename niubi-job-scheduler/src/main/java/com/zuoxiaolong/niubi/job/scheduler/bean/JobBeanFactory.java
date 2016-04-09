@@ -23,7 +23,6 @@ package com.zuoxiaolong.niubi.job.scheduler.bean;
  * @since 0.9.3
  *
  * @see DefaultJobBeanFactory
- * @see SpringJobBeanFactory
  *
  */
 public interface JobBeanFactory {
