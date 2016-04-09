@@ -68,6 +68,7 @@ public final class Bootstrap {
             LoggerHelper.info("bootstrap begin stop.");
             stop();
             LoggerHelper.info("bootstrap stop successfully.");
+            System.exit(0);
         } else if (!ListHelper.isEmpty(args) && "stop".equals(args[0])) {
             sendCommand("Shutdown");
         }
