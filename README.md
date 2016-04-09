@@ -17,6 +17,14 @@ niubi-job是一个具备高可用特性的专门针对定时任务的任务调�
  * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Cluster for Unix/Mac]
  * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [Console for Web UI]
 
+##### 编译
+自己编译一样简单，你只需安装好git和maven，然后执行以下命令即可。
+```
+git clone git@github.com:xiaolongzuo/niubi-job.git
+cd niubi-job
+mvn clean package
+```
+
 ##### web控制台默认的用户名密码
  * username : admin
  * password : 123456
