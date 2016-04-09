@@ -1,20 +1,30 @@
-# Niubi Job
-Niubi Job is a high availability, distributed job scheduling framework.The API will be provided to users with simple Web-UI for start/pause/restart jobs.
+# Niubi Job是什么
+niubi-job是一个具备高可用特性的专门针对定时任务的任务调度框架.
 
-# Download
-##### Current stable version : 0.9.3
+# Niubi Job的特点
+它是一个专门针对定时任务所设计的分布式任务调度框架,但它有以下特点.
+ * 动态发布任务，通过web控制台上传任务jar包即可发布任务，发布新任务时，正在运行的任务不受任何影响。
+ * 可靠性较高的灾备机制，采用成熟的分布式系统解决方案zookeeper处理节点间的协作。
+ * 智能负载均衡，拥有理论上无限的伸缩能力（仅master-slave模式支持）
+ * 有较为详细的任务执行日志，保存在logs文件夹当中。
+ * 完美支持spring的运行环境。
+ * 支持多种模式，例如单机模式(单机模式也可以用来测试)、伪分布式以及真正的分布式。
+ * 简单易用，降低门槛。
+
+# 如何下载
+##### 当前稳定版本 : 0.9.3
  * [niubi-job-cluster.zip](http://www.zuoxiaolong.com/download/niubi-job-cluster.zip "niubi-job-cluster.zip")   [Cluster for Windows]
  * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Cluster for Unix/Mac]
  * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [Console for Web UI]
 
-##### Default user for console
+##### web控制台默认的用户名密码
  * username : admin
  * password : 123456
 
-# Documentation
- * [Installation tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html")
- * [Develop tutorial](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html")
- * [Framework design principles](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html")
+# 文档
+ * 安装就是这么简单，详见[安装文档](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html")
+ * 开发任务就是这么简单，详见[开发文档](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-2.html")
+ * 如果你想了解更多，可以参考[框架设计原理简介](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-3.html")
 
-# License
-The Niubi Job Framework is released under version 2.0 of the Apache License.
+# 开源协议(License)
+Niubi Job框架基于开源协议Apache License 2.0。(The Niubi Job Framework is released under version 2.0 of the Apache License.)
