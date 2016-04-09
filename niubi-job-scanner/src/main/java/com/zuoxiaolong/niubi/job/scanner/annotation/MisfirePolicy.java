@@ -17,12 +17,16 @@
 package com.zuoxiaolong.niubi.job.scanner.annotation;
 
 /**
+ * 对于错过的任务的策略.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public enum MisfirePolicy {
 
+    /**
+     * 以下所有的策略请参考quartz的文档.
+     */
     DoNothing {
         @Override
         public int getIntValue() {

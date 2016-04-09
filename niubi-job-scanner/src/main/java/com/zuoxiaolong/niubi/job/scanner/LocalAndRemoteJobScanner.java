@@ -28,11 +28,22 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
+ * 唯一的job扫描器实现.
+ * 该实现同时实现了扫描classpath和jar包的功能
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public class LocalAndRemoteJobScanner extends AbstractJobScanner {
 
+    /**
+     * 扫描器唯一的构造方法,将使用指定的类加载器去扫描
+     *
+     * @param classLoader 扫描器所使用的类加载器
+     * @param packagesToScan 将被扫描的package
+     * @param containsClasspath 是否要扫描classpath路径下的类
+     * @param jarFilePaths 需要扫描的jar包
+     */
     LocalAndRemoteJobScanner(ClassLoader classLoader, String packagesToScan, boolean containsClasspath, String... jarFilePaths) {
         super(classLoader, packagesToScan, jarFilePaths);
         if (containsClasspath) {

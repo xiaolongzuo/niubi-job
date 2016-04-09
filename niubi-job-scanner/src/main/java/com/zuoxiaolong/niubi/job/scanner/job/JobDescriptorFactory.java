@@ -22,6 +22,7 @@ import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 import java.lang.reflect.Method;
 
 /**
+ * 任务描述符工厂,用于创建任务描述符.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3

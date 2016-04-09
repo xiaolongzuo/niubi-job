@@ -29,6 +29,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * niubi-job的类加载器.
+ * 当entrust为true时,该类加载完全遵循双亲委托模型,类加载器继承的顺序如下:
+ *      bootstrap class loader
+ *                ||
+ *                ||
+ *         ext class loader
+ *                ||
+ *                ||
+ *        system class loader
+ *                ||
+ *                ||
+ *      application class loader
+ *
+ * 当entrust为false时,该类加载完全遵循双亲委托模型,类加载器继承的顺序如下:
+ *      bootstrap class loader
+ *                ||
+ *                ||
+ *         ext class loader
+ *                ||
+ *                ||
+ *        application class loader
+ *                ||
+ *                ||
+ *        system class loader
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
@@ -36,6 +61,9 @@ public class ApplicationClassLoader extends URLClassLoader {
 
     private Map<String, Class<?>> classMap = new HashMap<>();
 
+    /**
+     * 由于bootstrap级别的类加载器无法被java程序获取到,因此该类加载通常是ext级别的类加载器
+     */
     private ClassLoader javaClassLoader;
 
     private boolean entrust;
@@ -149,32 +177,10 @@ public class ApplicationClassLoader extends URLClassLoader {
         if (url != null) {
             return url;
         }
-//        if (entrust) {
-//            ClassLoader parent = getParent();
-//            if (parent instanceof URLClassLoader) {
-//                url = ((URLClassLoader)parent).findResource(name);
-//            } else {
-//                url = parent.getResource(name);
-//            }
-//            if (url != null) {
-//                return url;
-//            }
-//        }
         url = findResource(name);
         if (url != null) {
             return url;
         }
-//        if (!entrust) {
-//            ClassLoader parent = getParent();
-//            if (parent instanceof URLClassLoader) {
-//                url = ((URLClassLoader)parent).findResource(name);
-//            } else {
-//                url = parent.getResource(name);
-//            }
-//            if (url != null) {
-//                return url;
-//            }
-//        }
         return null;
     }
 

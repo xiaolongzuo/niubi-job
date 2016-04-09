@@ -22,10 +22,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * disable the job.
+ * 该注解可以用于类和方法,该注解将会让niubi-job忽略掉被注释的任务.
+ * 如果该注解用在类上,那么该类中所有被{@link Schedule}注解的方法都会被忽略.
+ * 如果该注解用在方法上,那么该方法哪怕被{@link Schedule}注解也将会被忽略.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see Schedule
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)

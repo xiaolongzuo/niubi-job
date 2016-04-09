@@ -19,6 +19,8 @@ package com.zuoxiaolong.niubi.job.scanner;
 import com.zuoxiaolong.niubi.job.core.helper.StringHelper;
 
 /**
+ * job扫描器工厂,负责创建job扫描器
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

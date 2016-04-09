@@ -20,6 +20,8 @@ import com.zuoxiaolong.niubi.job.scanner.annotation.MisfirePolicy;
 import java.lang.reflect.Method;
 
 /**
+ * 任务描述符.在niubi-job中,每一个任务描述符代表着一个任务.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

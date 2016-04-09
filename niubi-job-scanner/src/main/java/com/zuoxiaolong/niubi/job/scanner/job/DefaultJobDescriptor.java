@@ -22,6 +22,8 @@ import com.zuoxiaolong.niubi.job.scanner.annotation.Schedule;
 import java.lang.reflect.Method;
 
 /**
+ * 默认的任务描述符实现
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

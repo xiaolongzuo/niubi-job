@@ -33,12 +33,18 @@ public abstract class ApplicationClassLoaderFactory {
 
     private static Map<String, ApplicationClassLoader> jarApplicationClassLoaderCache = new HashMap<>();
 
+    /**
+     * 该工厂在使用之前,必须制定系统加载器
+     *
+     * @param systemClassLoader 系统加载器
+     */
     public synchronized static void setSystemClassLoader(ClassLoader systemClassLoader) {
         ApplicationClassLoaderFactory.systemClassLoader = systemClassLoader;
     }
 
     /**
      * 获取节点的类加载器,对于一个节点来说,该类加载器唯一
+     * 注意:由于niubi-job的启动类和lib在一个目录下,因此对于node级别的类加载器,不需要指定lib目录为该类加载器的URL.
      *
      * @return 节点的类加载器
      */
@@ -76,6 +82,13 @@ public abstract class ApplicationClassLoaderFactory {
         }
     }
 
+    /**
+     * 创建一个普通的applicationClassLoader
+     *
+     * @param parent 父加载器
+     * @param jarFilePaths jar包路径
+     * @return 创建好的applicationClassLoader
+     */
     public static ApplicationClassLoader createNormalApplicationClassLoader(ClassLoader parent, String... jarFilePaths){
         ApplicationClassLoader classLoader = new ApplicationClassLoader(parent, true);
         classLoader.addJarFiles(jarFilePaths);

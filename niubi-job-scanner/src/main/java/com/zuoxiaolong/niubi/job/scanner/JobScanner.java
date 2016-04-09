@@ -21,6 +21,8 @@ import com.zuoxiaolong.niubi.job.scanner.job.JobDescriptor;
 import java.util.List;
 
 /**
+ * 任务的扫描器.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

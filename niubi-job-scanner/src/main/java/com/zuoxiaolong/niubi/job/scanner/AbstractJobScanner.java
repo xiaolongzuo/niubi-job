@@ -32,8 +32,16 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * 抽象的任务扫描器.
+ * 该扫描器只会将被{@link Schedule}注解的方法,其它的将会被忽略.
+ * 如果被{@link Disabled}注解的类和方法,也将会被忽略.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
+ *
+ * @see Schedule
+ * @see Disabled
+ *
  */
 public abstract class AbstractJobScanner implements JobScanner {
 
