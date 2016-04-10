@@ -38,6 +38,9 @@ mvn clean package
 Niubi Job框架基于开源协议Apache License 2.0。(The Niubi Job Framework is released under version 2.0 of the Apache License.)
 
 # 变更历史
+##### 0.9.4.1
+ * 将cluster的依赖瘦身
+
 ##### 0.9.4
  * 所有任务公用一个调度器,节省大量线程资源.
  * 优化类加载器
