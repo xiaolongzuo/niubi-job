@@ -12,7 +12,7 @@ niubi-job是一个具备高可用特性的专门针对定时任务的任务调�
  * 简单易用，降低门槛。
 
 # 如何下载
-##### 当前稳定版本 : 0.9.4.1
+##### 当前稳定版本 : 0.9.4.2
  * [niubi-job-cluster.zip](http://www.zuoxiaolong.com/download/niubi-job-cluster.zip "niubi-job-cluster.zip")   [Windows版本]
  * [niubi-job-cluster.tar.gz](http://www.zuoxiaolong.com/download/niubi-job-cluster.tar.gz "niubi-job-cluster.tar.gz")   [Unix/Mac版本]
  * [niubi-job-console.war](http://www.zuoxiaolong.com/download/niubi-job-console.war "niubi-job-console.war")   [web控制台war包]
@@ -38,6 +38,9 @@ mvn clean package
 Niubi Job框架基于开源协议Apache License 2.0。(The Niubi Job Framework is released under version 2.0 of the Apache License.)
 
 # 变更历史
+##### 0.9.4.2
+ * 修复集群节点缺少guava的BUG.
+
 ##### 0.9.4.1
  * 将cluster的依赖瘦身
 
