@@ -45,13 +45,14 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <configuration>
                     <outputDirectory>${cluster.build.dir}/lib</outputDirectory>
+                    <includeScope>runtime</includeScope>
                     <excludeTransitive>false</excludeTransitive>
                     <overWriteIfNewer>true</overWriteIfNewer>
                     <overWriteReleases>true</overWriteReleases>
                     <overWriteSnapshots>true</overWriteSnapshots>
                     <stripVersion>true</stripVersion>
                     <stripClassifier>true</stripClassifier>
-                    <excludeScope>provided</excludeScope>
+                    <excludeArtifactIds>guava</excludeArtifactIds>
                 </configuration>
                 <executions>
                     <execution>
