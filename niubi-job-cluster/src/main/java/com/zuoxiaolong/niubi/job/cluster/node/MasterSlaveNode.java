@@ -68,11 +68,14 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
     private PathChildrenCache nodeCache;
 
     public MasterSlaveNode() {
-        this.client = CuratorFrameworkFactory.newClient(Bootstrap.getZookeeperAddresses(), retryPolicy);
+        LoggerHelper.info("Starting init master-slave node...");
+        String zookeeperAddresses = Bootstrap.getZookeeperAddresses();
+        LoggerHelper.info("Connect to Zk client [" + zookeeperAddresses + "]");
+        this.client = CuratorFrameworkFactory.newClient(zookeeperAddresses, retryPolicy);
+        LoggerHelper.info("Starting Zk client connection...");
         this.client.start();
-
+        LoggerHelper.info("Zk client has been started...");
         this.masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
-
         this.initLock = new InterProcessMutex(client, masterSlaveApiFactory.pathApi().getInitLockPath());
         try {
             this.initLock.acquire();
@@ -90,7 +93,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
         }
 
         this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
-
+        LoggerHelper.info("Zk Node has been created successfully...");
         this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
         this.nodeCache.getListenable().addListener(new NodeCacheListener());
 
@@ -99,7 +102,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
 
         this.leaderSelector = new LeaderSelector(client, masterSlaveApiFactory.pathApi().getSelectorPath(), new MasterSlaveLeadershipSelectorListener());
         this.leaderSelector.autoRequeue();
-
+        LoggerHelper.info("Init master-slave node successfully...");
     }
 
     /**

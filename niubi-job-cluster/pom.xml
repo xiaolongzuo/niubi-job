@@ -52,7 +52,6 @@
                     <overWriteSnapshots>true</overWriteSnapshots>
                     <stripVersion>true</stripVersion>
                     <stripClassifier>true</stripClassifier>
-                    <excludeArtifactIds>guava</excludeArtifactIds>
                 </configuration>
                 <executions>
                     <execution>
