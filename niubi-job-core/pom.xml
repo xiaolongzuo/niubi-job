@@ -19,5 +19,9 @@
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-test</artifactId>
+        </dependency>
     </dependencies>
 </project>

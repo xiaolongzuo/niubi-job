@@ -40,6 +40,7 @@
         <module>niubi-job-scheduler</module>
         <module>niubi-job-core</module>
         <module>niubi-job-scanner</module>
+        <module>niubi-job-test</module>
     </modules>
 
     <properties>
@@ -121,6 +122,11 @@
                 <version>${curator.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-client</artifactId>
+                <version>${curator.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.google.code.gson</groupId>
                 <artifactId>gson</artifactId>
                 <version>${gson.version}</version>
@@ -190,6 +196,7 @@
                 <artifactId>shiro-spring</artifactId>
                 <version>${shiro.version}</version>
             </dependency>
+
             <!--web-->
             <dependency>
                 <groupId>jstl</groupId>
@@ -208,6 +215,7 @@
                 <version>2.0</version>
                 <scope>provided</scope>
             </dependency>
+
             <!--spring-->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -224,7 +232,6 @@
                 <artifactId>spring-rabbit</artifactId>
                 <version>1.4.3.RELEASE</version>
             </dependency>
-
             <dependency>
                 <groupId>org.springframework.retry</groupId>
                 <artifactId>spring-retry</artifactId>
@@ -280,6 +287,7 @@
                 <artifactId>spring-oxm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+
             <!-- provided -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -289,6 +297,12 @@
             </dependency>
 
             <!-- test -->
+            <dependency>
+                <groupId>com.zuoxiaolong</groupId>
+                <artifactId>niubi-job-test</artifactId>
+                <version>${project.version}</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
