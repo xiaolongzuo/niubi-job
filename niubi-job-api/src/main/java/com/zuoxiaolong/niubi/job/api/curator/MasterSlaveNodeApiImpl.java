@@ -19,7 +19,6 @@ package com.zuoxiaolong.niubi.job.api.curator;
 import com.zuoxiaolong.niubi.job.api.MasterSlaveNodeApi;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
-import com.zuoxiaolong.niubi.job.core.helper.ListHelper;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.recipes.cache.ChildData;
 
@@ -39,9 +38,6 @@ public class MasterSlaveNodeApiImpl extends AbstractCurdApiImpl implements Maste
     @Override
     public List<MasterSlaveNodeData> getAllNodes() {
         List<ChildData> childDataList = getChildren(PathHelper.getParentPath(getMasterSlavePathApi().getNodePath()));
-        if (ListHelper.isEmpty(childDataList)) {
-            return null;
-        }
         return childDataList.stream().map(MasterSlaveNodeData::new).collect(Collectors.toList());
     }
 

@@ -84,7 +84,7 @@ public abstract class AbstractCurdApiImpl {
      */
     protected List<ChildData> getChildren(String path) {
         if (!checkExists(path)) {
-            return null;
+            return new ArrayList<>();
         }
         try {
             List<ChildData> childDataList = new ArrayList<>();
