@@ -111,7 +111,7 @@ public final class Bootstrap {
         File binDir = new File(rootDir + "/bin");
         if (!binDir.exists()) {
             //用于生产环境
-            rootDir = userDir.substring(0, userDir.lastIndexOf("/"));
+            rootDir = userDir.substring(0, userDir.lastIndexOf('/'));
             binDir = new File(rootDir + "/bin");
             if (!binDir.exists()) {
                 throw new NiubiException(new IllegalArgumentException("can't find bin path."));

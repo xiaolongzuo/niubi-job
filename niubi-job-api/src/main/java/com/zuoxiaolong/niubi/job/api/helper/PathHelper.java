@@ -28,7 +28,7 @@ public interface PathHelper {
 
     static String getParentPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");
-        return path.substring(0, path.lastIndexOf("/"));
+        return path.substring(0, path.lastIndexOf('/'));
     }
 
     static String getJobPath(String jobParentPath, String group, String name) {
@@ -40,7 +40,7 @@ public interface PathHelper {
 
     static String getEndPath(String path) {
         AssertHelper.notNull(path, "path can't be null.");
-        return path.indexOf("/") >= 0 ? path.substring(path.lastIndexOf("/") + 1) : path;
+        return path.indexOf('/') >= 0 ? path.substring(path.lastIndexOf('/') + 1) : path;
     }
 
 }

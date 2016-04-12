@@ -44,7 +44,7 @@ public interface ClassHelper {
      */
     static String getPackageName(String className) {
         AssertHelper.notEmpty(className, "className can't be null.");
-        int index = className.lastIndexOf(".");
+        int index = className.lastIndexOf('.');
         if (index < 0) {
             return "";
         }
@@ -59,7 +59,7 @@ public interface ClassHelper {
      */
     static String getClassName(String jarEntryName) {
         if (jarEntryName.endsWith(".class")) {
-            return jarEntryName.replace("/", ".").substring(0, jarEntryName.lastIndexOf("."));
+            return jarEntryName.replace("/", ".").substring(0, jarEntryName.lastIndexOf('.'));
         }
         return null;
     }
