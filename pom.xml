@@ -61,6 +61,7 @@
         <mysql.version>5.1.34</mysql.version>
         <shiro.version>1.2.4</shiro.version>
         <mockito.version>1.10.19</mockito.version>
+        <derby.version>10.7.1.1</derby.version>
     </properties>
 
     <dependencyManagement>
@@ -327,6 +328,12 @@
                 <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>${derby.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -350,6 +357,10 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
         </dependency>
     </dependencies>
 
