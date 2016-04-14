@@ -27,7 +27,7 @@ import java.util.List;
  */
 public interface JarFileHelper {
 
-    public static String getJarFileName(String jarFilePath) {
+    static String getJarFileName(String jarFilePath) {
         if (jarFilePath == null) {
             return null;
         }
@@ -38,7 +38,7 @@ public interface JarFileHelper {
         return jarFileName.substring(jarFileName.lastIndexOf("\\") + 1);
     }
 
-    public static String[] download(String jarFileParentPath, String... jarUrls) {
+    static String[] download(String jarFileParentPath, String... jarUrls) {
         if (jarUrls != null) {
             List<String> jarFilePathList = new ArrayList<>();
             for (int i = 0;i < jarUrls.length; i++) {
@@ -57,7 +57,7 @@ public interface JarFileHelper {
         return StringHelper.emptyArray();
     }
 
-    public static String downloadJarFile(String jarFileParentPath, String jarUrl) throws IOException {
+    static String downloadJarFile(String jarFileParentPath, String jarUrl) throws IOException {
         String jarFileName = jarUrl.substring(jarUrl.lastIndexOf("/") + 1);
         String jarFilePath = StringHelper.appendSlant(jarFileParentPath) + jarFileName;
         File file = new File(jarFilePath);

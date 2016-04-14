@@ -30,6 +30,13 @@ import java.net.HttpURLConnection;
  */
 public interface IOHelper {
 
+    /**
+     * 将数据写入文件
+     *
+     * @param fileName 文件名称
+     * @param bytes 数据
+     * @throws IOException
+     */
     static void writeFile(String fileName, byte[] bytes) throws IOException {
         if (fileName != null) {
             FileOutputStream fileOutputStream = new FileOutputStream(fileName);

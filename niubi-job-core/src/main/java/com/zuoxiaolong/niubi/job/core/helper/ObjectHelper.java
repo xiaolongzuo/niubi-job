@@ -21,6 +21,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
+ * 对象帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

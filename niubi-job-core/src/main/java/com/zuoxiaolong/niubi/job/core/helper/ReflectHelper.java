@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 反射帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * String帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

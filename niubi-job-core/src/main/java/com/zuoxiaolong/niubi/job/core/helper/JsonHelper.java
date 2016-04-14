@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import java.lang.reflect.Type;
 
 /**
+ * 基于GSON的JSON解析器
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */

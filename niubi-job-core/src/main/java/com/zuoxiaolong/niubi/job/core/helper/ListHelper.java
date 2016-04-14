@@ -21,12 +21,14 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * 列表帮助类
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public interface ListHelper {
 
-    public static <T> List<T> merge(List<T> list1, List<T> list2) {
+    static <T> List<T> merge(List<T> list1, List<T> list2) {
         List<T> mergeResult = new ArrayList<>();
         if (list1 != null) {
             mergeResult.addAll(list1);
@@ -37,7 +39,7 @@ public interface ListHelper {
         return mergeResult;
     }
 
-    public static <T> List<T> add(List<T> list, T element) {
+    static <T> List<T> add(List<T> list, T element) {
         List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
@@ -48,7 +50,7 @@ public interface ListHelper {
         return mergeResult;
     }
 
-    public static <T> List<T> sub(List<T> list, T element) {
+    static <T> List<T> sub(List<T> list, T element) {
         List<T> mergeResult = new ArrayList<>();
         if (list != null) {
             mergeResult.addAll(list);
@@ -59,15 +61,15 @@ public interface ListHelper {
         return mergeResult;
     }
 
-    public static boolean isEmpty(Collection<?> collection) {
+    static boolean isEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
 
-    public static boolean isEmpty(Object[] array) {
+    static boolean isEmpty(Object[] array) {
         return array == null || array.length == 0;
     }
 
-    public static String[] listToArray(List<String> list) {
+    static String[] listToArray(List<String> list) {
         if (list == null)
             return null;
         String[] array = new String[list.size()];
