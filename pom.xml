@@ -341,9 +341,9 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.bitbucket.bradleysmithllc.etlunit</groupId>
-                <artifactId>h2-database</artifactId>
-                <version>1.8.16</version>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.190</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -375,8 +375,8 @@
             <artifactId>derby</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.bitbucket.bradleysmithllc.etlunit</groupId>
-            <artifactId>h2-database</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
 
