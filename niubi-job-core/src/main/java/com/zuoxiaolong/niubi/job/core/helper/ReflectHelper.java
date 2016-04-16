@@ -16,12 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.core.helper;
 
-import java.lang.reflect.*;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * 反射帮助类
@@ -31,7 +28,7 @@ import java.util.List;
  */
 public interface ReflectHelper {
 
-    public static void copyFieldValues(Object source, Object target) {
+    static void copyFieldValues(Object source, Object target) {
         if (source == null || target == null) {
             return;
         }
@@ -53,7 +50,7 @@ public interface ReflectHelper {
         }
     }
 
-    public static void copyFieldValuesSkipNull(Object source, Object target) {
+    static void copyFieldValuesSkipNull(Object source, Object target) {
         if (source == null || target == null) {
             return;
         }
@@ -77,7 +74,7 @@ public interface ReflectHelper {
         }
     }
 
-    public static Field[] getAllFields(Object object) {
+    static Field[] getAllFields(Object object) {
         Class<?> clazz;
         if (object instanceof Class) {
             clazz = (Class<?>) object;
@@ -98,7 +95,7 @@ public interface ReflectHelper {
         return fields;
     }
 
-    public static Method getGetterMethod(Class<?> clazz, String fieldName) {
+    static Method getGetterMethod(Class<?> clazz, String fieldName) {
         String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
         try {
             return getInheritMethod(clazz, methodName, new Class<?>[]{});
@@ -107,17 +104,11 @@ public interface ReflectHelper {
         }
     }
 
-    public static Method getGetterMethod(Class<?> clazz, Field field) {
-        String fieldName = field.getName();
-        String methodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-        try {
-            return getInheritMethod(clazz, methodName, new Class<?>[]{});
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
+    static Method getGetterMethod(Class<?> clazz, Field field) {
+        return getGetterMethod(clazz, field.getName());
     }
 
-    public static Method getSetterMethod(Class<?> clazz, Field field) {
+    static Method getSetterMethod(Class<?> clazz, Field field) {
         String fieldName = field.getName();
         String methodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
         try {
@@ -127,7 +118,7 @@ public interface ReflectHelper {
         }
     }
 
-    public static Method getInheritMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
+    static Method getInheritMethod(Class<?> clazz, String methodName, Class<?>... parameterTypes) throws NoSuchMethodException {
         try {
             return clazz.getDeclaredMethod(methodName, parameterTypes);
         } catch (NoSuchMethodException e) {
@@ -140,18 +131,7 @@ public interface ReflectHelper {
         }
     }
 
-    public static Object getFieldValueWithGetterMethod(Object object, Class<?> clazz, Field field) {
-        Method method = getGetterMethod(clazz, field);
-        try {
-            return method.invoke(object);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Object getFieldValueWithGetterMethod(Object object, Class<?> clazz, String fieldName) {
+    static Object getFieldValueWithGetterMethod(Object object, Class<?> clazz, String fieldName) {
         Method method = getGetterMethod(clazz, fieldName);
         try {
             return method.invoke(object);
@@ -162,7 +142,7 @@ public interface ReflectHelper {
         }
     }
 
-    public static Object setFieldValueWithSetterMethod(Object target, Object value, Class<?> clazz, Field field) {
+    static Object setFieldValueWithSetterMethod(Object target, Object value, Class<?> clazz, Field field) {
         Method method = getSetterMethod(clazz, field);
         try {
             return method.invoke(target, value);
@@ -172,111 +152,5 @@ public interface ReflectHelper {
             throw new RuntimeException(e);
         }
     }
-
-
-    public static boolean hasField(Class<?> clazz) {
-		if (clazz.getDeclaredFields() == null || clazz.getDeclaredFields().length == 0) {
-			return false;
-		}
-		return true;
-	}
-
-	public static Class<?> getParameterizedType(Class<?> clazz) {
-		return getParameterizedType(clazz, 0);
-	}
-
-	public static Class<?> getParameterizedType(Class<?> clazz, int index) {
-		Type type = clazz.getGenericSuperclass();
-		if (type instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			return (Class<?>) parameterizedType.getActualTypeArguments()[index];
-		}
-		return null;
-	}
-
-	public static Class<?> getParameterizedType(Field field) {
-		return getParameterizedType(field, 0);
-	}
-
-	public static Class<?> getParameterizedType(Field field, int index) {
-		Type type = field.getGenericType();
-		if (type instanceof ParameterizedType) {
-			ParameterizedType parameterizedType = (ParameterizedType) type;
-			return (Class<?>) parameterizedType.getActualTypeArguments()[index];
-		}
-		return null;
-	}
-
-	public static Class<?> getParameterizedType(List<?> list) {
-		if (!ListHelper.isEmpty(list)) {
-			return list.get(0).getClass();
-		}
-		return null;
-	}
-
-	public static boolean isPrimitive(Class<?> clazz) {
-		return clazz.isPrimitive() || clazz == String.class || clazz == Date.class || clazz == java.sql.Date.class || clazz == Timestamp.class || clazz == BigDecimal.class;
-	}
-
-	public static Object getFieldValue(Object entity, Field field) {
-		field.setAccessible(true);
-		Object value = null;
-		try {
-			value = field.get(entity);
-		} catch (Exception exception) {
-			LoggerHelper.warn("the field " + field.getName() + " will be ingored.");
-		}
-		return value;
-	}
-
-	public static Object getFieldValue(Object entity, String fieldName) {
-		try {
-			return getFieldValue(entity, entity.getClass().getDeclaredField(fieldName));
-		} catch (Exception e) {
-            LoggerHelper.error(fieldName, e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static void setFieldValue(Object entity, Field field, Object value) {
-		field.setAccessible(true);
-		try {
-			field.set(entity, value);
-		} catch (Exception exception) {
-            LoggerHelper.warn("the field " + field.getName() + " will be ingored.");
-		}
-	}
-
-	public static void setFieldValue(Object entity, String fieldName, Object value) {
-		try {
-			setFieldValue(entity, entity.getClass().getDeclaredField(fieldName), value);
-		} catch (Exception e) {
-			LoggerHelper.error(fieldName, e);
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static Method getMethodByName(Class<?> clazz, String methodName) {
-		Method[] methods = clazz.getDeclaredMethods();
-		if (methods == null || methods.length == 0) {
-			return null;
-		}
-		if (methodName == null || methodName.length() == 0) {
-			return null;
-		}
-		List<Method> methodList = new ArrayList<>();
-		for (Method method : methods) {
-			if (method.getName().equals(methodName)) {
-				methodList.add(method);
-			}
-		}
-		if (methodList.isEmpty()) {
-			return null;
-		}
-		if (methodList.size() > 1) {
-			return null;
-		}
-		return methodList.get(0);
-	}
 
 }

@@ -18,8 +18,6 @@ package com.zuoxiaolong.niubi.job.core.helper;
 
 import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
-
 /**
  * 基于GSON的JSON解析器
  *
@@ -43,10 +41,6 @@ public abstract class JsonHelper {
 
     public static <T> T fromJson(String json, Class<T> clazz) {
         return GSON.fromJson(json, clazz);
-    }
-
-    public static <T> T fromJson(String json, Type type) {
-        return GSON.fromJson(json, type);
     }
 
     public static <T> T fromJson(byte[] bytes, Class<T> clazz) {

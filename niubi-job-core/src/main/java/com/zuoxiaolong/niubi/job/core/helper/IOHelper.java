@@ -19,8 +19,6 @@ package com.zuoxiaolong.niubi.job.core.helper;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 
 /**
  * IO帮助类
@@ -46,37 +44,13 @@ public interface IOHelper {
         }
     }
 
-    static void writeStream(String content, String charset, OutputStream outputStream) throws IOException {
-        if (content != null) {
-            outputStream.write(content.getBytes(charset));
-            outputStream.flush();
-        }
-    }
-
-    static String readStream(HttpURLConnection connection, String charset) throws IOException {
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            return IOHelper.readStream(connection.getInputStream(), charset);
-        } else {
-            return IOHelper.readStream(connection.getErrorStream(), charset);
-        }
-    }
-
-    static String readStream(InputStream inputStream, String charset) throws IOException {
-        byte[] result = readStreamBytes(inputStream);
-        if (result == null ) {
-            return null;
-        }
-        return new String(result, charset);
-    }
-
-    static byte[] readStreamBytes(HttpURLConnection connection) throws IOException {
-        if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-            return IOHelper.readStreamBytes(connection.getInputStream());
-        } else {
-            return IOHelper.readStreamBytes(connection.getErrorStream());
-        }
-    }
-
+    /**
+     * 读取输入流中的字节
+     *
+     * @param inputStream 输入流
+     * @return 读出来的字节数组
+     * @throws IOException
+     */
     static byte[] readStreamBytes(InputStream inputStream) throws IOException {
         byte[] cache = new byte[2048];
         int len;

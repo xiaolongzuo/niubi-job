@@ -18,8 +18,6 @@ package com.zuoxiaolong.niubi.job.core.helper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Xiaolong Zuo
@@ -36,25 +34,6 @@ public interface JarFileHelper {
         }
         String jarFileName = jarFilePath.substring(jarFilePath.lastIndexOf("/") + 1);
         return jarFileName.substring(jarFileName.lastIndexOf("\\") + 1);
-    }
-
-    static String[] download(String jarFileParentPath, String... jarUrls) {
-        if (jarUrls != null) {
-            List<String> jarFilePathList = new ArrayList<>();
-            for (int i = 0;i < jarUrls.length; i++) {
-                try {
-                    jarFilePathList.add(downloadJarFile(jarFileParentPath, jarUrls[i]));
-                } catch (Throwable e) {
-                    LoggerHelper.error("download jar file [" + jarUrls[i] + "] failed,has been ignored.");
-                }
-            }
-            String[] jarFilePaths = new String[jarFilePathList.size()];
-            for (int i = 0; i < jarFilePaths.length; i++) {
-                jarFilePaths[i] = jarFilePathList.get(i);
-            }
-            return jarFilePaths;
-        }
-        return StringHelper.emptyArray();
     }
 
     static String downloadJarFile(String jarFileParentPath, String jarUrl) throws IOException {

@@ -17,43 +17,38 @@
 package com.zuoxiaolong.niubi.job.core.helper;
 
 import com.zuoxiaolong.niubi.job.test.http.server.HttpServer;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public class HttpHelperTest {
+public class JarFileHelperTest {
 
-    @BeforeClass
-    public static void setup() {
-        HttpServer.start();
-    }
-
-    @AfterClass
-    public static void teardown() {
-        HttpServer.exit();
+    @Test
+    public void getJarFileName() {
+        Assert.assertNull(JarFileHelper.getJarFileName(null));
+        Assert.assertTrue("1.jar".equals(JarFileHelper.getJarFileName("1.jar")));
+        Assert.assertTrue("1.jar".equals(JarFileHelper.getJarFileName("C:/1.jar")));
     }
 
     @Test
-    public void downloadRemoteResource() throws IOException {
-        String filePath = System.getProperty("user.dir") + "/test.txt";
-        String returnedFilePath = HttpHelper.downloadRemoteResource(filePath, "http://localhost:8080/download/test.txt");
-        Assert.assertTrue(filePath.equals(returnedFilePath));
-        File file = new File(filePath);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-        String text = reader.readLine().trim();
-        reader.close();
-        Assert.assertTrue(text.equals("hello"));
+    public void downloadJarFile() throws IOException {
+        HttpServer.start();
+        String filePath = System.getProperty("user.dir");
+        String jarFilePath = JarFileHelper.downloadJarFile(filePath, "http://localhost:8080/download/test.jar");
+        File file = new File(jarFilePath);
+        Assert.assertTrue(file.exists());
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] bytes = IOHelper.readStreamBytesAndClose(fileInputStream);
+        Assert.assertEquals(new String(bytes), "hello");
         Assert.assertTrue(file.delete());
+        HttpServer.exit();
     }
 
 }

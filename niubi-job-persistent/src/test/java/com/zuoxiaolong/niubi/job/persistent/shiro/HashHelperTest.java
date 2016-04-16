@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.exception;
+package com.zuoxiaolong.niubi.job.persistent.shiro;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * 代表发生了未知泛型类型的异常
- *
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4.2
  */
-public class UnknownGenericTypeException extends RuntimeException {
+public class HashHelperTest {
 
-    public UnknownGenericTypeException() {
+    @Test
+    public void getHashedPassword() {
+        Assert.assertEquals("a66abb5684c45962d887564f08346e8d", HashHelper.getHashedPassword("123456", "admin"));
     }
 
 }

@@ -32,10 +32,21 @@ import java.io.OutputStream;
 @EnableAutoConfiguration
 public class DownloadFileController {
 
-    @RequestMapping("/download")
-    public void download(HttpServletResponse response) throws IOException {
+    @RequestMapping("/download/test.txt")
+    public void downloadTxt(HttpServletResponse response) throws IOException {
         String fileName = "test.txt";
         response.setContentType("text/plain");
+        response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+        OutputStream outputStream = response.getOutputStream();
+        outputStream.write("hello".getBytes());
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    @RequestMapping("/download/test.jar")
+    public void downloadJar(HttpServletResponse response) throws IOException {
+        String fileName = "test.jar";
+        response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
         OutputStream outputStream = response.getOutputStream();
         outputStream.write("hello".getBytes());

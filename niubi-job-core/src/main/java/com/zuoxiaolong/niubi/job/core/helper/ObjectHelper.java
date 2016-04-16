@@ -34,13 +34,6 @@ public abstract class ObjectHelper {
 		return object == null || object.toString().trim().length() == 0;
 	}
 
-	public static String getFieldNameForTransientId(Field field) {
-		if (field == null) {
-			throw new NullPointerException();
-		}
-		return field.getName().substring(0, field.getName().length() - TRANSIENT_ID_SUFFIX.length());
-	}
-
 	public static <T> boolean isTransientId(Class<T> clazz, Field field) {
 		if (!field.getName().endsWith(TRANSIENT_ID_SUFFIX)) {
 			return false;

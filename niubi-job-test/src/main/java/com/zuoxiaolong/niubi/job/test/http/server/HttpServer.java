@@ -39,6 +39,7 @@ public class HttpServer {
     public static synchronized void exit() {
         if (APPLICATION_CONTEXT != null) {
             SpringApplication.exit(APPLICATION_CONTEXT);
+            APPLICATION_CONTEXT = null;
         }
     }
 

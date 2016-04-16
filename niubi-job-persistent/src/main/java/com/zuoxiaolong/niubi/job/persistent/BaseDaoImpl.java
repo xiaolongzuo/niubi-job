@@ -48,17 +48,6 @@ public class BaseDaoImpl implements BaseDao {
 		return (String) getHibernateSession().save(entity);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T merge(T entity) {
-		return (T) getHibernateSession().merge(entity);
-	}
-
-	@Override
-	public <T> void persist(T entity) {
-		getHibernateSession().persist(entity);
-	}
-
 	@Override
 	public <T> void update(T entity) {
 		getHibernateSession().update(entity);
@@ -103,12 +92,6 @@ public class BaseDaoImpl implements BaseDao {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T load(Class<T> clazz, String id) {
-		return (T) getHibernateSession().load(clazz, id);
-	}
-
-	@Override
 	public <T> List<T> getList(Class<T> clazz, T entity) {
 		return getList(clazz, entity, false);
 	}
@@ -144,16 +127,6 @@ public class BaseDaoImpl implements BaseDao {
 		setParameters(query, valueList);
 
 		return (T) query.uniqueResult();
-	}
-
-	@Override
-	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager) {
-		return getByPager(clazz, pager, null);
-	}
-
-	@Override
-	public <T extends AbstractEntity> Pager<T> getByPager(Class<T> clazz, Pager<T> pager, T entity) {
-		return getByPager(clazz, pager, entity, true);
 	}
 
 	@Override
@@ -206,7 +179,7 @@ public class BaseDaoImpl implements BaseDao {
 				if (Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers) || Modifier.isFinal(modifiers) || ObjectHelper.isTransientId(clazz, field)) {
 					continue;
 				}
-				Object value = ReflectHelper.getFieldValue(entity, field);
+				Object value = ReflectHelper.getFieldValueWithGetterMethod(entity, entity.getClass(), field.getName());
 				if (ObjectHelper.isEmpty(value)) {
 					continue;
 				}

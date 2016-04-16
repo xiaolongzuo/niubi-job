@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.core.exception;
+package com.zuoxiaolong.niubi.job.persistent;
+
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 代表发生了未知泛型类型的异常
- *
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4.2
  */
-public class UnknownGenericTypeException extends RuntimeException {
-
-    public UnknownGenericTypeException() {
-    }
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"classpath:applicationContext-persistent-test.xml"})
+@Transactional
+public abstract class AbstractSpringTestCase {
 
 }

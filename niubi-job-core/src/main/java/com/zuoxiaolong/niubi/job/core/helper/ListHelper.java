@@ -28,17 +28,6 @@ import java.util.List;
  */
 public interface ListHelper {
 
-    static <T> List<T> merge(List<T> list1, List<T> list2) {
-        List<T> mergeResult = new ArrayList<>();
-        if (list1 != null) {
-            mergeResult.addAll(list1);
-        }
-        if (list2 != null) {
-            mergeResult.addAll(list2);
-        }
-        return mergeResult;
-    }
-
     static <T> List<T> add(List<T> list, T element) {
         List<T> mergeResult = new ArrayList<>();
         if (list != null) {
@@ -50,33 +39,12 @@ public interface ListHelper {
         return mergeResult;
     }
 
-    static <T> List<T> sub(List<T> list, T element) {
-        List<T> mergeResult = new ArrayList<>();
-        if (list != null) {
-            mergeResult.addAll(list);
-        }
-        if (element != null) {
-            mergeResult.remove(element);
-        }
-        return mergeResult;
-    }
-
     static boolean isEmpty(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }
 
     static boolean isEmpty(Object[] array) {
         return array == null || array.length == 0;
-    }
-
-    static String[] listToArray(List<String> list) {
-        if (list == null)
-            return null;
-        String[] array = new String[list.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = list.get(i);
-        }
-        return array;
     }
 
 }

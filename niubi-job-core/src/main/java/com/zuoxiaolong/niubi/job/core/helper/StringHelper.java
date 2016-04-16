@@ -95,7 +95,7 @@ public abstract class StringHelper {
     }
 
     public static String[] checkEmpty(String[] s) {
-        return ObjectHelper.isEmpty(s) ? emptyArray() : s;
+        return ListHelper.isEmpty(s) ? emptyArray() : s;
     }
 
     public static String isEmpty(String value, String defaultValue) {
