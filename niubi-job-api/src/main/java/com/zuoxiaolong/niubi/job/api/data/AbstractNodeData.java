@@ -26,7 +26,7 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
 
     private String ip;
 
-    private String state;
+    private String nodeState;
 
     private Integer runningJobCount = 0;
 
@@ -45,12 +45,12 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
         this.ip = ip;
     }
 
-    public String getState() {
-        return state;
+    public String getNodeState() {
+        return nodeState;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setNodeState(String nodeState) {
+        this.nodeState = nodeState;
     }
 
     public Integer getRunningJobCount() {
@@ -78,7 +78,7 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
     public String toString() {
         return "Data{" +
                 "ip='" + ip + '\'' +
-                ", state='" + state + '\'' +
+                ", nodeState='" + nodeState + '\'' +
                 ", runningJobCount=" + runningJobCount +
                 '}';
     }

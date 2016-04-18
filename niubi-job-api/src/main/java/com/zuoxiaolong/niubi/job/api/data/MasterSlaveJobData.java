@@ -62,7 +62,7 @@ public class MasterSlaveJobData extends AbstractGenericData<MasterSlaveJobData, 
             clearNodePath();
             if (isStartup()) {
                 setOriginalJarFileName(getJarFileName());
-                setOperation("Start");
+                setJobOperation("Start");
             }
         }
 

@@ -62,9 +62,9 @@ public class MasterSlaveJobApiTest {
         Assert.assertNotNull(list);
         Assert.assertTrue(list.size() == 0);
         MasterSlaveJobData.Data data = new MasterSlaveJobData.Data();
-        data.setMode("Common");
-        data.setCron(".....");
-        data.setOperation("start");
+        data.setContainerType("Common");
+        data.setJobCron(".....");
+        data.setJobOperation("start");
         masterSlaveJobApi.saveJob("com.com.com","name1",data);
         masterSlaveJobApi.saveJob("com.com.com","name2",data);
         masterSlaveJobApi.saveJob("com.com.com","name3",data);
@@ -72,33 +72,33 @@ public class MasterSlaveJobApiTest {
         Assert.assertNotNull(list);
         Assert.assertTrue(list.size() == 3);
         for (MasterSlaveJobData jobData : list) {
-            Assert.assertTrue(jobData.getData().getCron().equals("....."));
-            Assert.assertTrue(jobData.getData().getMode().equals("Common"));
-            Assert.assertTrue(jobData.getData().getOperation().equals("start"));
+            Assert.assertTrue(jobData.getData().getJobCron().equals("....."));
+            Assert.assertTrue(jobData.getData().getContainerType().equals("Common"));
+            Assert.assertTrue(jobData.getData().getJobOperation().equals("start"));
         }
     }
 
     @Test
     public void updateNodeGetJob() {
         MasterSlaveJobData.Data data = new MasterSlaveJobData.Data();
-        data.setMode("Common");
-        data.setCron(".....");
-        data.setOperation("start");
+        data.setContainerType("Common");
+        data.setJobCron(".....");
+        data.setJobOperation("start");
         masterSlaveJobApi.saveJob("com.com.com","name1",data);
         MasterSlaveJobData jobData = masterSlaveJobApi.getJob("com.com.com", "name1");
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertNull(jobData.getData().getJarFileName());
         jobData = masterSlaveJobApi.getJob(PathHelper.getJobPath(masterSlaveApiFactory.pathApi().getJobPath(),"com.com.com","name1"));
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertNull(jobData.getData().getJarFileName());
         data.setJarFileName("1.jar");
         masterSlaveJobApi.updateJob("com.com.com", "name1", data);
         jobData = masterSlaveJobApi.getJob("com.com.com", "name1");
         Assert.assertNotNull(jobData);
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertEquals("1.jar", jobData.getData().getJarFileName());
     }
 

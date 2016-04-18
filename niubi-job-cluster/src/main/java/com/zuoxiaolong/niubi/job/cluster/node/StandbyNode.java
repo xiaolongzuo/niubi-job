@@ -148,7 +148,7 @@ public class StandbyNode extends AbstractClusterJobNode {
             StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
             int runningJobCount = startupJobs();
             nodeData.setRunningJobCount(runningJobCount);
-            nodeData.setState("Master");
+            nodeData.setNodeState("Master");
             standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
             LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
             jobCache.start();
@@ -163,8 +163,8 @@ public class StandbyNode extends AbstractClusterJobNode {
             for (StandbyJobData standbyJobData : standbyJobDataList) {
                 try {
                     StandbyJobData.Data data = standbyJobData.getData();
-                    if ("Startup".equals(data.getState())) {
-                        schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    if ("Startup".equals(data.getJobState())) {
+                        schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getJobCron(), data.getMisfirePolicy());
                         runningJobCount++;
                     }
                 } catch (Exception e) {
@@ -209,7 +209,7 @@ public class StandbyNode extends AbstractClusterJobNode {
                 return;
             }
             StandbyJobData standbyJobData = new StandbyJobData(event.getData());
-            if (StringHelper.isEmpty(standbyJobData.getData().getOperation())) {
+            if (StringHelper.isEmpty(standbyJobData.getData().getJobOperation())) {
                 return;
             }
             StandbyJobData.Data data = standbyJobData.getData();
@@ -223,15 +223,15 @@ public class StandbyNode extends AbstractClusterJobNode {
         private void executeOperation(StandbyNodeData.Data nodeData, StandbyJobData.Data data) {
             try {
                 if (data.isStart() || data.isRestart()) {
-                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getJobCron(), data.getMisfirePolicy());
                     if (data.isStart()) {
                         nodeData.increment();
                     }
-                    data.setState("Startup");
+                    data.setJobState("Startup");
                 } else {
                     schedulerManager.shutdown(data.getGroupName(), data.getJobName());
                     nodeData.decrement();
-                    data.setState("Pause");
+                    data.setJobState("Pause");
                 }
                 data.operateSuccess();
                 standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);

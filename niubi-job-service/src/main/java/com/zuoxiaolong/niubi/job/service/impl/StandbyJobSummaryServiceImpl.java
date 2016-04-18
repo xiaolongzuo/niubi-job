@@ -66,7 +66,7 @@ public class StandbyJobSummaryServiceImpl extends AbstractService implements Sta
         StandbyJob standbyJob = standbyJobService.getJob(standbyJobSummary.getGroupName(), standbyJobSummary.getJobName(), standbyJobSummary.getJarFileName());
         data.setJobOperationLogId(standbyJobLogService.saveJobLog(standbyJobSummary));
         data.setPackagesToScan(standbyJob.getPackagesToScan());
-        data.setMode(standbyJob.getContainerType());
+        data.setContainerType(standbyJob.getContainerType());
         //set state to Executing
         StandbyJobSummary param = new StandbyJobSummary();
         param.setGroupName(data.getGroupName());

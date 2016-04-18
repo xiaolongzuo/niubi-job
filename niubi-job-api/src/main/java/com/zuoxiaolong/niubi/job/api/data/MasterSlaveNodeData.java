@@ -57,7 +57,7 @@ public class MasterSlaveNodeData extends AbstractGenericData<MasterSlaveNodeData
 
         public Data(String ip) {
             super(ip);
-            setState("Slave");
+            setNodeState("Slave");
         }
 
         public void addJobPath(String jobPath) {

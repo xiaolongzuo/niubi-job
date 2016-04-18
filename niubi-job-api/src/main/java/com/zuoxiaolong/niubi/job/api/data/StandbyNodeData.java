@@ -52,7 +52,7 @@ public class StandbyNodeData extends AbstractGenericData<StandbyNodeData, Standb
 
         public Data(String ip) {
             super(ip);
-            setState("Backup");
+            setNodeState("Backup");
         }
 
     }

@@ -62,9 +62,9 @@ public class StandbyJobApiTest {
         Assert.assertNotNull(list);
         Assert.assertTrue(list.size() == 0);
         StandbyJobData.Data data = new StandbyJobData.Data();
-        data.setMode("Common");
-        data.setCron(".....");
-        data.setOperation("start");
+        data.setContainerType("Common");
+        data.setJobCron(".....");
+        data.setJobOperation("start");
         standbyJobApi.saveJob("com.com.com", "name1", data);
         standbyJobApi.saveJob("com.com.com", "name2", data);
         standbyJobApi.saveJob("com.com.com","name3",data);
@@ -72,33 +72,33 @@ public class StandbyJobApiTest {
         Assert.assertNotNull(list);
         Assert.assertTrue(list.size() == 3);
         for (StandbyJobData jobData : list) {
-            Assert.assertTrue(jobData.getData().getCron().equals("....."));
-            Assert.assertTrue(jobData.getData().getMode().equals("Common"));
-            Assert.assertTrue(jobData.getData().getOperation().equals("start"));
+            Assert.assertTrue(jobData.getData().getJobCron().equals("....."));
+            Assert.assertTrue(jobData.getData().getContainerType().equals("Common"));
+            Assert.assertTrue(jobData.getData().getJobOperation().equals("start"));
         }
     }
 
     @Test
     public void updateNodeGetJob() {
         StandbyJobData.Data data = new StandbyJobData.Data();
-        data.setMode("Common");
-        data.setCron(".....");
-        data.setOperation("start");
+        data.setContainerType("Common");
+        data.setJobCron(".....");
+        data.setJobOperation("start");
         standbyJobApi.saveJob("com.com.com", "name1", data);
         StandbyJobData jobData = standbyJobApi.getJob("com.com.com", "name1");
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertNull(jobData.getData().getJarFileName());
         jobData = standbyJobApi.getJob(PathHelper.getJobPath(standbyApiFactory.pathApi().getJobPath(), "com.com.com", "name1"));
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertNull(jobData.getData().getJarFileName());
         data.setJarFileName("1.jar");
         standbyJobApi.updateJob("com.com.com", "name1", data);
         jobData = standbyJobApi.getJob("com.com.com", "name1");
         Assert.assertNotNull(jobData);
         Assert.assertNotNull(jobData);
-        Assert.assertEquals("Common", jobData.getData().getMode());
+        Assert.assertEquals("Common", jobData.getData().getContainerType());
         Assert.assertEquals("1.jar", jobData.getData().getJarFileName());
     }
 

@@ -35,11 +35,11 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     private String packagesToScan;
 
-    private String cron;
+    private String jobCron;
 
-    private String mode = "Common";
+    private String containerType = "Common";
 
-    private String state = "Shutdown";
+    private String jobState = "Shutdown";
 
     private String misfirePolicy = "None";
 
@@ -49,7 +49,7 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
 
     private String originalJarFileName;
 
-    private String operation;
+    private String jobOperation;
 
     private Long version;
 
@@ -95,28 +95,28 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
         this.packagesToScan = packagesToScan;
     }
 
-    public String getCron() {
-        return cron;
+    public String getJobCron() {
+        return jobCron;
     }
 
-    public void setCron(String cron) {
-        this.cron = cron;
+    public void setJobCron(String jobCron) {
+        this.jobCron = jobCron;
     }
 
-    public String getMode() {
-        return mode;
+    public String getContainerType() {
+        return containerType;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 
-    public String getState() {
-        return state;
+    public String getJobState() {
+        return jobState;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setJobState(String jobState) {
+        this.jobState = jobState;
     }
 
     public String getMisfirePolicy() {
@@ -159,12 +159,12 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
         this.originalJarFileName = originalJarFileName;
     }
 
-    public String getOperation() {
-        return operation;
+    public String getJobOperation() {
+        return jobOperation;
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public void setJobOperation(String jobOperation) {
+        this.jobOperation = jobOperation;
     }
 
     @Override
@@ -184,48 +184,48 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
     }
 
     public boolean isOperated() {
-        return StringHelper.isEmpty(this.operation) && StringHelper.isEmpty(this.originalJarFileName)
+        return StringHelper.isEmpty(this.jobOperation) && StringHelper.isEmpty(this.originalJarFileName)
                 && this.operationResult != null && !this.operationResult.equals("Waiting");
     }
 
     public void init() {
-        setState("Shutdown");
-        setOperation(null);
+        setJobState("Shutdown");
+        setJobOperation(null);
         setOriginalJarFileName(null);
         setOperationResult("Success");
     }
 
     public void operateSuccess() {
         this.operationResult = "Success";
-        this.operation = null;
+        this.jobOperation = null;
         this.originalJarFileName = null;
     }
 
     public void operateFailed(String errorMessage) {
         this.operationResult = "Failed";
         this.errorMessage = errorMessage;
-        this.operation = null;
+        this.jobOperation = null;
         this.originalJarFileName = null;
     }
 
     public boolean isSpring() {
-        return mode != null && mode.equals("Spring");
+        return containerType != null && containerType.equals("Spring");
     }
 
     public boolean isStart() {
-        return operation != null && operation.equals("Start");
+        return jobOperation != null && jobOperation.equals("Start");
     }
 
     public boolean isStartup() {
-        return state != null && state.equals("Startup");
+        return jobState != null && jobState.equals("Startup");
     }
 
     public boolean isRestart() {
-        return operation != null && operation.equals("Restart");
+        return jobOperation != null && jobOperation.equals("Restart");
     }
 
     public boolean isPause() {
-        return operation != null && operation.equals("Pause");
+        return jobOperation != null && jobOperation.equals("Pause");
     }
 
     public boolean isUnknownOperation() {
@@ -239,14 +239,14 @@ public abstract class AbstractJobData<T extends AbstractJobData> implements Comp
                 ", jobName='" + jobName + '\'' +
                 ", jarFileName='" + jarFileName + '\'' +
                 ", packagesToScan='" + packagesToScan + '\'' +
-                ", cron='" + cron + '\'' +
-                ", mode='" + mode + '\'' +
-                ", state='" + state + '\'' +
+                ", jobCron='" + jobCron + '\'' +
+                ", containerType='" + containerType + '\'' +
+                ", jobState='" + jobState + '\'' +
                 ", misfirePolicy='" + misfirePolicy + '\'' +
                 ", jobOperationLogId='" + jobOperationLogId + '\'' +
                 ", operationResult='" + operationResult + '\'' +
                 ", originalJarFileName='" + originalJarFileName + '\'' +
-                ", operation='" + operation + '\'' +
+                ", jobOperation='" + jobOperation + '\'' +
                 ", version=" + version +
                 ", errorMessage='" + errorMessage + '\'' +
                 '}';

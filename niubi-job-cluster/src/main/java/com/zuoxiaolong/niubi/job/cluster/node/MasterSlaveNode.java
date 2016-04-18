@@ -198,7 +198,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
         public void acquireLeadership() throws Exception {
             checkUnavailableNode();
             MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
-            masterSlaveNodeData.getData().setState("Master");
+            masterSlaveNodeData.getData().setNodeState("Master");
             masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
             LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
             nodeCache.start();
@@ -238,7 +238,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             if (client.getState() == CuratorFrameworkState.STARTED) {
                 MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
                 releaseJobs(nodePath, nodeData);
-                nodeData.setState("Slave");
+                nodeData.setNodeState("Slave");
                 masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);
             }
             LoggerHelper.info("clear node successfully.");
@@ -272,7 +272,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
                 return;
             }
             MasterSlaveJobData jobData = new MasterSlaveJobData(event.getData());
-            if (StringHelper.isEmpty(jobData.getData().getOperation())) {
+            if (StringHelper.isEmpty(jobData.getData().getJobOperation())) {
                 return;
             }
             MasterSlaveJobData.Data data = jobData.getData();
@@ -339,7 +339,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
                 return false;
             }
             for (MasterSlaveJobData masterSlaveJobData : masterSlaveJobDataList) {
-                boolean hasOperation = !StringHelper.isEmpty(masterSlaveJobData.getData().getOperation());
+                boolean hasOperation = !StringHelper.isEmpty(masterSlaveJobData.getData().getJobOperation());
                 boolean assigned = !StringHelper.isEmpty(masterSlaveJobData.getData().getNodePath());
                 if (hasOperation && assigned) {
                     return true;
@@ -352,16 +352,16 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             MasterSlaveJobData.Data data = jobData.getData();
             try {
                 if (data.isStart() || data.isRestart()) {
-                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getCron(), data.getMisfirePolicy());
+                    schedulerManager.startupManual(downloadJarFile(data.getJarFileName()), data.getPackagesToScan(), data.isSpring(), data.getGroupName(), data.getJobName(), data.getJobCron(), data.getMisfirePolicy());
                     if (data.isStart()) {
                         nodeData.addJobPath(jobData.getPath());
                     }
-                    data.setState("Startup");
+                    data.setJobState("Startup");
                 } else {
                     schedulerManager.shutdown(data.getGroupName(), data.getJobName());
                     nodeData.removeJobPath(jobData.getPath());
                     data.clearNodePath();
-                    data.setState("Pause");
+                    data.setJobState("Pause");
                 }
                 data.operateSuccess();
                 masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
