@@ -48,7 +48,7 @@ public abstract class AbstractController {
         if (session == null) {
             return null;
         }
-        return (String) session.getAttribute("username");
+        return (String) session.getAttribute("userName");
     }
 
     protected String getUsernameAndCheck() {

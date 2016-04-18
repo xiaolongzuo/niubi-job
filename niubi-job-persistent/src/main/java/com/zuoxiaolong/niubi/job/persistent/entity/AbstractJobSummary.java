@@ -35,17 +35,17 @@ public class AbstractJobSummary extends AbstractEntity {
 
     private String packagesToScan;
 
-    private String mode;
+    private String containerType;
 
-    private String state;
+    private String jobState;
 
-    private String cron;
+    private String jobCron;
 
     private String misfirePolicy;
 
     private String originalJarFileName;
 
-    private String operation;
+    private String jobOperation;
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
@@ -63,16 +63,16 @@ public class AbstractJobSummary extends AbstractEntity {
         this.packagesToScan = packagesToScan;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setJobState(String jobState) {
+        this.jobState = jobState;
     }
 
-    public void setCron(String cron) {
-        this.cron = cron;
+    public void setJobCron(String jobCron) {
+        this.jobCron = jobCron;
     }
 
     public void setMisfirePolicy(String misfirePolicy) {
@@ -83,8 +83,8 @@ public class AbstractJobSummary extends AbstractEntity {
         this.originalJarFileName = originalJarFileName;
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public void setJobOperation(String jobOperation) {
+        this.jobOperation = jobOperation;
     }
 
     @Column(name = "group_name")
@@ -106,18 +106,18 @@ public class AbstractJobSummary extends AbstractEntity {
     }
 
     @Column(length = 30)
-    public String getMode() {
-        return mode;
+    public String getContainerType() {
+        return containerType;
     }
 
     @Column(length = 30)
-    public String getState() {
-        return state;
+    public String getJobState() {
+        return jobState;
     }
 
     @Column(length = 30)
-    public String getCron() {
-        return cron;
+    public String getJobCron() {
+        return jobCron;
     }
 
     @Column(length = 30)
@@ -131,26 +131,26 @@ public class AbstractJobSummary extends AbstractEntity {
     }
 
     @Transient
-    public String getOperation() {
-        return operation;
+    public String getJobOperation() {
+        return jobOperation;
     }
 
     public void setDefaultState() {
-        this.state = "Shutdown";
+        this.jobState = "Shutdown";
     }
 
     @Transient
     public String getStateLabelClass() {
-        if ("Shutdown".equals(state)) {
+        if ("Shutdown".equals(jobState)) {
             return "label-warning";
         }
-        if ("Startup".equals(state)) {
+        if ("Startup".equals(jobState)) {
             return "label-success";
         }
-        if ("Pause".equals(state)) {
+        if ("Pause".equals(jobState)) {
             return "label-inverse";
         }
-        if ("Executing".equals(state)) {
+        if ("Executing".equals(jobState)) {
             return "label-info";
         }
         return "";
@@ -158,10 +158,10 @@ public class AbstractJobSummary extends AbstractEntity {
 
     @Transient
     public String getModeLabelClass() {
-        if ("Common".equals(mode)) {
+        if ("Common".equals(containerType)) {
             return "label-Info";
         }
-        if ("Spring".equals(mode)) {
+        if ("Spring".equals(containerType)) {
             return "label-success";
         }
         return "";

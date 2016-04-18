@@ -90,7 +90,7 @@ public class StandbyJobServiceImpl extends AbstractService implements StandbyJob
             standbyJob.setJobName(jobDescriptor.name());
             standbyJob.setJarFileName(jarFileName);
             standbyJob.setPackagesToScan(packagesToScan);
-            standbyJob.setMode(mode);
+            standbyJob.setContainerType(mode);
             baseDao.save(standbyJob);
 
             StandbyJobSummary standbyJobSummary = new StandbyJobSummary();

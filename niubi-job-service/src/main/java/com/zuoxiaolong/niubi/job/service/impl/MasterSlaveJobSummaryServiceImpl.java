@@ -66,13 +66,13 @@ public class MasterSlaveJobSummaryServiceImpl extends AbstractService implements
         MasterSlaveJob masterSlaveJob = masterSlaveJobService.getJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), masterSlaveJobSummary.getJarFileName());
         data.setJobOperationLogId(masterSlaveJobLogService.saveJobLog(masterSlaveJobSummary));
         data.setPackagesToScan(masterSlaveJob.getPackagesToScan());
-        data.setMode(masterSlaveJob.getMode());
+        data.setMode(masterSlaveJob.getContainerType());
         //set state to Executing
         MasterSlaveJobSummary param = new MasterSlaveJobSummary();
         param.setGroupName(data.getGroupName());
         param.setJobName(data.getJobName());
         MasterSlaveJobSummary masterSlaveJobSummaryInDb = baseDao.getUnique(MasterSlaveJobSummary.class, param);
-        masterSlaveJobSummaryInDb.setState("Executing");
+        masterSlaveJobSummaryInDb.setJobState("Executing");
         baseDao.update(masterSlaveJobSummaryInDb);
         //send job
         masterSlaveApiFactory.jobApi().saveJob(masterSlaveJobSummary.getGroupName(), masterSlaveJobSummary.getJobName(), data);

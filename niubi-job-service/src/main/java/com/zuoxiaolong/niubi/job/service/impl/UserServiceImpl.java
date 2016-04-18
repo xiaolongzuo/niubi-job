@@ -39,19 +39,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePassword(String username, String password) {
         User param = new User();
-        param.setUsername(username);
+        param.setUserName(username);
         User userInDb = baseDao.getUnique(User.class, param);
         if (ObjectHelper.isEmpty(userInDb)) {
             throw new ServiceException("can't find user.");
         }
-        userInDb.setPassword(HashHelper.getHashedPassword(password, userInDb.getPasswordSalt()));
+        userInDb.setUserPassword(HashHelper.getHashedPassword(password, userInDb.getPasswordSalt()));
         baseDao.update(userInDb);
     }
 
     @Override
     public void saveUser(User user) {
         User param = new User();
-        param.setUsername(user.getUsername());
+        param.setUserName(user.getUserName());
         User userInDb = baseDao.getUnique(User.class, param);
         if (!ObjectHelper.isEmpty(userInDb)) {
             throw new ServiceException("username exists.");

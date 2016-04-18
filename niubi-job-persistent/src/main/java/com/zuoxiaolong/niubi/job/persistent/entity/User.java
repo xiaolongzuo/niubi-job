@@ -41,23 +41,23 @@ import java.util.stream.Collectors;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "job_user", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_USER", columnNames = {"username"})})
+@Table(name = "job_user", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_USER", columnNames = {"userName"})})
 public class User extends AbstractEntity implements SaltedAuthenticationInfo, AuthorizationInfo {
 
-    private String username;
+    private String userName;
 
-    private String password;
+    private String userPassword;
 
     private String passwordSalt;
 
     private List<Role> roleList;
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
     public String getPasswordSalt() {
@@ -75,7 +75,7 @@ public class User extends AbstractEntity implements SaltedAuthenticationInfo, Au
     public Collection<String> getRoles() {
         List<String> roles = new ArrayList<>();
         if (!ListHelper.isEmpty(roles)) {
-            roles.addAll(roleList.stream().map(Role::getName).collect(Collectors.toList()));
+            roles.addAll(roleList.stream().map(Role::getRoleName).collect(Collectors.toList()));
         }
         return roles;
     }
@@ -88,7 +88,7 @@ public class User extends AbstractEntity implements SaltedAuthenticationInfo, Au
             for (Role role : roleList) {
                 List<Permission> permissions = role.getPermissionList();
                 if (!ListHelper.isEmpty(permissions)) {
-                    stringPermissions.addAll(permissions.stream().map(Permission::getName).collect(Collectors.toList()));
+                    stringPermissions.addAll(permissions.stream().map(Permission::getPermissionName).collect(Collectors.toList()));
                 }
             }
         }
@@ -110,13 +110,13 @@ public class User extends AbstractEntity implements SaltedAuthenticationInfo, Au
     @Transient
     @Override
     public PrincipalCollection getPrincipals() {
-        return new SimplePrincipalCollection(username, "DEFAULT");
+        return new SimplePrincipalCollection(userName, "DEFAULT");
     }
 
     @Transient
     @Override
     public Object getCredentials() {
-        return password;
+        return userPassword;
     }
 
 }

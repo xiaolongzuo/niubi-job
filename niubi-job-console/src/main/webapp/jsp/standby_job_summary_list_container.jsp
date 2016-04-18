@@ -49,17 +49,17 @@
                         <tbody>
                         <c:forEach items="${jobSummaries}" var="jobSummary">
                             <tr class="gradeA">
-                                <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.state}</span></td>
+                                <td><span class="label ${jobSummary.stateLabelClass}">${jobSummary.jobState}</span></td>
                                 <td>
                                     <a data-content="${jobSummary.jarFileName}" data-placement="right" data-toggle="popover" class="btn btn-mini btn-info popoverElement" href="#" data-original-title="Current jar file name">
                                             ${jobSummary.groupName}.${jobSummary.jobName}
                                     </a>
                                 </td>
-                                <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.mode}</span></td>
-                                <td>${jobSummary.cron}</td>
+                                <td><span class="label ${jobSummary.modeLabelClass}">${jobSummary.containerType}</span></td>
+                                <td>${jobSummary.jobCron}</td>
                                 <td>${jobSummary.modifyDateString}</td>
                                 <td>
-                                    <c:if test="${jobSummary.state != 'Executing'}">
+                                    <c:if test="${jobSummary.jobState != 'Executing'}">
                                         <a href="${pageContext.request.contextPath}/standbyJobSummaries/${jobSummary.id}" class="btn btn-danger btn-mini">Schedule</a>
                                     </c:if>
                                     <a href="${pageContext.request.contextPath}/standbyJobSummaries/${jobSummary.id}/synchronize" class="btn btn-inverse btn-mini">Synchronize</a>

@@ -40,7 +40,7 @@ public class HibernateRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = (String) super.getAvailablePrincipal(principals);
         User param = new User();
-        param.setUsername(username);
+        param.setUserName(username);
         return baseDao.getUnique(User.class, param);
     }
 
@@ -49,7 +49,7 @@ public class HibernateRealm extends AuthorizingRealm {
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
         User param = new User();
-        param.setUsername(username);
+        param.setUserName(username);
         return baseDao.getUnique(User.class, param);
     }
 

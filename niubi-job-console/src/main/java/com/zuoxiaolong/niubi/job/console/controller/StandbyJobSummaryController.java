@@ -60,7 +60,7 @@ public class StandbyJobSummaryController extends AbstractController {
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ExceptionForward("/standbyJobSummaries")
     public String update(StandbyJobSummary standbyJobSummary) {
-        AssertHelper.notEmpty(standbyJobSummary.getCron(), "cron can't be empty.");
+        AssertHelper.notEmpty(standbyJobSummary.getJobCron(), "cron can't be empty.");
         standbyJobSummaryService.saveJobSummary(standbyJobSummary);
         return success("/standbyJobSummaries");
     }

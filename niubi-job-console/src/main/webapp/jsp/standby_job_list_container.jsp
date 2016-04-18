@@ -46,7 +46,7 @@
                         <tbody>
                         <c:forEach items="${jobs}" var="job">
                             <tr class="gradeA">
-                                <td><span class="label ${job.modeLabelClass}">${job.mode}</span></td>
+                                <td><span class="label ${job.modeLabelClass}">${job.containerType}</span></td>
                                 <td><a href="#" class="btn btn-mini btn-info">${job.groupName}.${job.jobName}</a></td>
                                 <td><a href="#" class="btn btn-mini btn-inverse">${job.jarFileName}</a></td>
                                 <td>${job.createDateString}</td>

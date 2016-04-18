@@ -48,7 +48,7 @@ public class DatabaseInitializationServiceImpl implements DatabaseInitialization
         String adminPassword = "123456";
 
         User param = new User();
-        param.setUsername(adminUsername);
+        param.setUserName(adminUsername);
         User admin = baseDao.getUnique(User.class, param);
         if (admin != null) {
             LoggerHelper.info("database has been initialized.");
@@ -56,13 +56,13 @@ public class DatabaseInitializationServiceImpl implements DatabaseInitialization
         }
         LoggerHelper.info("begin init database.");
         admin = new User();
-        admin.setUsername(adminUsername);
-        admin.setPassword(HashHelper.getHashedPassword(adminPassword, adminUsername));
+        admin.setUserName(adminUsername);
+        admin.setUserPassword(HashHelper.getHashedPassword(adminPassword, adminUsername));
         admin.setPasswordSalt(adminUsername);
 
         Role role = new Role();
-        role.setName("ROLE_ADMIN");
-        role.setDescription("Administrator");
+        role.setRoleName("ROLE_ADMIN");
+        role.setRoleDescription("Administrator");
         baseDao.save(role);
 
         admin.setRoleList(Arrays.asList(role));

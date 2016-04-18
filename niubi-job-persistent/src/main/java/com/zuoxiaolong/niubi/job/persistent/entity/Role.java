@@ -34,20 +34,20 @@ import java.util.List;
 @Table(name = "job_role", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_ROLE", columnNames = {"name"})})
 public class Role extends AbstractEntity {
 
-    private String name;
+    private String roleName;
 
-    private String description;
+    private String roleDescription;
 
     private List<User> userList;
 
     private List<Permission> permissionList;
 
-    public String getName() {
-        return name;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getRoleDescription() {
+        return roleDescription;
     }
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roleList")

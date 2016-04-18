@@ -49,7 +49,7 @@
                         <c:forEach items="${jobLogs}" var="jobLog" varStatus="status">
                             <tr class="gradeA">
                                 <td><span class="label ${jobLog.operationResultLabelClass}">${jobLog.operationResult}</span></td>
-                                <td><span class="label ${jobLog.operationLabelClass}">${jobLog.operation}</span></td>
+                                <td><span class="label ${jobLog.operationLabelClass}">${jobLog.jobOperation}</span></td>
                                 <td>
                                     <c:if test="${jobLog.operationResult == 'Failed'}">
                                         <a data-content="Click to view error message" class="btn btn-mini btn-info popoverElement" href="#detailModal${status.index}" data-toggle="modal" data-placement="right" data-toggle="popover">${jobLog.groupName}.${jobLog.jobName}</a>
@@ -58,7 +58,7 @@
                                         <a class="btn btn-mini btn-info" href="#">${jobLog.groupName}.${jobLog.jobName}</a>
                                     </c:if>
                                 </td>
-                                <td>${jobLog.cron}</td>
+                                <td>${jobLog.jobCron}</td>
                                 <td>${jobLog.createDateString}</td>
                                 <td>${jobLog.modifyDateString}</td>
                             </tr>

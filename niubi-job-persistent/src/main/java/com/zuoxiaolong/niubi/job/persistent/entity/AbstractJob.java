@@ -35,7 +35,7 @@ public class AbstractJob extends AbstractEntity {
 
     private String packagesToScan;
 
-    private String mode;
+    private String containerType;
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
@@ -72,20 +72,20 @@ public class AbstractJob extends AbstractEntity {
         return packagesToScan;
     }
 
-    public String getMode() {
-        return mode;
+    public String getContainerType() {
+        return containerType;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 
     @Transient
     public String getModeLabelClass() {
-        if ("Common".equals(mode)) {
+        if ("Common".equals(containerType)) {
             return "label-Info";
         }
-        if ("Spring".equals(mode)) {
+        if ("Spring".equals(containerType)) {
             return "label-success";
         }
         return "";

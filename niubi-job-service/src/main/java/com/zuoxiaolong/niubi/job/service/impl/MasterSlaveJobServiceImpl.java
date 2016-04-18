@@ -90,7 +90,7 @@ public class MasterSlaveJobServiceImpl extends AbstractService implements Master
             masterSlaveJob.setJobName(jobDescriptor.name());
             masterSlaveJob.setJarFileName(jarFileName);
             masterSlaveJob.setPackagesToScan(packagesToScan);
-            masterSlaveJob.setMode(mode);
+            masterSlaveJob.setContainerType(mode);
             baseDao.save(masterSlaveJob);
 
             MasterSlaveJobSummary masterSlaveJobSummary = new MasterSlaveJobSummary();

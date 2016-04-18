@@ -34,7 +34,7 @@ public class SessionFormAuthenticationFilter extends FormAuthenticationFilter {
     @Override
     protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
         HttpSession session = ((HttpServletRequest)request).getSession();
-        session.setAttribute("username", subject.getPrincipal());
+        session.setAttribute("userName", subject.getPrincipal());
         return super.onLoginSuccess(token, subject, request, response);
     }
 

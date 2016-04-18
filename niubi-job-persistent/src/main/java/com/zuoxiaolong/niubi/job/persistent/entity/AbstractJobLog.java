@@ -35,11 +35,11 @@ public class AbstractJobLog extends AbstractEntity {
 
     private String originalJarFileName;
 
-    private String cron;
+    private String jobCron;
 
     private String jarFileName;
 
-    private String mode;
+    private String containerType;
 
     private String misfirePolicy;
 
@@ -63,16 +63,16 @@ public class AbstractJobLog extends AbstractEntity {
         this.originalJarFileName = originalJarFileName;
     }
 
-    public void setCron(String cron) {
-        this.cron = cron;
+    public void setJobCron(String jobCron) {
+        this.jobCron = jobCron;
     }
 
     public void setJarFileName(String jarFileName) {
         this.jarFileName = jarFileName;
     }
 
-    public void setMode(String mode) {
-        this.mode = mode;
+    public void setContainerType(String containerType) {
+        this.containerType = containerType;
     }
 
     public void setMisfirePolicy(String misfirePolicy) {
@@ -105,8 +105,8 @@ public class AbstractJobLog extends AbstractEntity {
     }
 
     @Column(length = 30)
-    public String getCron() {
-        return cron;
+    public String getJobCron() {
+        return jobCron;
     }
 
     public String getJarFileName() {
@@ -114,8 +114,8 @@ public class AbstractJobLog extends AbstractEntity {
     }
 
     @Column(length = 30)
-    public String getMode() {
-        return mode;
+    public String getContainerType() {
+        return containerType;
     }
 
     @Column(length = 30)
