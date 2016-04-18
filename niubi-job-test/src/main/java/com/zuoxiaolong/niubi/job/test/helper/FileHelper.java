@@ -14,22 +14,29 @@
  * limitations under the License.
  */
 
-package com.zuoxiaolong.niubi.job.test.zookeeper;
+package com.zuoxiaolong.niubi.job.test.helper;
 
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
+import java.io.File;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public interface ZookeeperClientFactory {
+public interface FileHelper {
 
-    static CuratorFramework getClient() {
-        CuratorFramework client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000, Integer.MAX_VALUE));
-        client.start();
-        return client;
+    static void deleteDir(File dir) {
+        if (dir == null || !dir.exists()) {
+            return;
+        }
+        if (dir.isFile()) {
+            dir.delete();
+        } else {
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                deleteDir(file);
+            }
+            dir.delete();
+        }
     }
 
 }

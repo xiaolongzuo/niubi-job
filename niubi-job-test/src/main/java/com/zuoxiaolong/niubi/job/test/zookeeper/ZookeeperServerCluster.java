@@ -16,26 +16,59 @@
 
 package com.zuoxiaolong.niubi.job.test.zookeeper;
 
+import com.zuoxiaolong.niubi.job.test.helper.FileHelper;
 import org.apache.curator.test.InstanceSpec;
 import org.apache.curator.test.TestingCluster;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public interface ZookeeperServerCluster {
+public class ZookeeperServerCluster {
 
-    static void startZookeeperCluster() {
-        InstanceSpec instanceSpec1 = new InstanceSpec(new File(System.getProperty("user.dir") + "/target"), 2181, 2888, 3888,true, 1);
-        InstanceSpec instanceSpec2 = new InstanceSpec(new File(System.getProperty("user.dir") + "/target"), 3181, 2889, 3889,true, 2);
-        InstanceSpec instanceSpec3 = new InstanceSpec(new File(System.getProperty("user.dir") + "/target"), 4181, 2890, 3890,true, 3);
-        TestingCluster server = new TestingCluster(instanceSpec1, instanceSpec2, instanceSpec3);
-        try {
-            server.start();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    private ZookeeperServerCluster() {}
+
+    private static TestingCluster server;
+
+    private static final String DATA_DIR = System.getProperty("user.dir") + "/target/zk";
+
+    public static synchronized void startZookeeperCluster() {
+        File file1 = new File(DATA_DIR + "1");
+        File file2 = new File(DATA_DIR + "2");
+        File file3 = new File(DATA_DIR + "3");
+        file1.mkdirs();
+        file2.mkdirs();
+        file3.mkdirs();
+        InstanceSpec instanceSpec1 = new InstanceSpec(file1, 2181, 2888, 3888,true, 1);
+        InstanceSpec instanceSpec2 = new InstanceSpec(file2, 3181, 2889, 3889,true, 2);
+        InstanceSpec instanceSpec3 = new InstanceSpec(file3, 4181, 2890, 3890,true, 3);
+        if (server == null) {
+            server = new TestingCluster(instanceSpec1, instanceSpec2, instanceSpec3);
+            try {
+                server.start();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static synchronized void stopZookeeperCluster() {
+        if (server != null) {
+            try {
+                server.stop();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            server = null;
+            File file1 = new File(DATA_DIR + "1");
+            File file2 = new File(DATA_DIR + "2");
+            File file3 = new File(DATA_DIR + "3");
+            FileHelper.deleteDir(file1);
+            FileHelper.deleteDir(file2);
+            FileHelper.deleteDir(file3);
         }
     }
 
