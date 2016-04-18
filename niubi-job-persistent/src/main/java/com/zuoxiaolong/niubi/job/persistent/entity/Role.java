@@ -31,7 +31,7 @@ import java.util.List;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "job_role", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_ROLE", columnNames = {"name"})})
+@Table(name = "job_role", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_ROLE", columnNames = {"role_name"})})
 public class Role extends AbstractEntity {
 
     private String roleName;
@@ -42,6 +42,7 @@ public class Role extends AbstractEntity {
 
     private List<Permission> permissionList;
 
+    @Column(name = "role_name")
     public String getRoleName() {
         return roleName;
     }

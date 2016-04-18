@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "job_user", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_USER", columnNames = {"userName"})})
+@Table(name = "job_user", uniqueConstraints = {@UniqueConstraint(name = "UNIQUE_USER", columnNames = {"user_name"})})
 public class User extends AbstractEntity implements SaltedAuthenticationInfo, AuthorizationInfo {
 
     private String userName;
@@ -52,6 +52,7 @@ public class User extends AbstractEntity implements SaltedAuthenticationInfo, Au
 
     private List<Role> roleList;
 
+    @Column(name = "user_name")
     public String getUserName() {
         return userName;
     }
