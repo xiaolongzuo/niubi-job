@@ -16,16 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.api.curator;
 
-import com.zuoxiaolong.niubi.job.api.StandbyNodeApi;
 import com.zuoxiaolong.niubi.job.api.data.StandbyNodeData;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperClientFactory;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperServerCluster;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.KeeperException;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,24 +29,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public class StandbyNodeApiTest {
-
-    private static StandbyNodeApi standbyNodeApi;
-
-    private static CuratorFramework client;
-
-    @Before
-    public void setup() {
-        ZookeeperServerCluster.startZookeeperCluster();
-        client = ZookeeperClientFactory.getClient();
-        standbyNodeApi = new StandbyApiFactoryImpl(client).nodeApi();
-    }
-
-    @After
-    public void teardown() {
-        client.close();
-        ZookeeperServerCluster.stopZookeeperCluster();
-    }
+public class StandbyNodeApiTest extends AbstractZookeeperServerTest {
 
     @Test
     public void getAllNodesSaveNode() {

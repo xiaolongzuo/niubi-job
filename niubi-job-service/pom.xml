@@ -53,6 +53,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-test</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

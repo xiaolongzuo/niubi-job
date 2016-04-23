@@ -78,9 +78,4 @@ public class MasterSlaveJobLogServiceImpl extends AbstractService implements Mas
         masterSlaveApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
     }
 
-    @Override
-    public MasterSlaveJobLog getJobLog(String id) {
-        return baseDao.get(MasterSlaveJobLog.class, id);
-    }
-
 }

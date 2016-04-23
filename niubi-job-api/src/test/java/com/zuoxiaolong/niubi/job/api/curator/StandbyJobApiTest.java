@@ -16,16 +16,9 @@
 
 package com.zuoxiaolong.niubi.job.api.curator;
 
-import com.zuoxiaolong.niubi.job.api.StandbyApiFactory;
-import com.zuoxiaolong.niubi.job.api.StandbyJobApi;
 import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.api.helper.PathHelper;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperClientFactory;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperServerCluster;
-import org.apache.curator.framework.CuratorFramework;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -34,27 +27,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public class StandbyJobApiTest {
-
-    private static StandbyApiFactory standbyApiFactory;
-
-    private static StandbyJobApi standbyJobApi;
-
-    private static CuratorFramework client;
-
-    @Before
-    public void setup() {
-        ZookeeperServerCluster.startZookeeperCluster();
-        client = ZookeeperClientFactory.getClient();
-        standbyApiFactory = new StandbyApiFactoryImpl(client);
-        standbyJobApi = standbyApiFactory.jobApi();
-    }
-
-    @After
-    public void teardown() {
-        client.close();
-        ZookeeperServerCluster.stopZookeeperCluster();
-    }
+public class StandbyJobApiTest extends AbstractZookeeperServerTest {
 
     @Test
     public void getAllJobsSaveJob() {

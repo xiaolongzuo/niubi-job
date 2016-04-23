@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2015 the original author or authors.
+ * Copyright 2002-2016 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,30 @@
  * limitations under the License.
  */
 
+package com.zuoxiaolong.niubi.job.service.impl;
 
-package com.zuoxiaolong.niubi.job.service;
-
-import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
 import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobLog;
-import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
+import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 /**
  * @author Xiaolong Zuo
- * @since 0.9.3
+ * @since 0.9.4.2
  */
-public interface MasterSlaveJobLogService {
+public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
 
-    List<MasterSlaveJobLog> getAllJobLogs();
+    @Autowired
+    protected MasterSlaveJobLogService masterSlaveJobLogService;
 
-    String saveJobLog(MasterSlaveJobSummary masterSlaveJobSummary);
-
-    void updateJobLog(MasterSlaveJobData.Data data);
+    @Test
+    public void getAllJobLogs() {
+        List<MasterSlaveJobLog> jobLogs = masterSlaveJobLogService.getAllJobLogs();
+        Assert.assertNotNull(jobLogs);
+        Assert.assertTrue(jobLogs.size() == 0);
+    }
 
 }

@@ -16,16 +16,10 @@
 
 package com.zuoxiaolong.niubi.job.api.curator;
 
-import com.zuoxiaolong.niubi.job.api.MasterSlaveNodeApi;
 import com.zuoxiaolong.niubi.job.api.data.MasterSlaveNodeData;
 import com.zuoxiaolong.niubi.job.core.exception.NiubiException;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperClientFactory;
-import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperServerCluster;
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.KeeperException;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,24 +29,7 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public class MasterSlaveNodeApiTest {
-
-    private static MasterSlaveNodeApi masterSlaveNodeApi;
-
-    private static CuratorFramework client;
-
-    @Before
-    public void setup() {
-        ZookeeperServerCluster.startZookeeperCluster();
-        client = ZookeeperClientFactory.getClient();
-        masterSlaveNodeApi = new MasterSlaveApiFactoryImpl(client).nodeApi();
-    }
-
-    @After
-    public void teardown() {
-        client.close();
-        ZookeeperServerCluster.stopZookeeperCluster();
-    }
+public class MasterSlaveNodeApiTest extends AbstractZookeeperServerTest{
 
     @Test
     public void getAllNodesSaveNode() {

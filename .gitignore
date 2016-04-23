@@ -7,6 +7,7 @@ target/
 conf/
 bin/
 logs/
+derby-job/
 
 # Package Files #
 *.jar
