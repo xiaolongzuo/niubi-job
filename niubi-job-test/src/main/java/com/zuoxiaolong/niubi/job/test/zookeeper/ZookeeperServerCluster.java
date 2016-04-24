@@ -42,9 +42,9 @@ public class ZookeeperServerCluster {
         file1.mkdirs();
         file2.mkdirs();
         file3.mkdirs();
-        InstanceSpec instanceSpec1 = new InstanceSpec(file1, 2181, 2888, 3888,true, 1);
-        InstanceSpec instanceSpec2 = new InstanceSpec(file2, 3181, 2889, 3889,true, 2);
-        InstanceSpec instanceSpec3 = new InstanceSpec(file3, 4181, 2890, 3890,true, 3);
+        InstanceSpec instanceSpec1 = new InstanceSpec(file1, 2182, 2988, 3988,true, 1);
+        InstanceSpec instanceSpec2 = new InstanceSpec(file2, 3182, 2989, 3989,true, 2);
+        InstanceSpec instanceSpec3 = new InstanceSpec(file3, 4182, 2990, 3990,true, 3);
         if (server == null) {
             server = new TestingCluster(instanceSpec1, instanceSpec2, instanceSpec3);
             try {

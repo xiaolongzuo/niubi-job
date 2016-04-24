@@ -47,7 +47,7 @@ public abstract class AbstractZookeeperServerTest {
     @Before
     public void setup() {
         ZookeeperServerCluster.startZookeeperCluster();
-        client = CuratorFrameworkFactory.newClient("localhost:2181,localhost:3181,localhost:4181", new ExponentialBackoffRetry(1000, Integer.MAX_VALUE));
+        client = CuratorFrameworkFactory.newClient("localhost:2182,localhost:3182,localhost:4182", new ExponentialBackoffRetry(1000, Integer.MAX_VALUE));
         client.start();
         masterSlaveApiFactory = new MasterSlaveApiFactoryImpl(client);
         standbyApiFactory = new StandbyApiFactoryImpl(client);
