@@ -78,9 +78,4 @@ public class StandbyJobLogServiceImpl extends AbstractService implements Standby
         standbyApiFactory.jobApi().updateJob(data.getGroupName(), data.getJobName(), data);
     }
 
-    @Override
-    public StandbyJobLog getJobLog(String id) {
-        return baseDao.get(StandbyJobLog.class, id);
-    }
-
 }

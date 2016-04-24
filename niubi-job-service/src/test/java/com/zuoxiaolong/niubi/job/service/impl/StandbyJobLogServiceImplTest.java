@@ -16,15 +16,15 @@
 
 package com.zuoxiaolong.niubi.job.service.impl;
 
-import com.zuoxiaolong.niubi.job.api.MasterSlaveApiFactory;
-import com.zuoxiaolong.niubi.job.api.curator.MasterSlaveApiFactoryImpl;
-import com.zuoxiaolong.niubi.job.api.data.MasterSlaveJobData;
+import com.zuoxiaolong.niubi.job.api.StandbyApiFactory;
+import com.zuoxiaolong.niubi.job.api.curator.StandbyApiFactoryImpl;
+import com.zuoxiaolong.niubi.job.api.data.StandbyJobData;
 import com.zuoxiaolong.niubi.job.persistent.BaseDao;
-import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobLog;
-import com.zuoxiaolong.niubi.job.persistent.entity.MasterSlaveJobSummary;
-import com.zuoxiaolong.niubi.job.service.MasterSlaveJobLogService;
-import com.zuoxiaolong.niubi.job.service.MasterSlaveJobService;
-import com.zuoxiaolong.niubi.job.service.MasterSlaveJobSummaryService;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobLog;
+import com.zuoxiaolong.niubi.job.persistent.entity.StandbyJobSummary;
+import com.zuoxiaolong.niubi.job.service.StandbyJobLogService;
+import com.zuoxiaolong.niubi.job.service.StandbyJobService;
+import com.zuoxiaolong.niubi.job.service.StandbyJobSummaryService;
 import org.apache.curator.framework.CuratorFramework;
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,16 +36,16 @@ import java.util.List;
  * @author Xiaolong Zuo
  * @since 0.9.4.2
  */
-public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
+public class StandbyJobLogServiceImplTest extends AbstractSpringContextTest{
 
     @Autowired
-    private MasterSlaveJobLogService masterSlaveJobLogService;
+    private StandbyJobLogService standbyJobLogService;
 
     @Autowired
-    private MasterSlaveJobSummaryService masterSlaveJobSummaryService;
+    private StandbyJobSummaryService standbyJobSummaryService;
 
     @Autowired
-    private MasterSlaveJobService masterSlaveJobService;
+    private StandbyJobService standbyJobService;
 
     @Autowired
     private CuratorFramework client;
@@ -55,10 +55,10 @@ public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void getAllJobLogs() {
-        List<MasterSlaveJobLog> jobLogs = masterSlaveJobLogService.getAllJobLogs();
+        List<StandbyJobLog> jobLogs = standbyJobLogService.getAllJobLogs();
         Assert.assertNotNull(jobLogs);
         Assert.assertTrue(jobLogs.size() == 0);
-        MasterSlaveJobSummary jobSummary = new MasterSlaveJobSummary();
+        StandbyJobSummary jobSummary = new StandbyJobSummary();
         jobSummary.setJarFileName("1.jar");
         jobSummary.setJobName("Job1");
         jobSummary.setPackagesToScan("com.zuoxiaolong");
@@ -69,11 +69,11 @@ public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
         jobSummary.setJobState("Startup");
         jobSummary.setMisfirePolicy("None");
         jobSummary.setOriginalJarFileName("1.jar");
-        masterSlaveJobLogService.saveJobLog(jobSummary);
-        jobLogs = masterSlaveJobLogService.getAllJobLogs();
+        standbyJobLogService.saveJobLog(jobSummary);
+        jobLogs = standbyJobLogService.getAllJobLogs();
         Assert.assertNotNull(jobLogs);
         Assert.assertTrue(jobLogs.size() == 1);
-        MasterSlaveJobLog jobLog = jobLogs.get(0);
+        StandbyJobLog jobLog = jobLogs.get(0);
         Assert.assertEquals(jobLog.getJarFileName(), "1.jar");
         Assert.assertEquals(jobLog.getJobName(), "Job1");
         Assert.assertEquals(jobLog.getJobOperation(), "Start");
@@ -87,24 +87,24 @@ public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
     @Test
     public void updateJobLog() {
         //上传Jar包
-        masterSlaveJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
-        List<MasterSlaveJobSummary> jobSummaries = masterSlaveJobSummaryService.getAllJobSummaries();
+        standbyJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
+        List<StandbyJobSummary> jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         //调度任务1
-        MasterSlaveJobSummary jobSummary = jobSummaries.get(0);
+        StandbyJobSummary jobSummary = jobSummaries.get(0);
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
         jobSummary.setJarFileName("niubi-job-example-spring.jar");
         jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
-        masterSlaveJobSummaryService.saveJobSummary(jobSummary);
-        String jobLogId = masterSlaveJobLogService.saveJobLog(jobSummary);
+        standbyJobSummaryService.saveJobSummary(jobSummary);
+        String jobLogId = standbyJobLogService.saveJobLog(jobSummary);
         //根据节点数据更新日志
-        MasterSlaveApiFactory apiFactory = new MasterSlaveApiFactoryImpl(client);
-        MasterSlaveJobData.Data data = apiFactory.jobApi().getJob(jobSummary.getGroupName(), jobSummary.getJobName()).getData();
-        masterSlaveJobLogService.updateJobLog(data);
+        StandbyApiFactory apiFactory = new StandbyApiFactoryImpl(client);
+        StandbyJobData.Data data = apiFactory.jobApi().getJob(jobSummary.getGroupName(), jobSummary.getJobName()).getData();
+        standbyJobLogService.updateJobLog(data);
         //判断日志是否更新成功
-        MasterSlaveJobLog jobLog = baseDao.get(MasterSlaveJobLog.class, jobLogId);
+        StandbyJobLog jobLog = baseDao.get(StandbyJobLog.class, jobLogId);
         Assert.assertEquals(jobLog.getJarFileName(), "niubi-job-example-spring.jar");
         Assert.assertEquals(jobLog.getJobName(), "test");
         Assert.assertEquals(jobLog.getJobOperation(), "Start");

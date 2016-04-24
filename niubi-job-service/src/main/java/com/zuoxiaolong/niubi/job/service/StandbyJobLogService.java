@@ -35,6 +35,4 @@ public interface StandbyJobLogService {
 
     void updateJobLog(StandbyJobData.Data data);
 
-    StandbyJobLog getJobLog(String id);
-
 }

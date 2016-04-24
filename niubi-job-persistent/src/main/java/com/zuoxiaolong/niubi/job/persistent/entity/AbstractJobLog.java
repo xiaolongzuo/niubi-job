@@ -31,7 +31,7 @@ public class AbstractJobLog extends AbstractEntity {
 
     private String jobName;
 
-    private String operation;
+    private String jobOperation;
 
     private String originalJarFileName;
 
@@ -55,8 +55,8 @@ public class AbstractJobLog extends AbstractEntity {
         this.jobName = jobName;
     }
 
-    public void setOperation(String operation) {
-        this.operation = operation;
+    public void setJobOperation(String jobOperation) {
+        this.jobOperation = jobOperation;
     }
 
     public void setOriginalJarFileName(String originalJarFileName) {
@@ -96,8 +96,8 @@ public class AbstractJobLog extends AbstractEntity {
     }
 
     @Column(length = 30)
-    public String getOperation() {
-        return operation;
+    public String getJobOperation() {
+        return jobOperation;
     }
 
     public String getOriginalJarFileName() {
@@ -135,13 +135,13 @@ public class AbstractJobLog extends AbstractEntity {
 
     @Transient
     public String getOperationLabelClass() {
-        if ("Start".equals(operation)) {
+        if ("Start".equals(jobOperation)) {
             return "label-warning";
         }
-        if ("Restart".equals(operation)) {
+        if ("Restart".equals(jobOperation)) {
             return "label-success";
         }
-        if ("Pause".equals(operation)) {
+        if ("Pause".equals(jobOperation)) {
             return "label-important";
         }
         return "";
