@@ -44,7 +44,7 @@ public class StandbyNodeApiTest extends AbstractZookeeperServerTest {
         Assert.assertTrue(list.size() == 3);
         List<String> ipList = Arrays.asList("192.168.1.101", "192.168.1.102", "192.168.1.103");
         for (StandbyNodeData nodeData : list) {
-            Assert.assertTrue(ipList.contains(nodeData.getData().getIp()));
+            Assert.assertTrue(ipList.contains(nodeData.getData().getNodeIp()));
         }
     }
 
@@ -53,11 +53,11 @@ public class StandbyNodeApiTest extends AbstractZookeeperServerTest {
         String path = standbyNodeApi.saveNode(new StandbyNodeData.Data("192.168.1.101"));
         StandbyNodeData nodeData = standbyNodeApi.getNode(path);
         Assert.assertNotNull(nodeData);
-        Assert.assertEquals("192.168.1.101", nodeData.getData().getIp());
+        Assert.assertEquals("192.168.1.101", nodeData.getData().getNodeIp());
         standbyNodeApi.updateNode(path, new StandbyNodeData.Data("192.168.1.102"));
         nodeData = standbyNodeApi.getNode(path);
         Assert.assertNotNull(nodeData);
-        Assert.assertEquals("192.168.1.102", nodeData.getData().getIp());
+        Assert.assertEquals("192.168.1.102", nodeData.getData().getNodeIp());
     }
 
     @Test(expected = KeeperException.NoNodeException.class)

@@ -24,10 +24,10 @@ package com.zuoxiaolong.niubi.job.service.view;
 public class StandbyNodeView extends AbstractNodeView {
 
     public String getStateLabelClass() {
-        if ("Master".equals(getState())) {
+        if ("Master".equals(getNodeState())) {
             return "label-important";
         }
-        if ("Backup".equals(getState())) {
+        if ("Backup".equals(getNodeState())) {
             return "label-info";
         }
         return "";

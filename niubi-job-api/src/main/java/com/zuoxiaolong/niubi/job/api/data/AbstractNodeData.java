@@ -24,7 +24,7 @@ package com.zuoxiaolong.niubi.job.api.data;
  */
 public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<T> {
 
-    private String ip;
+    private String nodeIp;
 
     private String nodeState;
 
@@ -33,16 +33,16 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
     public AbstractNodeData() {
     }
 
-    public AbstractNodeData(String ip) {
-        this.ip = ip;
+    public AbstractNodeData(String nodeIp) {
+        this.nodeIp = nodeIp;
     }
 
-    public String getIp() {
-        return ip;
+    public String getNodeIp() {
+        return nodeIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setNodeIp(String nodeIp) {
+        this.nodeIp = nodeIp;
     }
 
     public String getNodeState() {
@@ -77,7 +77,7 @@ public class AbstractNodeData<T extends AbstractNodeData> implements Comparable<
     @Override
     public String toString() {
         return "Data{" +
-                "ip='" + ip + '\'' +
+                "nodeIp='" + nodeIp + '\'' +
                 ", nodeState='" + nodeState + '\'' +
                 ", runningJobCount=" + runningJobCount +
                 '}';

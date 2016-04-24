@@ -47,8 +47,8 @@
                         <tbody>
                         <c:forEach items="${nodes}" var="node">
                             <tr class="gradeA">
-                                <td><span class="label ${node.stateLabelClass}">${node.jobState}</span></td>
-                                <td><a href="#" class="btn btn-mini btn-info">${node.ip}</a></td>
+                                <td><span class="label ${node.stateLabelClass}">${node.nodeState}</span></td>
+                                <td><a href="#" class="btn btn-mini btn-info">${node.nodeIp}</a></td>
                                 <td><span class="badge badge-info">${node.runningJobCount}</span></td>
                                 <td><a href="#" class="btn btn-mini btn-info">${node.id}</a></td>
                             </tr>

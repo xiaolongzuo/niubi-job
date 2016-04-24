@@ -46,10 +46,10 @@ public class MasterNodeView extends AbstractNodeView {
     }
 
     public String getStateLabelClass() {
-        if ("Master".equals(getState())) {
+        if ("Master".equals(getNodeState())) {
             return "label-important";
         }
-        if ("Slave".equals(getState())) {
+        if ("Slave".equals(getNodeState())) {
             return "label-info";
         }
         return "";

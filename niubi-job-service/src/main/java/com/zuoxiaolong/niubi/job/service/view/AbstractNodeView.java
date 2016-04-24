@@ -26,9 +26,9 @@ public class AbstractNodeView {
 
     private String id;
 
-    private String ip;
+    private String nodeIp;
 
-    private String state;
+    private String nodeState;
 
     private Integer runningJobCount;
 
@@ -40,20 +40,20 @@ public class AbstractNodeView {
         this.id = id;
     }
 
-    public String getIp() {
-        return ip;
+    public String getNodeIp() {
+        return nodeIp;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setNodeIp(String nodeIp) {
+        this.nodeIp = nodeIp;
     }
 
-    public String getState() {
-        return state;
+    public String getNodeState() {
+        return nodeState;
     }
 
-    public void setState(String state) {
-        this.state = state;
+    public void setNodeState(String nodeState) {
+        this.nodeState = nodeState;
     }
 
     public Integer getRunningJobCount() {

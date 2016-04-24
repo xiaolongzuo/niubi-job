@@ -44,7 +44,7 @@ public class MasterSlaveNodeApiTest extends AbstractZookeeperServerTest{
         Assert.assertTrue(list.size() == 3);
         List<String> ipList = Arrays.asList("192.168.1.101", "192.168.1.102", "192.168.1.103");
         for (MasterSlaveNodeData nodeData : list) {
-            Assert.assertTrue(ipList.contains(nodeData.getData().getIp()));
+            Assert.assertTrue(ipList.contains(nodeData.getData().getNodeIp()));
         }
     }
 
@@ -53,11 +53,11 @@ public class MasterSlaveNodeApiTest extends AbstractZookeeperServerTest{
         String path = masterSlaveNodeApi.saveNode(new MasterSlaveNodeData.Data("192.168.1.101"));
         MasterSlaveNodeData nodeData = masterSlaveNodeApi.getNode(path);
         Assert.assertNotNull(nodeData);
-        Assert.assertEquals("192.168.1.101", nodeData.getData().getIp());
+        Assert.assertEquals("192.168.1.101", nodeData.getData().getNodeIp());
         masterSlaveNodeApi.updateNode(path, new MasterSlaveNodeData.Data("192.168.1.102"));
         nodeData = masterSlaveNodeApi.getNode(path);
         Assert.assertNotNull(nodeData);
-        Assert.assertEquals("192.168.1.102", nodeData.getData().getIp());
+        Assert.assertEquals("192.168.1.102", nodeData.getData().getNodeIp());
     }
 
     @Test(expected = KeeperException.NoNodeException.class)
