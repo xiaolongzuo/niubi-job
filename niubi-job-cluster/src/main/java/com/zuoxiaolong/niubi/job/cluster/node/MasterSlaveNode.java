@@ -92,7 +92,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             }
         }
 
-        this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getIp()));
+        this.nodePath = masterSlaveApiFactory.nodeApi().saveNode(new MasterSlaveNodeData.Data(getNodeIp()));
         LoggerHelper.info("Zk Node has been created successfully...");
         this.nodeCache = new PathChildrenCache(client, PathHelper.getParentPath(masterSlaveApiFactory.pathApi().getNodePath()), true);
         this.nodeCache.getListenable().addListener(new NodeCacheListener());
@@ -157,7 +157,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
         schedulerManager.shutdown();
         LoggerHelper.info("all scheduler has been shutdown.");
         masterSlaveApiFactory.nodeApi().deleteNode(nodePath);
-        LoggerHelper.info(getIp() + " has been deleted.");
+        LoggerHelper.info(getNodeIp() + " has been deleted.");
         leaderSelector.close();
         LoggerHelper.info("leaderSelector has been closed.");
         try {
@@ -200,7 +200,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
             MasterSlaveNodeData masterSlaveNodeData = masterSlaveApiFactory.nodeApi().getNode(nodePath);
             masterSlaveNodeData.getData().setNodeState("Master");
             masterSlaveApiFactory.nodeApi().updateNode(nodePath, masterSlaveNodeData.getData());
-            LoggerHelper.info(getIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
+            LoggerHelper.info(getNodeIp() + " has been updated. [" + masterSlaveNodeData.getData() + "]");
             nodeCache.start();
         }
 
@@ -236,7 +236,7 @@ public class MasterSlaveNode extends AbstractClusterJobNode {
                 LoggerHelper.warn("node cache close failed.", e);
             }
             if (client.getState() == CuratorFrameworkState.STARTED) {
-                MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getIp());
+                MasterSlaveNodeData.Data nodeData = new MasterSlaveNodeData.Data(getNodeIp());
                 releaseJobs(nodePath, nodeData);
                 nodeData.setNodeState("Slave");
                 masterSlaveApiFactory.nodeApi().updateNode(nodePath, nodeData);

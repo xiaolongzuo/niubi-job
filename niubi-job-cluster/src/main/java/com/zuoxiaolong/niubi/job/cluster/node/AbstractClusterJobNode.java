@@ -99,7 +99,7 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
         private Object mutex = new Object();
 
         public void takeLeadership(CuratorFramework curatorFramework) throws Exception {
-            LoggerHelper.info(getIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
+            LoggerHelper.info(getNodeIp() + " is now the leader ,and has been leader " + this.leaderCount.getAndIncrement() + " time(s) before.");
             boolean isJoined = isJoined();
             try {
                 if (isJoined) {
@@ -107,7 +107,7 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
                 }
             } catch (Throwable e) {
                 relinquishLeadership();
-                LoggerHelper.warn(getIp() + " startup failed,relinquish leadership.", e);
+                LoggerHelper.warn(getNodeIp() + " startup failed,relinquish leadership.", e);
                 return;
             }
             try {
@@ -115,12 +115,12 @@ public abstract class AbstractClusterJobNode extends AbstractNode implements Nod
                     mutex.wait();
                 }
             } catch (InterruptedException e) {
-                LoggerHelper.info(getIp() + " has been interrupted.");
+                LoggerHelper.info(getNodeIp() + " has been interrupted.");
             }
         }
 
         public void stateChanged(CuratorFramework client, ConnectionState newState) {
-            LoggerHelper.info(getIp() + " state has been changed [" + newState + "]");
+            LoggerHelper.info(getNodeIp() + " state has been changed [" + newState + "]");
             if (!newState.isConnected()) {
                 relinquishLeadership();
                 synchronized (mutex) {

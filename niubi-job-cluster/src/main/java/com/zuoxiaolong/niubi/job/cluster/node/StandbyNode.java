@@ -84,7 +84,7 @@ public class StandbyNode extends AbstractClusterJobNode {
             }
         }
 
-        this.nodePath = standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getIp()));
+        this.nodePath = standbyApiFactory.nodeApi().saveNode(new StandbyNodeData.Data(getNodeIp()));
 
         this.jobCache = new PathChildrenCache(client, standbyApiFactory.pathApi().getJobPath(), true);
         this.jobCache.getListenable().addListener(new JobCacheListener());
@@ -135,7 +135,7 @@ public class StandbyNode extends AbstractClusterJobNode {
         schedulerManager.shutdown();
         LoggerHelper.info("all scheduler has been shutdown.");
         standbyApiFactory.nodeApi().deleteNode(nodePath);
-        LoggerHelper.info(getIp() + " has been deleted.");
+        LoggerHelper.info(getNodeIp() + " has been deleted.");
         leaderSelector.close();
         LoggerHelper.info("leaderSelector has been closed.");
         client.close();
@@ -145,12 +145,12 @@ public class StandbyNode extends AbstractClusterJobNode {
 
         @Override
         public void acquireLeadership() throws Exception {
-            StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getIp());
+            StandbyNodeData.Data nodeData = new StandbyNodeData.Data(getNodeIp());
             int runningJobCount = startupJobs();
             nodeData.setRunningJobCount(runningJobCount);
             nodeData.setNodeState("Master");
             standbyApiFactory.nodeApi().updateNode(nodePath, nodeData);
-            LoggerHelper.info(getIp() + " has been updated. [" + nodeData + "]");
+            LoggerHelper.info(getNodeIp() + " has been updated. [" + nodeData + "]");
             jobCache.start();
         }
 
@@ -187,9 +187,9 @@ public class StandbyNode extends AbstractClusterJobNode {
             LoggerHelper.info("begin stop scheduler manager.");
             schedulerManager.shutdown();
             if (client.getState() == CuratorFrameworkState.STARTED) {
-                StandbyNodeData.Data data = new StandbyNodeData.Data(getIp());
+                StandbyNodeData.Data data = new StandbyNodeData.Data(getNodeIp());
                 standbyApiFactory.nodeApi().updateNode(nodePath, data);
-                LoggerHelper.info(getIp() + " has been shutdown. [" + data + "]");
+                LoggerHelper.info(getNodeIp() + " has been shutdown. [" + data + "]");
             }
             LoggerHelper.info("clear node successfully.");
         }

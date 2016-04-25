@@ -35,7 +35,7 @@ import java.util.Properties;
  */
 public abstract class AbstractNode implements Node {
 
-    private String ip;
+    private String nodeIp;
 
     /**
      * 用于非集群环境
@@ -54,9 +54,9 @@ public abstract class AbstractNode implements Node {
         }
         PropertyConfigurator.configure(properties);
         try {
-            this.ip = InetAddress.getLocalHost().getHostAddress();
+            this.nodeIp = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            this.ip = "unknown";
+            this.nodeIp = "unknown";
         }
     }
     /**
@@ -67,14 +67,14 @@ public abstract class AbstractNode implements Node {
     public AbstractNode(Properties properties) {
         PropertyConfigurator.configure(properties);
         try {
-            this.ip = InetAddress.getLocalHost().getHostAddress();
+            this.nodeIp = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            this.ip = "unknown";
+            this.nodeIp = "unknown";
         }
     }
 
-    protected String getIp() {
-        return ip;
+    protected String getNodeIp() {
+        return nodeIp;
     }
 
 }
