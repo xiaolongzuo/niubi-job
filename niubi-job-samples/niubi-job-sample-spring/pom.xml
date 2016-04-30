@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>niubi-job-samples</artifactId>
+        <groupId>com.zuoxiaolong</groupId>
+        <version>0.9.5.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>niubi-job-sample-spring</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <properties>
+        <sample.spring.user.dir>${user.dir}/niubi-job-samples/niubi-job-sample-spring</sample.spring.user.dir>
+        <spring.version>4.2.4.RELEASE</spring.version>
+    </properties>
+
+    <dependencies>
+        <!-- 为了本地测试,依旧要引入该包 -->
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-scheduler</artifactId>
+        </dependency>
+        <!-- spring环境与非spring环境的任务最不同的就是spring环境的任务需要多引入这个包 -->
+        <!-- 并且该包需要一起打到jar包当中 -->
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-spring</artifactId>
+        </dependency>
+        <!-- 这是spring的jar包 -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>niubi-job-sample-spring</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>build-console</id>
+                        <phase>package</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>
+                        <copy todir="${user.dir}" overwrite="true">
+                            <fileset dir="${sample.spring.user.dir}/target">
+                                <include name="niubi-job-sample-spring.jar" />
+                            </fileset>
+                        </copy>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

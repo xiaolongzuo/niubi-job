@@ -31,20 +31,15 @@
     </scm>
 
     <modules>
-        <module>niubi-job-cluster</module>
-        <module>niubi-job-spring</module>
-        <module>niubi-job-console</module>
-        <module>niubi-job-api</module>
-        <module>niubi-job-service</module>
-        <module>niubi-job-persistent</module>
-        <module>niubi-job-scheduler</module>
-        <module>niubi-job-core</module>
-        <module>niubi-job-scanner</module>
         <module>niubi-job-test</module>
+        <module>niubi-job-framework</module>
+        <module>niubi-job-parent</module>
+        <module>niubi-job-samples</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <niubi.job.version>0.9.5.1-SNAPSHOT</niubi.job.version>
         <spring.version>4.2.4.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
         <zookeeper.version>3.4.7</zookeeper.version>
@@ -70,42 +65,42 @@
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-core</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-cluster</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-api</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-spring</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-scanner</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-scheduler</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-service</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-persistent</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
@@ -301,7 +296,7 @@
             <dependency>
                 <groupId>com.zuoxiaolong</groupId>
                 <artifactId>niubi-job-test</artifactId>
-                <version>${project.version}</version>
+                <version>${niubi.job.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -348,37 +343,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>

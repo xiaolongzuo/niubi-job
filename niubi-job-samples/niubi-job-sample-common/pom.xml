@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>niubi-job-samples</artifactId>
+        <groupId>com.zuoxiaolong</groupId>
+        <version>0.9.5.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>niubi-job-sample-common</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <properties>
+        <sample.common.user.dir>${user.dir}/niubi-job-samples/niubi-job-sample-common</sample.common.user.dir>
+    </properties>
+
+    <dependencies>
+        <!-- 如果要本地测试必须引入该jar包 -->
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-scheduler</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>niubi-job-sample-common</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>build-console</id>
+                        <phase>package</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <target>
+                        <copy todir="${user.dir}" overwrite="true">
+                            <fileset dir="${sample.common.user.dir}/target">
+                                <include name="niubi-job-sample-common.jar" />
+                            </fileset>
+                        </copy>
+                    </target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

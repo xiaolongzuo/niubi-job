@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>niubi-job-framework</artifactId>
+        <groupId>com.zuoxiaolong</groupId>
+        <version>0.9.5.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>niubi-job-cluster</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
+
+    <properties>
+        <cluster.user.dir>${user.dir}/niubi-job-framework/niubi-job-cluster</cluster.user.dir>
+        <cluster.build.dir>${user.dir}/niubi-job-framework</cluster.build.dir>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zuoxiaolong</groupId>
+            <artifactId>niubi-job-scheduler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>niubi-job-cluster</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>*.*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <outputDirectory>${cluster.user.dir}/target/lib</outputDirectory>
+                    <includeScope>runtime</includeScope>
+                    <excludeTransitive>false</excludeTransitive>
+                    <overWriteIfNewer>true</overWriteIfNewer>
+                    <overWriteReleases>true</overWriteReleases>
+                    <overWriteSnapshots>true</overWriteSnapshots>
+                    <stripVersion>true</stripVersion>
+                    <stripClassifier>true</stripClassifier>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathLayoutType>custom</classpathLayoutType>
+                            <customClasspathLayout>$${artifact.artifactId}.$${artifact.extension}</customClasspathLayout>
+                            <mainClass>com.zuoxiaolong.niubi.job.cluster.startup.Bootstrap</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>main-build</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>prepared-build</id>
+                        <phase>test-compile</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <mkdir dir="${cluster.user.dir}/target/lib" />
+                                <mkdir dir="${cluster.user.dir}/target/logs" />
+                                <mkdir dir="${cluster.user.dir}/target/conf" />
+                                <mkdir dir="${cluster.user.dir}/target/bin" />
+                                <mkdir dir="${cluster.user.dir}/target/job" />
+                                <mkdir dir="${cluster.user.dir}/target/job/standby" />
+                                <mkdir dir="${cluster.user.dir}/target/job/masterSlave" />
+                                <copy todir="${cluster.user.dir}/target/bin" overwrite="true">
+                                    <fileset dir="${cluster.user.dir}/src/main/resources">
+                                        <include name="startup.bat" />
+                                        <include name="bootstrap.bat" />
+                                        <include name="shutdown.bat" />
+                                        <include name="startup.sh" />
+                                        <include name="bootstrap.sh" />
+                                        <include name="shutdown.sh" />
+                                    </fileset>
+                                </copy>
+                                <chmod dir="${cluster.user.dir}/target/bin" perm="+x" includes="**/*.sh" />
+                                <copy todir="${cluster.user.dir}/target/conf" overwrite="true">
+                                    <fileset dir="${cluster.user.dir}/src/main/resources">
+                                        <include name="job.properties" />
+                                        <include name="log4j.properties" />
+                                        <include name="quartz.properties" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${cluster.user.dir}/target" overwrite="true">
+                                    <fileset dir="${user.dir}">
+                                        <include name="LICENSE" />
+                                        <include name="README.md" />
+                                    </fileset>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-node</id>
+                        <phase>package</phase>
+                        <inherited>false</inherited>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy todir="${cluster.user.dir}/target/lib" overwrite="true">
+                                    <fileset dir="${cluster.user.dir}/target">
+                                        <include name="niubi-job-cluster.jar" />
+                                    </fileset>
+                                </copy>
+                                <delete file="${user.dir}/niubi-job-cluster.zip" />
+                                <delete file="${user.dir}/niubi-job-cluster.tar.gz" />
+                                <zip destfile="${user.dir}/niubi-job-cluster.zip" basedir="${cluster.user.dir}/target" includes="bin/**,conf/**,job/**,lib/**,logs/**,LICENSE,README.md" excludes="**/*.log*,job/masterSlave/**.jar,job/standby/**.jar" />
+                                <tar destfile="${user.dir}/niubi-job-cluster.tar" basedir="${cluster.user.dir}/target" includes="bin/**,conf/**,job/**,lib/**,logs/**,LICENSE,README.md" excludes="**/*.log*,job/masterSlave/**.jar,job/standby/**.jar" />
+                                <gzip destfile="${user.dir}/niubi-job-cluster.tar.gz" src="${user.dir}/niubi-job-cluster.tar" />
+                                <delete file="${user.dir}/niubi-job-cluster.tar" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
