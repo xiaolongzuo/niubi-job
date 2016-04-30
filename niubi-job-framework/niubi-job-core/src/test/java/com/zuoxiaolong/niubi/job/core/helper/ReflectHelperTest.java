@@ -46,7 +46,7 @@ public class ReflectHelperTest {
 
     @Getter
     @Setter
-    @EqualsAndHashCode
+    @EqualsAndHashCode(callSuper = false)
     public static class Child extends Parent {
 
         private String d;
