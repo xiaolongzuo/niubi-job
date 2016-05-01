@@ -12,10 +12,6 @@
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
 
-    <properties>
-        <niubi.job.version>0.9.5.1-SNAPSHOT</niubi.job.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
