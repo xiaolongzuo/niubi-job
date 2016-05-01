@@ -13,21 +13,9 @@
 
     <properties>
         <sample.spring.user.dir>${user.dir}/niubi-job-samples/niubi-job-sample-spring</sample.spring.user.dir>
-        <spring.version>4.2.4.RELEASE</spring.version>
     </properties>
 
     <dependencies>
-        <!-- 为了本地测试,依旧要引入该包 -->
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-scheduler</artifactId>
-        </dependency>
-        <!-- spring环境与非spring环境的任务最不同的就是spring环境的任务需要多引入这个包 -->
-        <!-- 并且该包需要一起打到jar包当中 -->
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-spring</artifactId>
-        </dependency>
         <!-- 这是spring的jar包 -->
         <dependency>
             <groupId>org.springframework</groupId>

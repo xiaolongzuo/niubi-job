@@ -13,10 +13,6 @@
     <dependencies>
         <dependency>
             <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
             <artifactId>niubi-job-scanner</artifactId>
         </dependency>
         <dependency>

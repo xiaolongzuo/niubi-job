@@ -54,10 +54,14 @@ import java.util.Map;
  *                ||
  *        system class loader
  *
+ * NOTE:如果是niubi-job本身的类,则无论entrust是否为true,都将优先由parent classloader加载.
+ *
  * @author Xiaolong Zuo
  * @since 0.9.3
  */
 public class ApplicationClassLoader extends URLClassLoader {
+
+    private static final String NIUBI_JOB_PACKAGE_PREFIX = "com.zuoxiaolong.niubi.job";
 
     private Map<String, Class<?>> classMap = new HashMap<>();
 
@@ -117,7 +121,7 @@ public class ApplicationClassLoader extends URLClassLoader {
                 //ignored
             }
             try {
-                if (entrust) {
+                if (entrust || isNiubiJobClass(name)) {
                     clazz = super.loadClass(name, resolve);
                     if (clazz != null) {
                         if (resolve) {
@@ -187,6 +191,13 @@ public class ApplicationClassLoader extends URLClassLoader {
     @Override
     protected void addURL(URL url) {
         super.addURL(url);
+    }
+
+    protected boolean isNiubiJobClass(String className) {
+        if (className != null && className.startsWith(NIUBI_JOB_PACKAGE_PREFIX)) {
+            return true;
+        }
+        return false;
     }
 
     public synchronized void addFiles(Object... filePaths) {

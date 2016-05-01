@@ -15,14 +15,6 @@
         <sample.common.user.dir>${user.dir}/niubi-job-samples/niubi-job-sample-common</sample.common.user.dir>
     </properties>
 
-    <dependencies>
-        <!-- 如果要本地测试必须引入该jar包 -->
-        <dependency>
-            <groupId>com.zuoxiaolong</groupId>
-            <artifactId>niubi-job-scheduler</artifactId>
-        </dependency>
-    </dependencies>
-
     <build>
         <finalName>niubi-job-sample-common</finalName>
         <plugins>
