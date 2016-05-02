@@ -38,7 +38,7 @@ public class MasterSlaveJobServiceImplTest extends AbstractSpringContextTest{
         List<MasterSlaveJob> jobs = masterSlaveJobService.getAllJobs();
         Assert.assertNotNull(jobs);
         Assert.assertTrue(jobs.size() == 0);
-        masterSlaveJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
+        masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         jobs = masterSlaveJobService.getAllJobs();
         Assert.assertNotNull(jobs);
         Assert.assertTrue(jobs.size() == 2);
@@ -46,14 +46,14 @@ public class MasterSlaveJobServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void getJob() {
-        masterSlaveJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
+        masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         MasterSlaveJob job = masterSlaveJobService.getJob("com.zuoxiaolong.niubi.job.example.spring.job.Job1", "test", "niubi-job-example-spring.jar");
         Assert.assertNotNull(job);
     }
 
     @Test
     public void getJarFileNameList() {
-        masterSlaveJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
+        masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         List<String> jarFileNameList = masterSlaveJobService.getJarFileNameList("com.zuoxiaolong.niubi.job.example.spring.job.Job1", "test");
         Assert.assertNotNull(jarFileNameList);
         Assert.assertTrue(jarFileNameList.size() == 1);

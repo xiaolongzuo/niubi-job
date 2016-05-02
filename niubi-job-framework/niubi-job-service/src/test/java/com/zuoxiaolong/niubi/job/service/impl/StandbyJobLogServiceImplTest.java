@@ -87,7 +87,7 @@ public class StandbyJobLogServiceImplTest extends AbstractSpringContextTest{
     @Test
     public void updateJobLog() {
         //上传Jar包
-        standbyJobService.saveJob(ClassLoader.getSystemClassLoader().getResource("niubi-job-example-spring.jar").getFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         List<StandbyJobSummary> jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         //调度任务1
         StandbyJobSummary jobSummary = jobSummaries.get(0);
