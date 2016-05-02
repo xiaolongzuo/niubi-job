@@ -5,7 +5,7 @@
     <groupId>com.zuoxiaolong</groupId>
     <artifactId>niubi-job</artifactId>
     <packaging>pom</packaging>
-    <version>0.9.5.2-SNAPSHOT</version>
+    <version>0.9.5.1-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <description>This is a distributed job scheduling framework.</description>
     <url>https://github.com/xiaolongzuo/niubi-job</url>
@@ -39,7 +39,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <niubi.job.version>0.9.5.2-SNAPSHOT</niubi.job.version>
+        <niubi.job.version>0.9.5.1-SNAPSHOT</niubi.job.version>
         <spring.version>4.2.4.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
         <zookeeper.version>3.4.7</zookeeper.version>
