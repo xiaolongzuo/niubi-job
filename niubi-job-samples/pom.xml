@@ -3,7 +3,7 @@
     <parent>
         <artifactId>niubi-job-parent</artifactId>
         <groupId>com.zuoxiaolong</groupId>
-        <version>0.9.5.1.2-SNAPSHOT</version>
+        <version>0.9.5.1.2</version>
         <relativePath>../niubi-job-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
