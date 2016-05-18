@@ -38,7 +38,7 @@ public class StandbyJobServiceImplTest extends AbstractSpringContextTest{
         List<StandbyJob> jobs = standbyJobService.getAllJobs();
         Assert.assertNotNull(jobs);
         Assert.assertTrue(jobs.size() == 0);
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         jobs = standbyJobService.getAllJobs();
         Assert.assertNotNull(jobs);
         Assert.assertTrue(jobs.size() == 2);
@@ -46,14 +46,14 @@ public class StandbyJobServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void getJob() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         StandbyJob job = standbyJobService.getJob("com.zuoxiaolong.niubi.job.sample.spring.job.Job1", "test", "niubi-job-sample-spring.jar");
         Assert.assertNotNull(job);
     }
 
     @Test
     public void getJarFileNameList() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         List<String> jarFileNameList = standbyJobService.getJarFileNameList("com.zuoxiaolong.niubi.job.sample.spring.job.Job1", "test");
         Assert.assertNotNull(jarFileNameList);
         Assert.assertTrue(jarFileNameList.size() == 1);

@@ -54,7 +54,11 @@ public abstract class AbstractSpringContextTest implements ApplicationContextAwa
         this.applicationContext = applicationContext;
     }
 
-    protected String getExampleJarFile() {
+    protected String getSampleJarFile() {
+        System.out.println(ClassLoader.getSystemResource("").getFile());
+        System.out.println(AbstractSpringContextTest.class.getClassLoader().getSystemResource("").getFile());
+        System.out.println(MasterSlaveJobLogServiceImplTest.class.getClassLoader().getSystemResource("").getFile());
+        System.out.println(applicationContext.getClassLoader().getSystemResource("").getFile());
         System.out.println(ClassLoader.getSystemResource("niubi-job-sample-spring.jar").getFile());
         System.out.println(AbstractSpringContextTest.class.getClassLoader().getSystemResource("niubi-job-sample-spring.jar").getFile());
         System.out.println(MasterSlaveJobLogServiceImplTest.class.getClassLoader().getSystemResource("niubi-job-sample-spring.jar").getFile());

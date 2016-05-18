@@ -87,7 +87,7 @@ public class MasterSlaveJobLogServiceImplTest extends AbstractSpringContextTest{
     @Test
     public void updateJobLog() {
         //上传Jar包
-        masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        masterSlaveJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         List<MasterSlaveJobSummary> jobSummaries = masterSlaveJobSummaryService.getAllJobSummaries();
         //调度任务1
         MasterSlaveJobSummary jobSummary = jobSummaries.get(0);

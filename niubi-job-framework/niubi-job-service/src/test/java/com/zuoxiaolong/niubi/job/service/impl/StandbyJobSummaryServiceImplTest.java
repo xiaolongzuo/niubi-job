@@ -53,7 +53,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
         List<StandbyJobSummary> jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         Assert.assertNotNull(jobSummaries);
         Assert.assertTrue(jobSummaries.size() == 0);
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         Assert.assertNotNull(jobSummaries);
         Assert.assertTrue(jobSummaries.size() == 2);
@@ -61,7 +61,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void saveJobSummary() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         List<StandbyJobSummary> jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         StandbyJobSummary jobSummary = jobSummaries.get(0);
         jobSummary.setJobCron("0 * * * * ?");
@@ -78,7 +78,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void getJobSummary() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         List<StandbyJobSummary> jobSummaries = standbyJobSummaryService.getAllJobSummaries();
         StandbyJobSummary jobSummary = jobSummaries.get(0);
         String id = jobSummary.getId();
@@ -103,7 +103,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void updateJobSummary1() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         StandbyJobSummary jobSummary = standbyJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
         Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
@@ -120,7 +120,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
 
     @Test
     public void updateJobSummary2() {
-        standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
+        standbyJobService.saveJob(getSampleJarFile(), "com.zuoxiaolong");
         StandbyJobSummary jobSummary = standbyJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
         Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
