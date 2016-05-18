@@ -28,3 +28,6 @@ dependency-reduced-pom.xml
 .settings/
 .project
 .classpath
+
+# exclude file
+!/niubi-job-framework/niubi-job-service/src/test/resources/niubi-job-sample-spring.jar

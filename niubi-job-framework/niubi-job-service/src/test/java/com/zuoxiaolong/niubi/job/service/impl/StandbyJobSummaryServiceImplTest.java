@@ -66,8 +66,8 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
         StandbyJobSummary jobSummary = jobSummaries.get(0);
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
-        jobSummary.setJarFileName("niubi-job-example-spring.jar");
-        jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
+        jobSummary.setJarFileName("niubi-job-sample-spring.jar");
+        jobSummary.setOriginalJarFileName("niubi-job-sample-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
         standbyJobSummaryService.saveJobSummary(jobSummary);
@@ -84,8 +84,8 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
         String id = jobSummary.getId();
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
-        jobSummary.setJarFileName("niubi-job-example-spring.jar");
-        jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
+        jobSummary.setJarFileName("niubi-job-sample-spring.jar");
+        jobSummary.setOriginalJarFileName("niubi-job-sample-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
         standbyJobSummaryService.saveJobSummary(jobSummary);
@@ -106,7 +106,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
         standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         StandbyJobSummary jobSummary = standbyJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
-        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.example.spring.job.Job1");
+        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
         Assert.assertEquals(jobSummary.getJobName(), "test");
         StandbyJobData.Data data = new StandbyJobData.Data();
         data.setJobCron("0 * * * * ?");
@@ -123,7 +123,7 @@ public class StandbyJobSummaryServiceImplTest extends AbstractSpringContextTest{
         standbyJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         StandbyJobSummary jobSummary = standbyJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
-        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.example.spring.job.Job1");
+        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
         Assert.assertEquals(jobSummary.getJobName(), "test");
         standbyJobSummaryService.saveJobSummary(jobSummary);
         StandbyApiFactory apiFactory = new StandbyApiFactoryImpl(client);

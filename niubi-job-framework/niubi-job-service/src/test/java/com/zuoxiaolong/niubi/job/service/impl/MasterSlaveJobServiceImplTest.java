@@ -47,17 +47,17 @@ public class MasterSlaveJobServiceImplTest extends AbstractSpringContextTest{
     @Test
     public void getJob() {
         masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
-        MasterSlaveJob job = masterSlaveJobService.getJob("com.zuoxiaolong.niubi.job.example.spring.job.Job1", "test", "niubi-job-example-spring.jar");
+        MasterSlaveJob job = masterSlaveJobService.getJob("com.zuoxiaolong.niubi.job.sample.spring.job.Job1", "test", "niubi-job-sample-spring.jar");
         Assert.assertNotNull(job);
     }
 
     @Test
     public void getJarFileNameList() {
         masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
-        List<String> jarFileNameList = masterSlaveJobService.getJarFileNameList("com.zuoxiaolong.niubi.job.example.spring.job.Job1", "test");
+        List<String> jarFileNameList = masterSlaveJobService.getJarFileNameList("com.zuoxiaolong.niubi.job.sample.spring.job.Job1", "test");
         Assert.assertNotNull(jarFileNameList);
         Assert.assertTrue(jarFileNameList.size() == 1);
-        Assert.assertEquals("niubi-job-example-spring.jar" , jarFileNameList.get(0));
+        Assert.assertEquals("niubi-job-sample-spring.jar" , jarFileNameList.get(0));
     }
 
 }

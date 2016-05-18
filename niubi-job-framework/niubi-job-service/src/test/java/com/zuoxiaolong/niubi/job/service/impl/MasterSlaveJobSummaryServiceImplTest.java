@@ -66,8 +66,8 @@ public class MasterSlaveJobSummaryServiceImplTest extends AbstractSpringContextT
         MasterSlaveJobSummary jobSummary = jobSummaries.get(0);
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
-        jobSummary.setJarFileName("niubi-job-example-spring.jar");
-        jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
+        jobSummary.setJarFileName("niubi-job-sample-spring.jar");
+        jobSummary.setOriginalJarFileName("niubi-job-sample-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
         masterSlaveJobSummaryService.saveJobSummary(jobSummary);
@@ -84,8 +84,8 @@ public class MasterSlaveJobSummaryServiceImplTest extends AbstractSpringContextT
         String id = jobSummary.getId();
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
-        jobSummary.setJarFileName("niubi-job-example-spring.jar");
-        jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
+        jobSummary.setJarFileName("niubi-job-sample-spring.jar");
+        jobSummary.setOriginalJarFileName("niubi-job-sample-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
         masterSlaveJobSummaryService.saveJobSummary(jobSummary);
@@ -106,7 +106,7 @@ public class MasterSlaveJobSummaryServiceImplTest extends AbstractSpringContextT
         masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         MasterSlaveJobSummary jobSummary = masterSlaveJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
-        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.example.spring.job.Job1");
+        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
         Assert.assertEquals(jobSummary.getJobName(), "test");
         MasterSlaveJobData.Data data = new MasterSlaveJobData.Data();
         data.setJobCron("0 * * * * ?");
@@ -123,7 +123,7 @@ public class MasterSlaveJobSummaryServiceImplTest extends AbstractSpringContextT
         masterSlaveJobService.saveJob(getExampleJarFile(), "com.zuoxiaolong");
         MasterSlaveJobSummary jobSummary = masterSlaveJobSummaryService.getAllJobSummaries().get(0);
         Assert.assertNotNull(jobSummary);
-        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.example.spring.job.Job1");
+        Assert.assertEquals(jobSummary.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
         Assert.assertEquals(jobSummary.getJobName(), "test");
         masterSlaveJobSummaryService.saveJobSummary(jobSummary);
         MasterSlaveApiFactory apiFactory = new MasterSlaveApiFactoryImpl(client);

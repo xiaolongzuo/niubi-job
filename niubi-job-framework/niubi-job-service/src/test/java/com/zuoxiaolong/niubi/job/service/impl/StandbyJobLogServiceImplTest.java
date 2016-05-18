@@ -93,8 +93,8 @@ public class StandbyJobLogServiceImplTest extends AbstractSpringContextTest{
         StandbyJobSummary jobSummary = jobSummaries.get(0);
         jobSummary.setJobCron("0 * * * * ?");
         jobSummary.setMisfirePolicy("None");
-        jobSummary.setJarFileName("niubi-job-example-spring.jar");
-        jobSummary.setOriginalJarFileName("niubi-job-example-spring.jar");
+        jobSummary.setJarFileName("niubi-job-sample-spring.jar");
+        jobSummary.setOriginalJarFileName("niubi-job-sample-spring.jar");
         jobSummary.setJobOperation("Start");
         jobSummary.setContainerType("Spring");
         standbyJobSummaryService.saveJobSummary(jobSummary);
@@ -105,14 +105,14 @@ public class StandbyJobLogServiceImplTest extends AbstractSpringContextTest{
         standbyJobLogService.updateJobLog(data);
         //判断日志是否更新成功
         StandbyJobLog jobLog = baseDao.get(StandbyJobLog.class, jobLogId);
-        Assert.assertEquals(jobLog.getJarFileName(), "niubi-job-example-spring.jar");
+        Assert.assertEquals(jobLog.getJarFileName(), "niubi-job-sample-spring.jar");
         Assert.assertEquals(jobLog.getJobName(), "test");
         Assert.assertEquals(jobLog.getJobOperation(), "Start");
         Assert.assertEquals(jobLog.getMisfirePolicy(), "None");
-        Assert.assertEquals(jobLog.getOriginalJarFileName(), "niubi-job-example-spring.jar");
+        Assert.assertEquals(jobLog.getOriginalJarFileName(), "niubi-job-sample-spring.jar");
         Assert.assertEquals(jobLog.getJobCron(), "0 * * * * ?");
         Assert.assertEquals(jobLog.getContainerType(), "Spring");
-        Assert.assertEquals(jobLog.getGroupName(), "com.zuoxiaolong.niubi.job.example.spring.job.Job1");
+        Assert.assertEquals(jobLog.getGroupName(), "com.zuoxiaolong.niubi.job.sample.spring.job.Job1");
     }
 
 }
