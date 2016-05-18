@@ -20,9 +20,6 @@ import com.zuoxiaolong.niubi.job.test.zookeeper.ZookeeperServerCluster;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext-service-test.xml"})
 @Transactional
-public abstract class AbstractSpringContextTest implements ApplicationContextAware {
-
-    private ApplicationContext applicationContext;
+public abstract class AbstractSpringContextTest {
 
     @BeforeClass
     public static void setup() {
@@ -49,20 +44,7 @@ public abstract class AbstractSpringContextTest implements ApplicationContextAwa
         ZookeeperServerCluster.stopZookeeperCluster();
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
-
     protected String getSampleJarFile() {
-        System.out.println(ClassLoader.getSystemResource("").getFile());
-        System.out.println(AbstractSpringContextTest.class.getClassLoader().getSystemResource("").getFile());
-        System.out.println(MasterSlaveJobLogServiceImplTest.class.getClassLoader().getSystemResource("").getFile());
-        System.out.println(applicationContext.getClassLoader().getSystemResource("").getFile());
-        System.out.println(ClassLoader.getSystemResource("niubi-job-sample-spring.jar").getFile());
-        System.out.println(AbstractSpringContextTest.class.getClassLoader().getSystemResource("niubi-job-sample-spring.jar").getFile());
-        System.out.println(MasterSlaveJobLogServiceImplTest.class.getClassLoader().getSystemResource("niubi-job-sample-spring.jar").getFile());
-        System.out.println(applicationContext.getClassLoader().getSystemResource("niubi-job-sample-spring.jar").getFile());
         return ClassLoader.getSystemResource("niubi-job-sample-spring.jar").getFile();
     }
 
