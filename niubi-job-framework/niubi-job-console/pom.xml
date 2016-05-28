@@ -101,32 +101,16 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
+                <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <attachClasses>true</attachClasses>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>build-console</id>
-                        <phase>package</phase>
-                        <inherited>false</inherited>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-deploy-plugin</artifactId>
                 <configuration>
-                    <target>
-                        <copy todir="${user.dir}" overwrite="true">
-                            <fileset dir="${console.user.dir}/target">
-                                <include name="niubi-job-console.war" />
-                            </fileset>
-                        </copy>
-                    </target>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>niubi-job-samples</artifactId>
+        <artifactId>niubi-job-parent</artifactId>
         <groupId>com.zuoxiaolong</groupId>
+        <!-- 该版本应该使用release版本,比如 0.9.5.1.2 -->
         <version>0.9.5.1.3-SNAPSHOT</version>
+        <relativePath>../../niubi-job-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>niubi-job-sample-spring</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
-
-    <properties>
-        <sample.spring.user.dir>${user.dir}/niubi-job-samples/niubi-job-sample-spring</sample.spring.user.dir>
-    </properties>
 
     <dependencies>
         <!-- 这是spring的jar包 -->
@@ -20,34 +18,5 @@
             <artifactId>spring-context</artifactId>
         </dependency>
     </dependencies>
-
-    <build>
-        <finalName>niubi-job-sample-spring</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>build-console</id>
-                        <phase>package</phase>
-                        <inherited>false</inherited>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <target>
-                        <copy todir="${user.dir}" overwrite="true">
-                            <fileset dir="${sample.spring.user.dir}/target">
-                                <include name="niubi-job-sample-spring.jar" />
-                            </fileset>
-                        </copy>
-                    </target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
