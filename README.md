@@ -24,6 +24,7 @@ git clone git@github.com:xiaolongzuo/niubi-job.git
 cd niubi-job
 mvn clean package
 ```
+执行完以后，你会在niubi-job-build/build目录下看到打包好的niubi-job。
 
 # 文档
  * 安装就是这么简单，详见[安装文档](http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html "http://www.cnblogs.com/zuoxiaolong/p/niubi-job-1.html")
