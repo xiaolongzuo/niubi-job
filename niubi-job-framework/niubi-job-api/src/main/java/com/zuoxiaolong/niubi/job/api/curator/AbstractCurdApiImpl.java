@@ -39,11 +39,11 @@ public abstract class AbstractCurdApiImpl {
 
     private static final Stat EMPTY_STAT = new Stat();
 
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
-    private StandbyPathApi standbyPathApi = StandbyPathApiImpl.INSTANCE;
+    private static final StandbyPathApi standbyPathApi = StandbyPathApiImpl.INSTANCE;
 
-    private MasterSlavePathApi masterSlavePathApi = MasterSlavePathApiImpl.INSTANCE;
+    private static final MasterSlavePathApi masterSlavePathApi = MasterSlavePathApiImpl.INSTANCE;
 
     public AbstractCurdApiImpl(CuratorFramework client) {
         this.client = client;
