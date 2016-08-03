@@ -61,7 +61,9 @@ import java.util.Map;
  */
 public class ApplicationClassLoader extends URLClassLoader {
 
-    private static final String NIUBI_JOB_PACKAGE_PREFIX = "com.zuoxiaolong.niubi.job";
+    private static final String NIUBI_JOB_PACKAGE_PREFIX = "com.zuoxiaolong.niubi.job.";
+
+    private static final String[] NIUBI_JOB_MODULE = new String[]{"core", "api", "scanner", "scheduler", "cluster"};
 
     private Map<String, Class<?>> classMap = new HashMap<>();
 
@@ -194,8 +196,12 @@ public class ApplicationClassLoader extends URLClassLoader {
     }
 
     protected boolean isNiubiJobClass(String className) {
-        if (className != null && className.startsWith(NIUBI_JOB_PACKAGE_PREFIX)) {
-            return true;
+        if (className != null) {
+            for (String niubiJobModule : NIUBI_JOB_MODULE) {
+                if (className.startsWith(NIUBI_JOB_PACKAGE_PREFIX + niubiJobModule)) {
+                    return true;
+                }
+            }
         }
         return false;
     }
