@@ -4,7 +4,7 @@
         <artifactId>niubi-job-parent</artifactId>
         <groupId>com.zuoxiaolong</groupId>
         <!-- 该版本应该使用release版本,比如 0.9.5.1.2 -->
-        <version>0.9.5.1.4-SNAPSHOT</version>
+        <version>0.9.5.1.3-SNAPSHOT</version>
         <relativePath>../../niubi-job-parent/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>

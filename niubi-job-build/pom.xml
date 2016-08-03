@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>niubi-job</artifactId>
         <groupId>com.zuoxiaolong</groupId>
-        <version>0.9.5.1.4-SNAPSHOT</version>
+        <version>0.9.5.1.3-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>niubi-job-build</artifactId>
@@ -98,8 +100,8 @@
                         <gzip destfile="${cluster.user.dir}/target/niubi-job-cluster.tar.gz" src="${cluster.user.dir}/target/niubi-job-cluster.tar" />
 
                         <!-- 创建build文件夹 -->
-                        <delete dir="${build.dir}" />
-                        <mkdir dir="${build.dir}" />
+                        <delete dir="${build.dir}"/>
+                        <mkdir dir="${build.dir}"/>
 
                         <!-- 将包复制到build文件夹 -->
                         <copy file="${sample.spring.user.dir}/target/niubi-job-sample-spring-${niubi.job.version}.jar" tofile="${build.dir}/niubi-job-sample-spring.jar" overwrite="true" />
