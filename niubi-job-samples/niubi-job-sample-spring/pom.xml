@@ -4,7 +4,7 @@
         <artifactId>niubi-job-parent</artifactId>
         <groupId>com.zuoxiaolong</groupId>
         <!-- 以下两个配置仅做示例使用 -->
-        <version>0.9.6</version>
+        <version>0.9.6.1-SNAPSHOT</version>
         <relativePath>../../niubi-job-parent/pom.xml</relativePath>
         <!-- 实际开发时应使用如下配置 -->
         <!-- <version>0.9.5.1.2</version> -->
