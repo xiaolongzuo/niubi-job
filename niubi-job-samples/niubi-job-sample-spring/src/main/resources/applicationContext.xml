@@ -9,12 +9,13 @@
        http://www.zuoxiaolong.com/schema/niubi-job
        http://www.zuoxiaolong.com/schema/niubi-job/niubi-job-1.0.xsd">
 
-    <!-- Annotation Config -->
+    <!-- 你自己的一些spring配置 -->
     <context:annotation-config/>
 
     <context:component-scan base-package="com.zuoxiaolong.niubi.job.sample.spring"/>
 
-    <!-- for Test -->
+    <!-- 以下这一行用于开启niubi-job的驱动,可以用于本地测试任务 -->
+    <!-- packagesToScan属性指定了需要扫描那些包寻找任务 -->
     <job:job-driven packagesToScan="com.zuoxiaolong.niubi.job.sample.spring"/>
 
 </beans>

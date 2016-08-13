@@ -27,6 +27,7 @@ import com.zuoxiaolong.niubi.job.scheduler.node.SimpleLocalJobNode;
 public class Test {
 
     public static void main(String[] args) {
+        //com.zuoxiaolong为任务所在的包，这个参数指定了niubi-job需要扫描哪些包找到任务。
         Node node = new SimpleLocalJobNode("com.zuoxiaolong");
         node.join();
     }
