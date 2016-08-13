@@ -42,7 +42,7 @@ import java.util.Map;
  *                ||
  *      application class loader
  *
- * 当entrust为false时,该类加载完全遵循双亲委托模型,类加载器继承的顺序如下:
+ * 当entrust为false时,该类加载不完全遵循双亲委托模型,类加载器继承的顺序如下:
  *      bootstrap class loader
  *                ||
  *                ||
@@ -54,7 +54,7 @@ import java.util.Map;
  *                ||
  *        system class loader
  *
- * NOTE:如果是niubi-job本身的类,则无论entrust是否为true,都将优先由parent classloader加载.
+ * 注意:如果是niubi-job本身的类,则无论entrust是否为true,都将优先由parent classloader加载.
  *
  * @author Xiaolong Zuo
  * @since 0.9.3
