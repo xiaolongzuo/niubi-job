@@ -30,7 +30,7 @@ import org.apache.curator.framework.CuratorFramework;
  */
 public class MasterSlaveApiFactoryImpl implements MasterSlaveApiFactory {
 
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
     public MasterSlaveApiFactoryImpl(CuratorFramework client) {
         this.client = client;

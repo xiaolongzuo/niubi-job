@@ -30,7 +30,7 @@ import org.apache.curator.framework.CuratorFramework;
  */
 public class StandbyApiFactoryImpl implements StandbyApiFactory {
 
-    private CuratorFramework client;
+    private final CuratorFramework client;
 
     public StandbyApiFactoryImpl(CuratorFramework client) {
         this.client = client;
