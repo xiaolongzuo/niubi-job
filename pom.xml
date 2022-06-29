@@ -43,7 +43,7 @@
         <niubi.job.version>0.9.6.1-SNAPSHOT</niubi.job.version>
         <spring.version>4.2.4.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
-        <zookeeper.version>3.4.7</zookeeper.version>
+        <zookeeper.version>3.4.14</zookeeper.version>
         <quartz.version>2.2.2</quartz.version>
         <curator.version>2.7.0</curator.version>
         <gson.version>2.5</gson.version>
