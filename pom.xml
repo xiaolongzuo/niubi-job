@@ -41,7 +41,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <niubi.job.version>0.9.6.1-SNAPSHOT</niubi.job.version>
-        <spring.version>4.2.4.RELEASE</spring.version>
+        <spring.version>5.2.20.RELEASE</spring.version>
         <junit.version>4.12</junit.version>
         <zookeeper.version>3.4.7</zookeeper.version>
         <quartz.version>2.2.2</quartz.version>
